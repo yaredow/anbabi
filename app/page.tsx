@@ -2,7 +2,7 @@
 
 import EbookReader from "@/components/ebook-reader";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
@@ -12,6 +12,9 @@ export default function Home() {
 
     if (file && file.type === "application/epub+zip") {
       const fileUrl = URL.createObjectURL(file);
+
+      localStorage.setItem("bookUrl", fileUrl);
+
       setFileUrl(fileUrl);
     } else {
       toast({
@@ -19,6 +22,19 @@ export default function Home() {
       });
     }
   };
+
+  const handleClearBook = () => {
+    localStorage.removeItem("bookUrl");
+    setFileUrl(null);
+  };
+
+  useEffect(() => {
+    const savedBook = localStorage.getItem("bookUrl");
+
+    if (savedBook) {
+      setFileUrl(savedBook);
+    }
+  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -30,6 +46,9 @@ export default function Home() {
       ) : (
         <EbookReader fileUrl={fileUrl} />
       )}
+      <button onClick={handleClearBook} style={{ margin: "1rem" }}>
+        Clear Book
+      </button>
     </div>
   );
 }
