@@ -1,28 +1,31 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import ePub from "epubjs";
+import React, { useState } from "react";
+import { ReactReader } from "react-reader";
 
 type BookReaderProps = {
   fileUrl: string;
 };
 
 const EbookReader = ({ fileUrl }: BookReaderProps) => {
-  const viewerRef = useRef<HTMLDivElement>(null);
+  const [location, setLocation] = useState<string | number>(0);
 
-  useEffect(() => {
-    if (viewerRef.current && fileUrl) {
-      const book = ePub(fileUrl);
-      const rendition = book.renderTo(viewerRef.current, {
-        width: "100%",
-        height: "100%",
-      });
+  const handleLocaltionChange = (newLocation: string | number) => {
+    setLocation(newLocation);
+  };
 
-      rendition.display();
-    }
-  }, [fileUrl]);
-
-  return <div ref={viewerRef} style={{ width: "100%", height: "100vh" }} />;
+  return (
+    <div style={{ height: "100vh", width: "100%" }}>
+      <ReactReader
+        url={fileUrl}
+        location={location}
+        locationChanged={handleLocaltionChange}
+        epubInitOptions={{
+          openAs: "epub",
+        }}
+      />
+    </div>
+  );
 };
 
 export default EbookReader;

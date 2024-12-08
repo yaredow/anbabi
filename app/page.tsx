@@ -1,18 +1,35 @@
 "use client";
 
+import EbookReader from "@/components/ebook-reader";
+import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { ReactReader } from "react-reader";
 
 export default function Home() {
-  const [location, setLocation] = useState<string | number>(0);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file && file.type === "application/epub+zip") {
+      const fileUrl = URL.createObjectURL(file);
+      setFileUrl(fileUrl);
+    } else {
+      toast({
+        description: "Please upload a valid epub",
+      });
+    }
+  };
 
   return (
-    <div style={{ height: "100vh" }}>
-      <ReactReader
-        url="https://react-reader.metabits.no/files/alice.epub"
-        location={location}
-        locationChanged={(epubcfi: string) => setLocation(epubcfi)}
-      />
+    <div className="flex items-center justify-center min-h-screen">
+      {!fileUrl ? (
+        <div className="flex flex-col gap-y-2">
+          <h1>Upload file</h1>
+          <input type="file" accept=".epub" onChange={handleFileUpload} />
+        </div>
+      ) : (
+        <EbookReader fileUrl={fileUrl} />
+      )}
     </div>
   );
 }
