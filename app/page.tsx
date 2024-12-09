@@ -46,9 +46,6 @@ export default function Home() {
       ) : (
         <EbookReader fileUrl={fileUrl} />
       )}
-      <button onClick={handleClearBook} style={{ margin: "1rem" }}>
-        Clear Book
-      </button>
     </div>
   );
 }
