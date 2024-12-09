@@ -12,9 +12,6 @@ export default function Home() {
 
     if (file && file.type === "application/epub+zip") {
       const fileUrl = URL.createObjectURL(file);
-
-      localStorage.setItem("bookUrl", fileUrl);
-
       setFileUrl(fileUrl);
     } else {
       toast({
@@ -22,19 +19,6 @@ export default function Home() {
       });
     }
   };
-
-  const handleClearBook = () => {
-    localStorage.removeItem("bookUrl");
-    setFileUrl(null);
-  };
-
-  useEffect(() => {
-    const savedBook = localStorage.getItem("bookUrl");
-
-    if (savedBook) {
-      setFileUrl(savedBook);
-    }
-  }, []);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
