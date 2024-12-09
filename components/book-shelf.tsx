@@ -1,11 +1,14 @@
+"use client";
+
 import { Book } from "@/features/books/types";
-import BookItem from "./book-item";
+import BookItem from "../features/books/components/book-item";
 
 interface BookShelfProps {
   books: Book[];
 }
 
-export default function BookShelf({ books }: BookShelfProps) {
+export default function BookShelf() {
+  const { books, isPending } = useGetBooks();
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       {books.length > 0 ? (

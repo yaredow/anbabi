@@ -1,5 +1,5 @@
-import { Book } from "@/features/books/types";
 import Image from "next/image";
+import { Book } from "../schemas";
 
 interface BookItemProps {
   book: Book;
@@ -10,7 +10,7 @@ export default function BookItem({ book }: BookItemProps) {
     <div className="flex flex-col items-center">
       <div className="relative w-36 h-48 mb-2">
         <Image
-          src={book.cover}
+          src={book.coverImageUrl}
           alt={book.title}
           fill
           className="object-cover rounded-md shadow-md"

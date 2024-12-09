@@ -1,35 +1,17 @@
-"use client";
-
-import EbookReader from "@/components/ebook-reader";
-import { toast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
+import Header from "@/components/header";
+import EpubUploader from "@/features/books/components/ebook-uploader";
 
 export default function Home() {
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file && file.type === "application/epub+zip") {
-      const fileUrl = URL.createObjectURL(file);
-      setFileUrl(fileUrl);
-    } else {
-      toast({
-        description: "Please upload a valid epub",
-      });
-    }
-  };
-
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      {!fileUrl ? (
-        <div className="flex flex-col gap-y-2">
-          <h1>Upload file</h1>
-          <input type="file" accept=".epub" onChange={handleFileUpload} />
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">My Books</h1>
+          <EpubUploader />
         </div>
-      ) : (
-        <EbookReader fileUrl={fileUrl} />
-      )}
+        <BookShelf books={books} />
+      </main>
     </div>
   );
 }
