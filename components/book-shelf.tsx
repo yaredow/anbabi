@@ -1,17 +1,22 @@
 "use client";
 
-import { Book } from "@/features/books/types";
+import { Book } from "@prisma/client";
 import BookItem from "../features/books/components/book-item";
-
-interface BookShelfProps {
-  books: Book[];
-}
+import { useGetBooks } from "@/features/books/api/use-get-books";
+import { Loader2 } from "lucide-react";
 
 export default function BookShelf() {
   const { books, isPending } = useGetBooks();
+
+  if (isPending) {
+    return (
+      <Loader2 className="flex min-h-screen items-center justify-center animate-spin" />
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-      {books.length > 0 ? (
+      {books && books.length > 0 ? (
         books.map((book) => <BookItem key={book.id} book={book} />)
       ) : (
         <div className="col-span-full text-center py-12">

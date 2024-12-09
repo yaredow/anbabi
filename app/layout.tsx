@@ -1,9 +1,13 @@
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
-import "./globals.css";
-import { cn } from "@/lib/utils";
-import { Toast } from "@/components/ui/toast";
+
+import QueryProviders from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
+
+import "./globals.css";
+import UploadBookModal from "@/features/books/components/upload-book-modal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,8 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, "antialiased min-h-screen")}>
-        <Toaster />
-        {children}
+        <QueryProviders>
+          <NuqsAdapter>
+            <UploadBookModal />
+            <Toaster />
+            {children}
+          </NuqsAdapter>
+        </QueryProviders>
       </body>
     </html>
   );
