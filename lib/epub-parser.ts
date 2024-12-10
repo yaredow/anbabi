@@ -9,18 +9,25 @@ export async function parseEpub(file: File): Promise<{
   publicationYear?: number;
   isbn?: string;
   publisher?: string;
-  pageCount?: number;
 }> {
-  console.log({ file });
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const arrayBuffer = e.target?.result as ArrayBuffer;
-        const book = EPUBJS.default(arrayBuffer);
+        if (!arrayBuffer) {
+          reject(new Error("Failed to load ArrayBuffer from file"));
+          return;
+        }
 
-        const metadata = book.packaging.metadata;
+        const book = new EPUBJS.Book(arrayBuffer);
+        await book.ready;
 
+        if (!book.packaging) {
+          throw new Error("EPUB packaging data is missing.");
+        }
+
+        const metadata = book.packaging.metadata || {};
         const isbn =
           metadata.identifier && validateISBN(metadata.identifier)
             ? metadata.identifier
@@ -40,10 +47,16 @@ export async function parseEpub(file: File): Promise<{
           publisher: metadata.publisher || undefined,
         });
       } catch (error) {
-        reject(error);
+        console.error("Error parsing EPUB:", error);
+        reject(new Error("Failed to parse EPUB file."));
       }
     };
-    reader.onerror = reject;
+
+    reader.onerror = (e) => {
+      console.error("FileReader error:", e);
+      reject(new Error("Failed to read file as ArrayBuffer"));
+    };
+
     reader.readAsArrayBuffer(file);
   });
 }

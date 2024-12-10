@@ -9,7 +9,7 @@ import { parseEpub } from "@/lib/epub-parser";
 import { Input } from "@/components/ui/input";
 
 import { useUploadBook } from "../api/use-upload-book";
-import { EpubInfo } from "../types";
+import { BookType } from "../types";
 
 type EpubUploaderProps = {
   onCancel: () => void;
@@ -17,7 +17,7 @@ type EpubUploaderProps = {
 
 export default function EpubUploader({ onCancel }: EpubUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [epubInfo, setEpubInfo] = useState<EpubInfo | null>(null);
+  const [epubInfo, setEpubInfo] = useState<BookType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { upload, status } = useUploadBook();
 
@@ -27,29 +27,27 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const selectedFile = event.target.files?.[0];
-    if (!selectedFile) {
-      setError("No file selected.");
-      return;
-    }
+    console.log("Selected file:", selectedFile);
 
-    if (selectedFile.type !== "application/epub+zip") {
+    if (selectedFile?.type === "application/epub+zip") {
+      setFile(selectedFile);
+      setError(null);
+
+      try {
+        const bookData = await parseEpub(selectedFile);
+        console.log("Parsed EPUB data:", bookData);
+        setEpubInfo(bookData);
+      } catch (err) {
+        console.error("Error parsing EPUB:", err);
+        setError("Failed to parse EPUB file.");
+      }
+    } else {
       setError("Please select a valid EPUB file.");
-      return;
-    }
-
-    setFile(selectedFile);
-    setError(null);
-
-    try {
-      const bookData = await parseEpub(selectedFile);
-      setEpubInfo(bookData);
-    } catch (err) {
-      setError("Failed to parse EPUB file.");
     }
   };
 
   const handleUpload = () => {
-    if (!file || !epubInfo) {
+    if (!epubInfo) {
       setError("Missing file or metadata to upload.");
       return;
     }
