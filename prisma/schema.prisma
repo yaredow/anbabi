@@ -14,18 +14,15 @@ datasource db {
 }
 
 model Book {
-  id            String    @id @default(cuid())
-  title         String
-  author        String
-  description   String?
-  coverUrl      String?
-  cloudinaryUrl String
-  genre         String?
-  publishedAt   DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations (if applicable)
-  // owner      User?     @relation(fields: [ownerId], references: [id])
-  // ownerId    String?
+  id              String   @id @default(cuid())
+  title           String
+  author          String
+  description     String?
+  language        String
+  publicationYear Int?
+  isbn            String?
+  publisher       String?
+  uploadedAt      DateTime @default(now())
+  coverPublicId   String
+  coverUrl        String
 }

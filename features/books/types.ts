@@ -13,6 +13,18 @@ export type Book = {
   updatedAt: Date; // Timestamp for when the book was last updated
 };
 
+export type EpubInfo = {
+  title: string;
+  author: string;
+  language?: string;
+  description?: string;
+  publisher?: string;
+  publishedDate?: string;
+  categories?: string[];
+  isbn?: string;
+  arrayBuffer: ArrayBuffer;
+};
+
 export interface UploadState {
   progress: number;
   status: "idle" | "parsing" | "uploading" | "complete" | "error";

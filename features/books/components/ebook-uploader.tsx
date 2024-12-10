@@ -3,26 +3,23 @@
 import { AlertCircle, CheckCircle2, Upload } from "lucide-react";
 import { useState, useRef } from "react";
 
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-import { EpubInfo, UploadState } from "../types";
 import { parseEpub } from "@/lib/epub-parser";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { useUploadBook } from "../api/use-upload-book";
+import { EpubInfo } from "../types";
 
 type EpubUploaderProps = {
   onCancel: () => void;
 };
 
 export default function EpubUploader({ onCancel }: EpubUploaderProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [epubInfo, setEpubInfo] = useState<EpubInfo | null>(null);
-  const [uploadState, setUploadState] = useState<UploadState>({
-    progress: 0,
-    status: "idle",
-  });
+  const [error, setError] = useState<string | null>(null);
+  const { upload, status } = useUploadBook();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -30,64 +27,60 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const selectedFile = event.target.files?.[0];
-    if (selectedFile && selectedFile.type === "application/epub+zip") {
-      setFile(selectedFile);
-      setUploadState({ progress: 0, status: "parsing" });
-      try {
-        const info = await parseEpub(selectedFile);
-        setEpubInfo(info);
-        setUploadState({ progress: 0, status: "idle" });
-      } catch (error) {
-        setUploadState({
-          progress: 0,
-          status: "error",
-          error: "Failed to parse EPUB file",
-        });
-      }
-    } else {
-      setUploadState({
-        progress: 0,
-        status: "error",
-        error: "Please select a valid EPUB file",
-      });
+    if (!selectedFile) {
+      setError("No file selected.");
+      return;
     }
-  };
 
-  const simulateUpload = () => {
-    setUploadState({ progress: 0, status: "uploading" });
-    const interval = setInterval(() => {
-      setUploadState((prev) => {
-        if (prev.progress >= 100) {
-          clearInterval(interval);
-          return { progress: 100, status: "complete" };
-        }
-        return { progress: prev.progress + 10, status: "uploading" };
-      });
-    }, 500);
+    if (selectedFile.type !== "application/epub+zip") {
+      setError("Please select a valid EPUB file.");
+      return;
+    }
+
+    setFile(selectedFile);
+    setError(null);
+
+    try {
+      const bookData = await parseEpub(selectedFile);
+      setEpubInfo(bookData);
+    } catch (err) {
+      setError("Failed to parse EPUB file.");
+    }
   };
 
   const handleUpload = () => {
-    if (file) {
-      simulateUpload();
+    if (!file || !epubInfo) {
+      setError("Missing file or metadata to upload.");
+      return;
     }
-  };
 
-  const resetUpload = () => {
-    setFile(null);
-    setEpubInfo(null);
-    setUploadState({ progress: 0, status: "idle" });
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    upload(
+      {
+        json: {
+          ...epubInfo,
+          language: epubInfo.language || "Unknown language",
+        },
+      },
+      {
+        onSuccess: (data) => {
+          console.log({ data });
+        },
+      },
+    );
   };
 
   return (
-    <Card>
+    <Card className="w-[400px]">
       <CardHeader>
-        <CardTitle>Upload EPUB</CardTitle>
+        <CardTitle className="text-center text-lg font-bold">
+          Upload an EPUB Book
+        </CardTitle>
+        <p className="text-sm text-muted-foreground text-center">
+          Select and upload your favorite EPUB file to get started.
+        </p>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex items-center gap-4">
           <Input
             type="file"
             accept=".epub"
@@ -97,46 +90,62 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
           />
           <Button
             onClick={() => fileInputRef.current?.click()}
-            disabled={uploadState.status === "uploading"}
+            variant="secondary"
+            className="w-40"
           >
             Select EPUB
           </Button>
-
           {file && (
-            <span className="text-sm text-gray-500 truncate">{file.name}</span>
+            <span className="text-sm text-gray-500 truncate" title={file.name}>
+              {file.name}
+            </span>
           )}
         </div>
+
         {epubInfo && (
-          <div className="space-y-2">
-            <h3 className="font-semibold">EPUB Information:</h3>
-            <p>Title: {epubInfo.title}</p>
-            <p>Author: {epubInfo.author}</p>
+          <div className="mt-4 space-y-2 border-t pt-4">
+            <h3 className="font-medium text-lg">EPUB Information:</h3>
+            <p>
+              <strong>Title:</strong> {epubInfo.title}
+            </p>
+            <p>
+              <strong>Author:</strong> {epubInfo.author}
+            </p>
           </div>
         )}
-        {uploadState.status === "uploading" && (
-          <Progress value={uploadState.progress} className="w-full" />
+
+        {status === "pending" && (
+          <div className="mt-4">
+            <p className="text-sm text-center text-gray-500 mt-1">
+              Uploading...
+            </p>
+          </div>
         )}
-        {uploadState.status === "error" && (
-          <div className="flex items-center gap-2 text-red-500">
+
+        {error && (
+          <div className="mt-4 flex items-center gap-2 text-red-500">
             <AlertCircle size={16} />
-            <span>{uploadState.error}</span>
+            <span>{error}</span>
           </div>
         )}
-        {uploadState.status === "complete" && (
-          <div className="flex items-center gap-2 text-green-500">
+
+        {status === "success" && (
+          <div className="mt-4 flex items-center gap-2 text-green-500">
             <CheckCircle2 size={16} />
             <span>Upload complete!</span>
           </div>
         )}
-        <div className="flex justify-end gap-2">
-          <Button onClick={resetUpload} variant="outline">
-            Reset
+
+        <div className="mt-6 flex justify-end gap-2">
+          <Button onClick={onCancel} variant="outline" className="w-28">
+            Cancel
           </Button>
           <Button
             onClick={handleUpload}
-            disabled={!file || uploadState.status === "uploading"}
+            disabled={status === "pending"}
+            className="w-28"
           >
-            {uploadState.status === "uploading" ? (
+            {status === "pending" ? (
               <>
                 <Upload className="mr-2 h-4 w-4 animate-spin" />
                 Uploading...
