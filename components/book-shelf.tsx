@@ -2,7 +2,6 @@
 
 import { useGetBooks } from "@/features/books/api/use-get-books";
 import { Loader2 } from "lucide-react";
-import BookCard from "../features/books/components/book-card";
 
 export default function BookShelf() {
   const { books, isPending } = useGetBooks();

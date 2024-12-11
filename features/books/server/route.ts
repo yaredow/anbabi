@@ -23,7 +23,6 @@ const app = new Hono()
           );
 
           const googleData = await response.json();
-          console.log({ googleData });
           const googleBook = googleData.items?.[0].volumeInfo;
 
           return {
@@ -38,6 +37,34 @@ const app = new Hono()
     );
 
     return c.json({ data: booksWithDetail });
+  })
+  .get("/:bookId", async (c) => {
+    const { bookId } = c.req.param();
+
+    const book = await prisma.book.findUnique({
+      where: { id: bookId },
+    });
+
+    if (!book) {
+      return c.json({ error: "No book available with that id" }, 400);
+    }
+
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(
+        book.title,
+      )}+inauthor:${encodeURIComponent(book.author)}&key=${process.env.GOOGLE_BOOK_API_KEY}`,
+    );
+
+    const googleData = await response.json();
+    const googleBook = googleData.items?.[0].volumeInfo;
+
+    return c.json({
+      data: {
+        ...book,
+        coverImage: googleBook?.imageLinks?.thumbnail || null,
+        description: googleBook?.description || null,
+      },
+    });
   })
   .post("/upload", zValidator("json", BookSchema), async (c) => {
     const {

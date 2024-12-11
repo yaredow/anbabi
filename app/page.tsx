@@ -4,6 +4,7 @@ import { useUploadBookModal } from "@/features/books/hooks/use-upload-book-modal
 import BookShelf from "@/components/book-shelf";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header";
+import { BooksGrid } from "@/features/books/components/books-grid";
 
 export default function Home() {
   const { open } = useUploadBookModal();
@@ -15,7 +16,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold">My Books</h1>
           <Button onClick={open}>Upload book</Button>
         </div>
-        <BookShelf />
+        <BooksGrid />
       </main>
     </div>
   );
