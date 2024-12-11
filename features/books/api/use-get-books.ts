@@ -12,17 +12,13 @@ export const useGetBooks = () => {
       }
 
       const data = await response.json();
-
       return data.data;
     },
-    select(data) {
+    select: (data) =>
       data.map((book) => ({
         ...book,
-        publishedAt: book.publishedAt ? new Date(book.publishedAt) : null,
-        createdAt: new Date(book.createdAt),
-        updatedAt: new Date(book.updatedAt),
-      }));
-    },
+        uploadedAt: new Date(book.uploadedAt),
+      })),
   });
 
   return { books, isPending };

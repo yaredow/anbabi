@@ -28,14 +28,14 @@ export async function parseEpub(file: File): Promise<{
         }
 
         const metadata = book.packaging.metadata || {};
-        const isbn =
-          metadata.identifier && validateISBN(metadata.identifier)
-            ? metadata.identifier
-            : undefined;
+        console.log({ metadata });
+        const isbn = metadata.identifier ? metadata.identifier : undefined;
+
         const publicationYear = metadata.pubdate
           ? parseInt(metadata.pubdate.split("-")[0], 10)
           : undefined;
 
+        const coverFile = book.coverUrl();
         resolve({
           arrayBuffer,
           title: metadata.title || "Unknown Title",

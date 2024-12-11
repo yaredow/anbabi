@@ -13,8 +13,11 @@ export const BookSchema = z.object({
   isbn: z.string().optional(),
   publisher: z.string().optional(),
   uploadedAt: z.date().optional().default(new Date()),
-  arrayBuffer: z.custom<ArrayBuffer>((value) => value instanceof ArrayBuffer, {
-    message: "Invalid ArrayBuffer",
-  }),
+  base64Data: z
+    .string()
+    .regex(
+      /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/,
+      "Invalid base64 data",
+    ),
 });
 export type Book = z.infer<typeof BookSchema>;

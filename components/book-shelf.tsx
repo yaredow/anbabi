@@ -1,23 +1,28 @@
 "use client";
 
-import { Book } from "@prisma/client";
-import BookItem from "../features/books/components/book-item";
 import { useGetBooks } from "@/features/books/api/use-get-books";
 import { Loader2 } from "lucide-react";
+import BookCard from "../features/books/components/book-card";
 
 export default function BookShelf() {
   const { books, isPending } = useGetBooks();
 
   if (isPending) {
     return (
-      <Loader2 className="flex min-h-screen items-center justify-center animate-spin" />
+      <Loader2 className="flex mx-auto min-h-screen items-center justify-center animate-spin" />
     );
   }
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
       {books && books.length > 0 ? (
-        books.map((book) => <BookItem key={book.id} book={book} />)
+        books.map((book) => (
+          <BookCard
+            key={book.id}
+            coverImage={book.coverImage}
+            title={book.title || ""}
+          />
+        ))
       ) : (
         <div className="col-span-full text-center py-12">
           <p className="text-xl text-muted-foreground">

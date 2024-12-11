@@ -2,13 +2,14 @@
 
 import ResponsiveModal from "@/components/responsive-modal";
 import { useUploadBookModal } from "../hooks/use-upload-book-modal";
-import EpubUploader from "./ebook-uploader";
+import EpubUploader from "./book-uploader";
+import BookUploader from "./book-uploader";
 
 export default function UploadBookModal() {
   const { isOpen, setIsOpen, close } = useUploadBookModal();
   return (
     <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
-      <EpubUploader onCancel={close} />
+      <BookUploader onCancel={close} />
     </ResponsiveModal>
   );
 }

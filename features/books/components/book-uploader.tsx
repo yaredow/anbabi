@@ -10,16 +10,20 @@ import { Input } from "@/components/ui/input";
 
 import { useUploadBook } from "../api/use-upload-book";
 import { BookType } from "../types";
+import { arrayBufferToBase64 } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 type EpubUploaderProps = {
   onCancel: () => void;
 };
 
-export default function EpubUploader({ onCancel }: EpubUploaderProps) {
+export default function BookUploader({ onCancel }: EpubUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [epubInfo, setEpubInfo] = useState<BookType | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { upload, status } = useUploadBook();
+  const queryClient = useQueryClient();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,11 +61,16 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
         json: {
           ...epubInfo,
           language: epubInfo.language || "Unknown language",
+          base64Data: arrayBufferToBase64(epubInfo.arrayBuffer),
         },
       },
       {
-        onSuccess: (data) => {
-          console.log({ data });
+        onSuccess: () => {
+          toast({
+            description: "Book uploaded successfully",
+          });
+          queryClient.invalidateQueries({ queryKey: ["books"] });
+          onCancel();
         },
       },
     );

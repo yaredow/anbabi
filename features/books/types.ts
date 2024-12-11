@@ -13,7 +13,7 @@ export type Book = {
   updatedAt: Date; // Timestamp for when the book was last updated
 };
 
-export type EpubInfo = {
+export type BookType = {
   title: string;
   author: string;
   language?: string;
