@@ -1,12 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronUp, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Book } from "@prisma/client";
 import Link from "next/link";
-import Image from "next/image";
+import { Loader2, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useGetBook } from "../api/use-get-book";
 
 type BookInfoProps = {
@@ -15,70 +12,113 @@ type BookInfoProps = {
 
 export default function BookInfo({ bookId }: BookInfoProps) {
   const { book, isPending } = useGetBook({ bookId });
-  const [isExpanded, setIsExpanded] = useState(false);
 
   if (isPending) {
     return (
-      <Loader2 className="flex items-center justify-center mx-auto animate-spin" />
+      <Loader2 className="flex items-center justify-center h-screen mx-auto animate-spin" />
     );
   }
 
+  if (!book) {
+    return <div>No book found</div>;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-1">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 mb-4"
-          >
-            <ChevronLeft className="mr-1 h-4 w-4" />
-            Back to Shelf
-          </Link>
-          <Image
-            src={book?.coverImage}
-            alt={`Cover of ${book?.title}`}
-            width={400}
-            height={600}
-            className="w-full rounded-lg shadow-lg"
-          />
-        </div>
+    <div className="min-h-screen bg-background p-6">
+      <div className="mx-auto max-w-6xl">
+        <Link
+          href="/"
+          className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-primary"
+        >
+          ← Back to Books
+        </Link>
 
-        <div className="md:col-span-2">
-          <h1 className="text-3xl font-bold mb-2">{book?.title}</h1>
-          <h2 className="text-xl text-gray-600 mb-4">{book?.author}</h2>
+        <div className="grid gap-6 md:grid-cols-[300px_1fr]">
+          <Card className="overflow-hidden h-fit">
+            <img
+              src={book.coverImage}
+              alt="Untold Secrets: Fire & Ice Book Cover"
+              className="w-full object-cover"
+              height={450}
+              width={300}
+            />
+          </Card>
 
-          <ScrollArea className={`${isExpanded ? "h-64" : "h-32"} mb-4`}>
-            <p className="text-gray-700">{book.description}</p>
-          </ScrollArea>
-          <Button
-            variant="ghost"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full justify-center"
-          >
-            {isExpanded ? (
-              <>
-                <ChevronUp className="mr-2 h-4 w-4" /> Show Less
-              </>
-            ) : (
-              <>
-                <ChevronDown className="mr-2 h-4 w-4" /> Show More
-              </>
-            )}
-          </Button>
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-2 mt-4">
-            <dt className="text-sm font-medium text-gray-500">Publisher</dt>
-            <dd className="text-sm text-gray-900">{book.publisher}</dd>
-            <dt className="text-sm font-medium text-gray-500">
-              Publication Date
-            </dt>
-            <dd className="text-sm text-gray-900">{book.publicationDate}</dd>
-            <dt className="text-sm font-medium text-gray-500">ISBN</dt>
-            <dd className="text-sm text-gray-900">{book.isbn}</dd>
-            <dt className="text-sm font-medium text-gray-500">Category</dt>
-            <dd className="text-sm text-gray-900">{book.category}</dd>
-            <dt className="text-sm font-medium text-gray-500">Genre</dt>
-            <dd className="text-sm text-gray-900">{book.genre}</dd>
-          </dl>
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-4xl font-bold">Untold Secrets: Fire & Ice</h1>
+              <p className="text-xl text-muted-foreground">by Zabrina Murray</p>
+            </div>
+
+            <div>
+              <Button size="lg">Read</Button>
+            </div>
+
+            <div className="prose dark:prose-invert max-w-none">
+              <p>
+                Arrianna Williams is an ordinary 25 yr. old woman or so she
+                thinks. She has stumbled across a very special book and she soon
+                sees just how special this book really is or at least she thinks
+                she knows. The book comes to life and Arrianna is no longer
+                reading the pages but is in the story herself.
+              </p>
+              <p>
+                Shortly after reading the book she runs into an old childhood
+                friend Damian. She quickly falls for him but it doesn't last
+                long. Hurt; she finds comfort in another man. Thinking her life
+                is completely normal, she soon finds out she has a special gift
+                that puts her life in danger.
+              </p>
+              <p>
+                An Archangel named Gabriel comes to her rescue but in turn
+                things only get worse. She is now being hunted for her gift and
+                the man she sought comfort with is in desperate need of her to
+                save his life. Meanwhile her feelings for Gabriel grow stronger
+                as she wonders if he could be her true love. Could this Angel
+                ever love her the way she loves him? Will she defeat the fallen
+                angel and demons after her? So many secrets so many lies and so
+                much heartache will happen during her journey to discovering who
+                she really is and what she was meant to do.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold">Book Details</h3>
+                  <div className="text-sm text-muted-foreground">168 pages</div>
+                </div>
+                <div>
+                  <h3 className="font-semibold">Publisher</h3>
+                  <div className="text-sm text-muted-foreground">
+                    Self-Published
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold">Publication Date</h3>
+                  <div className="text-sm text-muted-foreground">2012</div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold">Language</h3>
+                  <div className="text-sm text-muted-foreground">English</div>
+                </div>
+                <div>
+                  <h3 className="font-semibold">ISBN</h3>
+                  <div className="text-sm text-muted-foreground">
+                    1479174661
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold">Genre</h3>
+                  <div className="text-sm text-muted-foreground">
+                    Fantasy, Romance
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

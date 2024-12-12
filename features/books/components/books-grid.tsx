@@ -11,9 +11,7 @@ export function BooksGrid() {
 
   if (isPending) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin" />
-      </div>
+      <Loader2 className="animate-spin flex items-center justify-center mx-auto" />
     );
   }
 
