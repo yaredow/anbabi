@@ -1,7 +1,6 @@
 "use client";
 
 import ResponsiveReaderModal from "@/components/responsive-reader-modal";
-import BookUploader from "./book-uploader";
 
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import BookReader from "./book-reader";

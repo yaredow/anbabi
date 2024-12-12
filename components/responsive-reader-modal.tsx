@@ -38,7 +38,7 @@ export default function ResponsiveReaderModal({
           </DialogHeader>
         </VisuallyHidden>
         <DialogContent
-          className={`p-0 border-none overflow-y-auto ${
+          className={`p-0 border-none overflow-hidden ${
             isMaximized
               ? "w-screen h-screen max-w-none max-h-none"
               : "w-[375px] h-[667px] max-w-none max-h-none" // Smartphone-like size
