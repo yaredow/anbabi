@@ -128,7 +128,7 @@ const app = new Hono()
           author,
           language,
           description,
-          coverUrl: uploadResult.secure_url as string,
+          bookUrl: uploadResult.url as string,
           coverPublicId: uploadResult.public_id as string,
           publicationYear,
           isbn,

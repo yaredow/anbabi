@@ -1,9 +1,13 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
+import { ReactReader } from "react-reader";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Star } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+
 import { useGetBook } from "../api/use-get-book";
 
 type BookInfoProps = {
@@ -12,6 +16,35 @@ type BookInfoProps = {
 
 export default function BookInfo({ bookId }: BookInfoProps) {
   const { book, isPending } = useGetBook({ bookId });
+  const [isReading, setIsReading] = useState(false);
+  const [location, setLocation] = useState<number | string>(0);
+  const [bookUrl, setBookUrl] = useState("");
+
+  const handleToggleReader = () => setIsReading((prev) => !prev);
+
+  const fetchBookFile = async (bookUrl) => {
+    const response = await fetch(bookUrl);
+    const blob = await response.blob();
+    return blob;
+  };
+
+  const createObjectUrl = (blob) => {
+    return URL.createObjectURL(blob);
+  };
+
+  const fetchAndPrepareBook = async (bookUrl) => {
+    try {
+      const blob = await fetchBookFile(bookUrl);
+      const fileUrl = createObjectUrl(blob); // Use this URL in React-Reader
+      setBookUrl(fileUrl);
+    } catch (error) {
+      console.error("Failed to fetch or convert book:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAndPrepareBook(book?.bookUrl);
+  }, []);
 
   if (isPending) {
     return (
@@ -50,9 +83,29 @@ export default function BookInfo({ bookId }: BookInfoProps) {
               <p className="text-xl text-muted-foreground">{`by ${book.author}`}</p>
             </div>
 
-            <div>
-              <Button size="lg">Read</Button>
-            </div>
+            {!isReading ? (
+              <div>
+                <Button size="lg" onClick={handleToggleReader}>
+                  Read
+                </Button>
+              </div>
+            ) : (
+              <div className="reader-container mt-6">
+                <button
+                  onClick={handleToggleReader}
+                  className="mb-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Close Reader
+                </button>
+                <div style={{ height: "100vh", width: "100%" }}>
+                  <ReactReader
+                    url={bookUrl}
+                    location={location}
+                    locationChanged={(epubcfi: string) => setLocation(epubcfi)}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="prose dark:prose-invert max-w-none">
               {book.description}

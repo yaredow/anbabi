@@ -24,6 +24,6 @@ model Book {
   publisher       String?
   uploadedAt      DateTime @default(now())
   coverPublicId   String
-  coverUrl        String
+  bookUrl         String
   coverImage      String?
 }
