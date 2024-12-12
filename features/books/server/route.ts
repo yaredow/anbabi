@@ -29,6 +29,8 @@ const app = new Hono()
             ...book,
             coverImage: googleBook?.imageLinks?.thumbnail || null,
             description: googleBook?.description || null,
+            pageCount: googleBook?.pageCount || null,
+            genre: googleBook?.categories?.[0] || null,
           };
         } catch (error) {
           console.error(error);
@@ -63,6 +65,8 @@ const app = new Hono()
         ...book,
         coverImage: googleBook?.imageLinks?.thumbnail || null,
         description: googleBook?.description || null,
+        pageCount: googleBook?.pageCount || null,
+        genre: googleBook?.categories?.[0] || null,
       },
     });
   })

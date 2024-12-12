@@ -25,4 +25,5 @@ model Book {
   uploadedAt      DateTime @default(now())
   coverPublicId   String
   coverUrl        String
+  coverImage      String?
 }

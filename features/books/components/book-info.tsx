@@ -46,8 +46,8 @@ export default function BookInfo({ bookId }: BookInfoProps) {
 
           <div className="space-y-6">
             <div>
-              <h1 className="text-4xl font-bold">Untold Secrets: Fire & Ice</h1>
-              <p className="text-xl text-muted-foreground">by Zabrina Murray</p>
+              <h1 className="text-4xl font-bold">{book.title}</h1>
+              <p className="text-xl text-muted-foreground">{`by ${book.author}`}</p>
             </div>
 
             <div>
@@ -55,65 +55,45 @@ export default function BookInfo({ bookId }: BookInfoProps) {
             </div>
 
             <div className="prose dark:prose-invert max-w-none">
-              <p>
-                Arrianna Williams is an ordinary 25 yr. old woman or so she
-                thinks. She has stumbled across a very special book and she soon
-                sees just how special this book really is or at least she thinks
-                she knows. The book comes to life and Arrianna is no longer
-                reading the pages but is in the story herself.
-              </p>
-              <p>
-                Shortly after reading the book she runs into an old childhood
-                friend Damian. She quickly falls for him but it doesn't last
-                long. Hurt; she finds comfort in another man. Thinking her life
-                is completely normal, she soon finds out she has a special gift
-                that puts her life in danger.
-              </p>
-              <p>
-                An Archangel named Gabriel comes to her rescue but in turn
-                things only get worse. She is now being hunted for her gift and
-                the man she sought comfort with is in desperate need of her to
-                save his life. Meanwhile her feelings for Gabriel grow stronger
-                as she wonders if he could be her true love. Could this Angel
-                ever love her the way she loves him? Will she defeat the fallen
-                angel and demons after her? So many secrets so many lies and so
-                much heartache will happen during her journey to discovering who
-                she really is and what she was meant to do.
-              </p>
+              {book.description}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold">Book Details</h3>
-                  <div className="text-sm text-muted-foreground">168 pages</div>
+                  <div className="text-sm text-muted-foreground">{`${book.pageCount ? book.pageCount : "Unknown"} pages`}</div>
                 </div>
                 <div>
                   <h3 className="font-semibold">Publisher</h3>
                   <div className="text-sm text-muted-foreground">
-                    Self-Published
+                    {book.publisher}
                   </div>
                 </div>
                 <div>
                   <h3 className="font-semibold">Publication Date</h3>
-                  <div className="text-sm text-muted-foreground">2012</div>
+                  <div className="text-sm text-muted-foreground">
+                    {book.publicationYear}
+                  </div>
                 </div>
               </div>
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold">Language</h3>
-                  <div className="text-sm text-muted-foreground">English</div>
+                  <div className="text-sm text-muted-foreground">
+                    {book.language}
+                  </div>
                 </div>
                 <div>
                   <h3 className="font-semibold">ISBN</h3>
                   <div className="text-sm text-muted-foreground">
-                    1479174661
+                    {book.isbn}{" "}
                   </div>
                 </div>
                 <div>
                   <h3 className="font-semibold">Genre</h3>
                   <div className="text-sm text-muted-foreground">
-                    Fantasy, Romance
+                    {book.genre}
                   </div>
                 </div>
               </div>

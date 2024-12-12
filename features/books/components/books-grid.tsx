@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { BookCard } from "./book-card";
 import { useGetBooks } from "../api/use-get-books";
 import { Book } from "@prisma/client";
 import { Loader2 } from "lucide-react";
+import BookCard from "./book-card";
 
 export function BooksGrid() {
   const { books, isPending } = useGetBooks();
