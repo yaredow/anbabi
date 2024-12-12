@@ -38,21 +38,31 @@ export default function ResponsiveReaderModal({
           </DialogHeader>
         </VisuallyHidden>
         <DialogContent
-          className={`p-0 border-none overflow-hidden ${
+          className={`relative p-0 border-none overflow-hidden ${
             isMaximized
               ? "w-screen h-screen max-w-none max-h-none"
               : "w-[375px] h-[667px] max-w-none max-h-none" // Smartphone-like size
           }`}
         >
-          <div className="flex justify-end px-4 py-2">
+          {/* Maximize and Close Buttons */}
+          <div className="absolute top-2 right-2 z-10 flex gap-2">
             <Button onClick={handleMaximizeToggle} variant="link">
               {isMaximized ? (
-                <Minimize2 className="size-3 mr-2" />
+                <Minimize2 className="size-3" />
               ) : (
-                <Maximize2 className="size-3 mr-2" />
+                <Maximize2 className="size-3" />
               )}
             </Button>
+            <Button
+              onClick={() => onOpenChange(false)}
+              variant="link"
+              className="text-red-500"
+            >
+              <X className="size-3" />
+            </Button>
           </div>
+
+          {/* React Reader Content */}
           {children}
         </DialogContent>
       </Dialog>
@@ -62,7 +72,7 @@ export default function ResponsiveReaderModal({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="w-full h-screen p-0 overflow-y-auto">
-        <div className="flex justify-end p-2">
+        <div className="absolute top-2 right-2 z-10">
           <Button
             onClick={() => onOpenChange(false)}
             className="bg-red-200 ml-2 rounded px-3 py-1 text-sm"
