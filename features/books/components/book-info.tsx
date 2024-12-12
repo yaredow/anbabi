@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 import { useGetBook } from "../api/use-get-book";
+import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 
 type BookInfoProps = {
   bookId: string;
@@ -16,13 +17,9 @@ type BookInfoProps = {
 
 export default function BookInfo({ bookId }: BookInfoProps) {
   const { book, isPending } = useGetBook({ bookId });
-  const [isReading, setIsReading] = useState(false);
-  const [location, setLocation] = useState<number | string>(0);
-  const [bookUrl, setBookUrl] = useState("");
+  const { open } = useBookReaderModal();
 
-  const handleToggleReader = () => setIsReading((prev) => !prev);
-
-  const fetchBookFile = async (bookUrl) => {
+  /* const fetchBookFile = async (bookUrl) => {
     const response = await fetch(bookUrl);
     const blob = await response.blob();
     return blob;
@@ -44,7 +41,7 @@ export default function BookInfo({ bookId }: BookInfoProps) {
 
   useEffect(() => {
     fetchAndPrepareBook(book?.bookUrl);
-  }, []);
+  }, []); */
 
   if (isPending) {
     return (
@@ -83,29 +80,11 @@ export default function BookInfo({ bookId }: BookInfoProps) {
               <p className="text-xl text-muted-foreground">{`by ${book.author}`}</p>
             </div>
 
-            {!isReading ? (
-              <div>
-                <Button size="lg" onClick={handleToggleReader}>
-                  Read
-                </Button>
-              </div>
-            ) : (
-              <div className="reader-container mt-6">
-                <button
-                  onClick={handleToggleReader}
-                  className="mb-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Close Reader
-                </button>
-                <div style={{ height: "100vh", width: "100%" }}>
-                  <ReactReader
-                    url={bookUrl}
-                    location={location}
-                    locationChanged={(epubcfi: string) => setLocation(epubcfi)}
-                  />
-                </div>
-              </div>
-            )}
+            <div>
+              <Button size="lg" onClick={open}>
+                Read
+              </Button>
+            </div>
 
             <div className="prose dark:prose-invert max-w-none">
               {book.description}

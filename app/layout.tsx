@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 import "./globals.css";
 import UploadBookModal from "@/features/books/components/upload-book-modal";
+import BookReaderModal from "@/features/books/components/book-reader-modal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
         <QueryProviders>
           <NuqsAdapter>
             <UploadBookModal />
+            <BookReaderModal />
             <Toaster />
             {children}
           </NuqsAdapter>
