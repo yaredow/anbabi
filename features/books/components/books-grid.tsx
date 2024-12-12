@@ -18,8 +18,7 @@ export function BooksGrid() {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {" "}
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {!books?.length ? (
         <p className="col-span-full text-center text-muted-foreground">
           No books found.

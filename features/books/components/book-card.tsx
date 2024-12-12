@@ -7,7 +7,7 @@ interface BookCardProps {
 
 export function BookCard({ src, title }: BookCardProps) {
   return (
-    <div className="relative aspect-[2/3] w-full rounded-md shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+    <div className="relative aspect-[2/3] w-full rounded-md shadow-md">
       <Image
         src={src}
         alt={title}
