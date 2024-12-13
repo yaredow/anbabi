@@ -11,6 +11,13 @@ const ownStyle = {
   ...ReactReaderStyle,
   arrow: {
     ...ReactReaderStyle.arrow,
+    fontSize: "30px",
+  },
+  container: {
+    ...ReactReaderStyle.container,
+    padding: "0px",
+    margin: "0px",
+    maxWidth: "100%",
   },
 };
 

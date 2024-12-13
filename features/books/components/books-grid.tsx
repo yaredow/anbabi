@@ -16,7 +16,7 @@ export function BooksGrid() {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
       {!books?.length ? (
         <p className="col-span-full text-center text-muted-foreground">
           No books found.
@@ -36,11 +36,8 @@ type BookLinkProps = {
 
 function BookLink({ book }: BookLinkProps) {
   return (
-    <Link
-      href={`/${book.id}`}
-      className="block transform transition-transform ease-in-out hover:scale-105"
-    >
-      <BookCard src={book.coverImage} title={book.title} />
+    <Link href={`/${book.id}`} className="block">
+      <BookCard src={book.coverImage || ""} title={book.title} />
     </Link>
   );
 }

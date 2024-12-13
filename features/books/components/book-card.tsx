@@ -1,4 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 
 type BookCardProps = {
@@ -6,21 +5,16 @@ type BookCardProps = {
   title: string;
 };
 
-export default function BookCard({ title, src }: BookCardProps) {
+export default function BookCard({ src, title }: BookCardProps) {
   return (
-    <Card className="group w-48 overflow-hidden transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
-      <CardContent className="p-3">
-        <div className="overflow-hidden rounded-md">
-          <Image
-            src={src}
-            alt={title}
-            width={180}
-            height={270}
-            className="h-auto w-full object-cover"
-          />
-        </div>
-        <h3 className="mt-2 truncate text-sm font-medium">{title}</h3>
-      </CardContent>
-    </Card>
+    <div className="group relative h-60 w-44 overflow-hidden rounded-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg">
+      <Image
+        src={src}
+        alt={title}
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
+    </div>
   );
 }

@@ -1,18 +1,24 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Upload } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+  CheckCircle2,
+  Loader,
+  Upload,
+  X,
+} from "lucide-react";
 import { useState, useRef } from "react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { parseEpub } from "@/lib/epub-parser";
-import { Input } from "@/components/ui/input";
 
 import { useUploadBook } from "../api/use-upload-book";
 import { BookType } from "../types";
 import { arrayBufferToBase64 } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { Progress } from "@/components/ui/progress";
 
 type EpubUploaderProps = {
   onCancel: () => void;
@@ -21,6 +27,7 @@ type EpubUploaderProps = {
 export default function BookUploader({ onCancel }: EpubUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [epubInfo, setEpubInfo] = useState<BookType | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { upload, status } = useUploadBook();
   const queryClient = useQueryClient();
@@ -31,7 +38,6 @@ export default function BookUploader({ onCancel }: EpubUploaderProps) {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const selectedFile = event.target.files?.[0];
-    console.log("Selected file:", selectedFile);
 
     if (selectedFile?.type === "application/epub+zip") {
       setFile(selectedFile);
@@ -39,7 +45,6 @@ export default function BookUploader({ onCancel }: EpubUploaderProps) {
 
       try {
         const bookData = await parseEpub(selectedFile);
-        console.log("Parsed EPUB data:", bookData);
         setEpubInfo(bookData);
       } catch (err) {
         console.error("Error parsing EPUB:", err);
@@ -77,92 +82,61 @@ export default function BookUploader({ onCancel }: EpubUploaderProps) {
   };
 
   return (
-    <Card className="w-[400px]">
-      <CardHeader>
-        <CardTitle className="text-center text-lg font-bold">
-          Upload an EPUB Book
-        </CardTitle>
-        <p className="text-sm text-muted-foreground text-center">
-          Select and upload your favorite EPUB file to get started.
-        </p>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center gap-4">
-          <Input
+    <div className="w-full max-w-md mx-auto p-6 space-y-4">
+      <div className="flex items-center justify-center w-full">
+        <label
+          htmlFor="epub-upload"
+          className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <Upload className="w-10 h-10 mb-3 text-gray-400" />
+            <p className="mb-2 text-sm text-gray-500">
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
+            </p>
+            <p className="text-xs text-gray-500">EPUB files only (max 5MB)</p>
+          </div>
+          <input
+            id="epub-upload"
             type="file"
+            className="hidden"
             accept=".epub"
             onChange={handleFileChange}
-            className="hidden"
-            ref={fileInputRef}
           />
-          <Button
-            onClick={() => fileInputRef.current?.click()}
-            variant="secondary"
-            className="w-40"
-          >
-            Select EPUB
-          </Button>
-          {file && (
-            <span className="text-sm text-gray-500 truncate" title={file.name}>
-              {file.name}
-            </span>
-          )}
+        </label>
+      </div>
+
+      {epubInfo && (
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="font-semibold text-lg mb-2">Book Details</h3>
+          <p>
+            <span className="font-medium">Title:</span> {epubInfo.title}
+          </p>
+          <p>
+            <span className="font-medium">Author:</span> {epubInfo.author}
+          </p>
         </div>
+      )}
 
-        {epubInfo && (
-          <div className="mt-4 space-y-2 border-t pt-4">
-            <h3 className="font-medium text-lg">EPUB Information:</h3>
-            <p>
-              <strong>Title:</strong> {epubInfo.title}
-            </p>
-            <p>
-              <strong>Author:</strong> {epubInfo.author}
-            </p>
-          </div>
-        )}
-
-        {status === "pending" && (
-          <div className="mt-4">
-            <p className="text-sm text-center text-gray-500 mt-1">
-              Uploading...
-            </p>
-          </div>
-        )}
-
-        {error && (
-          <div className="mt-4 flex items-center gap-2 text-red-500">
-            <AlertCircle size={16} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {status === "success" && (
-          <div className="mt-4 flex items-center gap-2 text-green-500">
-            <CheckCircle2 size={16} />
-            <span>Upload complete!</span>
-          </div>
-        )}
-
-        <div className="mt-6 flex justify-end gap-2">
-          <Button onClick={onCancel} variant="outline" className="w-28">
+      {epubInfo && (
+        <div className="flex justify-end space-x-2">
+          <Button variant="outline" onClick={onCancel}>
+            <X className="w-4 h-4 mr-2" />
             Cancel
           </Button>
-          <Button
-            onClick={handleUpload}
-            disabled={status === "pending"}
-            className="w-28"
-          >
+          <Button disabled={status === "pending"} onClick={handleUpload}>
+            <Check className="w-4 h-4 mr-2" />
             {status === "pending" ? (
-              <>
-                <Upload className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
-              </>
+              <div className="flex gap-2">
+                <Loader className="size-2 animate-spin" />
+                <span>Uploading...</span>
+              </div>
             ) : (
               "Upload"
             )}
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }
