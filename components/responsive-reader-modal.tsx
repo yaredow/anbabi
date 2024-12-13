@@ -1,23 +1,21 @@
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { type ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { useMedia } from "react-use";
-import { useState } from "react";
-
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Maximize2, Minimize2, X } from "lucide-react";
-import { Button } from "./ui/button";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
+import { X, Maximize2, Minimize2 } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-type ResponsiveModalProps = {
-  children: React.ReactNode;
+interface ResponsiveModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-};
+  children: React.ReactNode;
+}
 
 export default function ResponsiveReaderModal({
   open,
@@ -38,32 +36,40 @@ export default function ResponsiveReaderModal({
           </DialogHeader>
         </VisuallyHidden>
         <DialogContent
-          className={`relative p-0 border-none overflow-hidden ${
+          className={`fixed p-0 border-none overflow-hidden ${
             isMaximized
-              ? "w-screen h-screen max-w-none max-h-none"
-              : "w-[375px] h-[667px] max-w-none max-h-none" // Smartphone-like size
+              ? "w-screen h-screen max-w-none max-h-none inset-0 z-50"
+              : "w-[375px] h-[667px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
           }`}
+          style={{
+            position: isMaximized ? "fixed" : "absolute",
+            top: isMaximized ? 0 : "50%",
+            left: isMaximized ? 0 : "50%",
+            transform: isMaximized ? "none" : "translate(-50%, -50%)",
+          }}
         >
-          {/* Maximize and Close Buttons */}
           <div className="absolute top-2 right-2 z-10 flex gap-2">
-            <Button onClick={handleMaximizeToggle} variant="link">
+            <Button onClick={handleMaximizeToggle} variant="ghost" size="icon">
               {isMaximized ? (
-                <Minimize2 className="size-3" />
+                <Minimize2 className="h-4 w-4" />
               ) : (
-                <Maximize2 className="size-3" />
+                <Maximize2 className="h-4 w-4" />
               )}
             </Button>
             <Button
               onClick={() => onOpenChange(false)}
-              variant="link"
-              className="text-red-500"
+              variant="ghost"
+              size="icon"
+              className="text-red-500 hover:text-red-700"
             >
-              <X className="size-3" />
+              <X className="h-4 w-4" />
             </Button>
           </div>
-
-          {/* React Reader Content */}
-          {children}
+          <div
+            className={`${isMaximized ? "h-screen" : "h-full"} overflow-hidden`}
+          >
+            {children}
+          </div>
         </DialogContent>
       </Dialog>
     );
@@ -71,16 +77,18 @@ export default function ResponsiveReaderModal({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="w-full h-screen p-0 overflow-y-auto">
+      <DrawerContent className="h-[85vh] p-0 overflow-hidden">
         <div className="absolute top-2 right-2 z-10">
           <Button
             onClick={() => onOpenChange(false)}
-            className="bg-red-200 ml-2 rounded px-3 py-1 text-sm"
+            variant="ghost"
+            size="icon"
+            className="text-red-500 hover:text-red-700"
           >
-            <X className="size-4" />
+            <X className="h-4 w-4" />
           </Button>
         </div>
-        {children}
+        <div className="h-full overflow-y-auto pt-10">{children}</div>
       </DrawerContent>
     </Drawer>
   );
