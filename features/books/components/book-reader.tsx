@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
 import { ReactReader, ReactReaderStyle } from "react-reader";
 import { Rendition } from "epubjs";
-import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
 import ToolBarModal from "@/components/tool-bar-modal";
 
 type TocItem = {
@@ -35,11 +34,6 @@ export default function BookReader() {
   const renditionRef = useRef<Rendition | null>(null);
   const [size, setSize] = useState(100);
   const tocRef = useRef<TocItem[] | null>(null);
-  const { setIsOpen, isOpen, open } = useToolBarModal();
-
-  const changeSize = (newSize: number) => {
-    setSize(newSize);
-  };
 
   const locationChanged = (epubcifi: string) => {
     if (!firstRenderDone) {
@@ -61,16 +55,14 @@ export default function BookReader() {
     }
   };
 
-  useEffect(() => {
-    if (renditionRef.current) {
-      renditionRef.current.themes.fontSize(`${size}`);
-    }
-  }, [size]);
-
   return (
     <>
       <VisuallyHidden>
-        <ToolBarModal setFontSize={setSize} fontSize={size} />
+        <ToolBarModal
+          setFontSize={setSize}
+          fontSize={size}
+          renditionRef={renditionRef}
+        />
       </VisuallyHidden>
       <div className="relative h-[93vh] w-full m-0 p-0 text-left">
         <ReactReader
@@ -78,7 +70,10 @@ export default function BookReader() {
           url={book?.bookUrl as string}
           epubInitOptions={{ openAs: "epub" }}
           locationChanged={locationChanged}
-          getRendition={(rendition) => (renditionRef.current = rendition)}
+          getRendition={(rendition) => {
+            renditionRef.current = rendition;
+            renditionRef.current.themes.fontSize(`${size}%`);
+          }}
           tocChanged={(toc) => (tocRef.current = toc)}
           readerStyles={{ ...ownStyle }}
           epubOptions={{

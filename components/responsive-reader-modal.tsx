@@ -52,7 +52,7 @@ export default function ResponsiveReaderModal({
         >
           <div className="absolute top-2 right-2 z-10 flex gap-2">
             <Button variant="ghost" onClick={openToolBar}>
-              <Settings className="size-4 mr-2" />
+              <Settings className="size-4" />
             </Button>
 
             <Button onClick={handleMaximizeToggle} variant="ghost" size="icon">

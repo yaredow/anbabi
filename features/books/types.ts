@@ -1,3 +1,6 @@
+import { RefObject } from "react";
+import { Rendition } from "epubjs";
+
 export type Book = {
   id: string;
   title: string;
@@ -30,3 +33,5 @@ export interface UploadState {
   status: "idle" | "parsing" | "uploading" | "complete" | "error";
   error?: string;
 }
+
+export type RenditionRef = RefObject<Rendition | null>;
