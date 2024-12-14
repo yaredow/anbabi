@@ -35,3 +35,5 @@ export interface UploadState {
 }
 
 export type RenditionRef = RefObject<Rendition | null>;
+
+export type ITheme = "light" | "dark";

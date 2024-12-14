@@ -5,6 +5,7 @@ import { useBookId } from "../hooks/use-book-id";
 import { ReactReader, ReactReaderStyle } from "react-reader";
 import { Rendition } from "epubjs";
 import ToolBarModal from "@/components/tool-bar-modal";
+import { ITheme } from "../types";
 
 type TocItem = {
   href: string;
@@ -33,6 +34,7 @@ export default function BookReader() {
   const [page, setPage] = useState("");
   const renditionRef = useRef<Rendition | null>(null);
   const [size, setSize] = useState(100);
+  const [theme, setTheme] = useState<ITheme>("dark");
   const tocRef = useRef<TocItem[] | null>(null);
 
   const locationChanged = (epubcifi: string) => {
@@ -55,16 +57,35 @@ export default function BookReader() {
     }
   };
 
+  function updateTheme(rendition: Rendition, theme: ITheme) {
+    const themes = rendition.themes;
+    switch (theme) {
+      case "dark": {
+        themes.override("color", "#fff");
+        themes.override("background", "#000");
+        break;
+      }
+      case "light": {
+        themes.override("color", "#000");
+        themes.override("background", "#fff");
+        break;
+      }
+    }
+  }
+
   return (
     <>
       <VisuallyHidden>
         <ToolBarModal
           setFontSize={setSize}
           fontSize={size}
+          theme={theme}
+          setTheme={setTheme}
           renditionRef={renditionRef}
+          updateTheme={updateTheme}
         />
       </VisuallyHidden>
-      <div className="relative h-[93vh] w-full m-0 p-0 text-left">
+      <div className="relative h-[95vh] top-0 w-full m-0 p-0 text-left">
         <ReactReader
           location={location}
           url={book?.bookUrl as string}
@@ -73,6 +94,7 @@ export default function BookReader() {
           getRendition={(rendition) => {
             renditionRef.current = rendition;
             renditionRef.current.themes.fontSize(`${size}%`);
+            updateTheme(rendition, theme);
           }}
           tocChanged={(toc) => (tocRef.current = toc)}
           readerStyles={{ ...ownStyle }}
@@ -82,7 +104,7 @@ export default function BookReader() {
           }}
         />
       </div>
-      <div className="text-xs font-normal absolute bottom-4 right-4 left-4 text-center z-10">
+      <div className="text-xs font-normal absolute bottom-2 right-4 left-4 text-center z-10">
         {page}
       </div>
     </>
