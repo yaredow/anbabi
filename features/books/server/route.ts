@@ -119,26 +119,34 @@ const app = new Hono()
       );
     }
 
-    let book;
+    const existingBook = await prisma.book.findFirst({
+      where: {
+        title,
+      },
+    });
 
-    try {
-      book = await prisma.book.create({
-        data: {
-          title,
-          author,
-          language,
-          description,
-          bookUrl: uploadResult.url as string,
-          coverPublicId: uploadResult.public_id as string,
-          publicationYear,
-          isbn,
-          publisher,
+    if (existingBook) {
+      return c.json(
+        {
+          error: `book with title ${existingBook.title} already exists`,
         },
-      });
-    } catch (err) {
-      console.error("Database Error: ", err);
-      return c.json({ error: "Failed to create book in database." }, 500);
+        400,
+      );
     }
+
+    const book = await prisma.book.create({
+      data: {
+        title,
+        author,
+        language,
+        description,
+        bookUrl: uploadResult.url as string,
+        coverPublicId: uploadResult.public_id as string,
+        publicationYear,
+        isbn,
+        publisher,
+      },
+    });
 
     if (!book) {
       return c.json({ error: "Uploading book failed." }, 400);

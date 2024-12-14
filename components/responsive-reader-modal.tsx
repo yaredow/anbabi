@@ -38,6 +38,7 @@ export default function ResponsiveReaderModal({
           </DialogHeader>
         </VisuallyHidden>
         <DialogContent
+          id="reader-modal"
           className={`fixed p-0 border-none overflow-hidden ${
             isMaximized
               ? "w-screen h-screen max-w-none max-h-none inset-0 z-50"
@@ -83,7 +84,7 @@ export default function ResponsiveReaderModal({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-[85vh] p-0 overflow-hidden">
+      <DrawerContent id="reader-modal" className="h-[85vh] p-0 overflow-hidden">
         <div className="absolute top-2 right-2 z-10">
           <Button
             onClick={() => onOpenChange(false)}

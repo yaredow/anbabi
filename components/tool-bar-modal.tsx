@@ -11,7 +11,7 @@ type ToolBarModalProps = {
   fontSize: number;
   setFontSize: (fontSize: number) => void;
   setTheme: (theme: ITheme) => void;
-  theme: ITheme;
+  currentTheme: ITheme;
   renditionRef: RenditionRef | null;
   updateTheme: (rendition: Rendition, theme: ITheme) => void;
 };
@@ -20,9 +20,9 @@ export default function ToolBarModal({
   setFontSize,
   fontSize,
   setTheme,
-  theme,
-  updateTheme,
+  currentTheme,
   renditionRef,
+  updateTheme,
 }: ToolBarModalProps) {
   const { isOpen, setIsOpen, close } = useToolBarModal();
 
@@ -33,7 +33,7 @@ export default function ToolBarModal({
         setFontSize={setFontSize}
         renditionRef={renditionRef}
         setTheme={setTheme}
-        theme={theme}
+        currentTheme={currentTheme}
         updateTheme={updateTheme}
       />
     </ResponsiveToolBarModal>

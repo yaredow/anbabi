@@ -1,11 +1,16 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
-import { ReactReader, ReactReaderStyle } from "react-reader";
+import {
+  ReactReader,
+  ReactReaderStyle,
+  type IReactReaderStyle,
+} from "react-reader";
 import { Rendition } from "epubjs";
 import ToolBarModal from "@/components/tool-bar-modal";
 import { ITheme } from "../types";
+import { themes } from "../constants";
 
 type TocItem = {
   href: string;
@@ -34,7 +39,7 @@ export default function BookReader() {
   const [page, setPage] = useState("");
   const renditionRef = useRef<Rendition | null>(null);
   const [size, setSize] = useState(100);
-  const [theme, setTheme] = useState<ITheme>("dark");
+  const [theme, setTheme] = useState<ITheme>("light");
   const tocRef = useRef<TocItem[] | null>(null);
 
   const locationChanged = (epubcifi: string) => {
@@ -70,6 +75,16 @@ export default function BookReader() {
         themes.override("background", "#fff");
         break;
       }
+      case "sepia": {
+        themes.override("color", "#5b4636");
+        themes.override("background", "#f5deb3");
+        break;
+      }
+      case "greenish": {
+        themes.override("color", "#3e4e3f");
+        themes.override("background", "#e4f7e7");
+        break;
+      }
     }
   }
 
@@ -79,7 +94,7 @@ export default function BookReader() {
         <ToolBarModal
           setFontSize={setSize}
           fontSize={size}
-          theme={theme}
+          currentTheme={theme}
           setTheme={setTheme}
           renditionRef={renditionRef}
           updateTheme={updateTheme}
@@ -97,7 +112,15 @@ export default function BookReader() {
             updateTheme(rendition, theme);
           }}
           tocChanged={(toc) => (tocRef.current = toc)}
-          readerStyles={{ ...ownStyle }}
+          readerStyles={
+            theme === "dark"
+              ? darkReaderTheme
+              : theme === "sepia"
+                ? sepiaReaderTheme
+                : theme === "greenish"
+                  ? greenReaderTheme
+                  : lightReaderTheme
+          }
           epubOptions={{
             allowPopups: true,
             allowScriptedContent: true,
@@ -110,3 +133,72 @@ export default function BookReader() {
     </>
   );
 }
+
+const lightReaderTheme: IReactReaderStyle = {
+  ...ReactReaderStyle,
+  readerArea: {
+    ...ReactReaderStyle.readerArea,
+    transition: undefined,
+  },
+};
+
+const darkReaderTheme: IReactReaderStyle = {
+  ...ReactReaderStyle,
+  arrow: {
+    ...ReactReaderStyle.arrow,
+    color: "white",
+  },
+  arrowHover: {
+    ...ReactReaderStyle.arrowHover,
+    color: "#ccc",
+  },
+  readerArea: {
+    ...ReactReaderStyle.readerArea,
+    backgroundColor: "#000",
+    transition: undefined,
+  },
+  titleArea: {
+    ...ReactReaderStyle.titleArea,
+    color: "#ccc",
+  },
+  tocArea: {
+    ...ReactReaderStyle.tocArea,
+    background: "#111",
+  },
+  tocButtonExpanded: {
+    ...ReactReaderStyle.tocButtonExpanded,
+    background: "#222",
+  },
+  tocButtonBar: {
+    ...ReactReaderStyle.tocButtonBar,
+    background: "#fff",
+  },
+  tocButton: {
+    ...ReactReaderStyle.tocButton,
+    color: "white",
+  },
+};
+
+const sepiaReaderTheme: IReactReaderStyle = {
+  ...ReactReaderStyle,
+  readerArea: {
+    ...ReactReaderStyle.readerArea,
+    backgroundColor: "#f5deb3",
+  },
+  titleArea: {
+    ...ReactReaderStyle.titleArea,
+    color: "#5b4636",
+  },
+};
+
+const greenReaderTheme: IReactReaderStyle = {
+  ...ReactReaderStyle,
+  readerArea: {
+    ...ReactReaderStyle.readerArea,
+    backgroundColor: "#e4f7e7",
+  },
+  titleArea: {
+    ...ReactReaderStyle.titleArea,
+    color: "#3e4e3f",
+  },
+};
