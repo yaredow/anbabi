@@ -19,7 +19,7 @@ export function BooksGrid() {
     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
       {!books?.length ? (
         <p className="col-span-full text-center text-muted-foreground">
-          No books found.
+          No book available on your shelf. Upload and read
         </p>
       ) : (
         books.map((book, index) => (

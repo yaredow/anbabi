@@ -25,11 +25,11 @@ export default function ResponsiveModal({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <VisuallyHidden>
-          <DialogHeader>
+        <DialogHeader>
+          <VisuallyHidden>
             <DialogTitle>Title</DialogTitle>
-          </DialogHeader>
-        </VisuallyHidden>
+          </VisuallyHidden>
+        </DialogHeader>
         <DialogContent className="w-full sm:max-w-lg p-0 bordr-none overflow-y-auto max-h-[85vh] hide-scrollbar">
           {children}
         </DialogContent>

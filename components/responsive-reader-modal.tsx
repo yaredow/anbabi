@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { X, Maximize2, Minimize2 } from "lucide-react";
+import { X, Maximize2, Minimize2, Settings } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
 
 interface ResponsiveModalProps {
   open: boolean;
@@ -23,6 +24,7 @@ export default function ResponsiveReaderModal({
   children,
 }: ResponsiveModalProps): ReactElement {
   const isDesktop = useMedia("(min-width: 1024px)", true);
+  const { open: openToolBar } = useToolBarModal();
   const [isMaximized, setIsMaximized] = useState(false);
 
   const handleMaximizeToggle = () => setIsMaximized((prev) => !prev);
@@ -39,7 +41,7 @@ export default function ResponsiveReaderModal({
           className={`fixed p-0 border-none overflow-hidden ${
             isMaximized
               ? "w-screen h-screen max-w-none max-h-none inset-0 z-50"
-              : "w-[375px] h-[667px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+              : "w-[400px] h-[667px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
           }`}
           style={{
             position: isMaximized ? "fixed" : "absolute",
@@ -49,6 +51,10 @@ export default function ResponsiveReaderModal({
           }}
         >
           <div className="absolute top-2 right-2 z-10 flex gap-2">
+            <Button variant="ghost" onClick={openToolBar}>
+              <Settings className="size-4 mr-2" />
+            </Button>
+
             <Button onClick={handleMaximizeToggle} variant="ghost" size="icon">
               {isMaximized ? (
                 <Minimize2 className="h-4 w-4" />

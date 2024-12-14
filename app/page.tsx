@@ -1,7 +1,6 @@
 "use client";
 
 import { useUploadBookModal } from "@/features/books/hooks/use-upload-book-modal";
-import BookShelf from "@/components/book-shelf";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/header";
 import { BooksGrid } from "@/features/books/components/books-grid";

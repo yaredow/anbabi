@@ -1,10 +1,15 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
 import { ReactReader, ReactReaderStyle } from "react-reader";
+import { Rendition } from "epubjs";
+import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
+import ToolBarModal from "@/components/tool-bar-modal";
 
-type BookReaderProps = {
-  onCancel: () => void;
+type TocItem = {
+  href: string;
+  label: string;
 };
 
 const ownStyle = {
@@ -21,17 +26,22 @@ const ownStyle = {
   },
 };
 
-export default function BookReader({ onCancel }: BookReaderProps) {
+export default function BookReader() {
   const bookId = useBookId();
   const { book } = useGetBook({ bookId });
-
   const [location, setLocation] = useState<string | number>(0);
   const [firstRenderDone, setFirstRenderDone] = useState(false);
   const [page, setPage] = useState("");
-  const renditionRef = useRef(null);
-  const tocRef = useRef(null);
+  const renditionRef = useRef<Rendition | null>(null);
+  const [size, setSize] = useState(100);
+  const tocRef = useRef<TocItem[] | null>(null);
+  const { setIsOpen, isOpen, open } = useToolBarModal();
 
-  const locationChanged = (epubcifi) => {
+  const changeSize = (newSize: number) => {
+    setSize(newSize);
+  };
+
+  const locationChanged = (epubcifi: string) => {
     if (!firstRenderDone) {
       setLocation(localStorage.getItem("book-progress") || "");
       setFirstRenderDone(true);
@@ -51,17 +61,18 @@ export default function BookReader({ onCancel }: BookReaderProps) {
     }
   };
 
+  useEffect(() => {
+    if (renditionRef.current) {
+      renditionRef.current.themes.fontSize(`${size}`);
+    }
+  }, [size]);
+
   return (
     <>
-      <div
-        style={{
-          position: "relative",
-          height: "100vh",
-          width: "100%",
-          margin: 0,
-          padding: 0,
-        }}
-      >
+      <VisuallyHidden>
+        <ToolBarModal setFontSize={setSize} fontSize={size} />
+      </VisuallyHidden>
+      <div className="relative h-[93vh] w-full m-0 p-0 text-left">
         <ReactReader
           location={location}
           url={book?.bookUrl as string}
@@ -70,19 +81,13 @@ export default function BookReader({ onCancel }: BookReaderProps) {
           getRendition={(rendition) => (renditionRef.current = rendition)}
           tocChanged={(toc) => (tocRef.current = toc)}
           readerStyles={{ ...ownStyle }}
+          epubOptions={{
+            allowPopups: true,
+            allowScriptedContent: true,
+          }}
         />
       </div>
-      <div
-        style={{
-          position: "absolute",
-          bottom: "1rem",
-          right: "1rem",
-          left: "1rem",
-          textAlign: "center",
-          zIndex: 1,
-        }}
-        className="text-sm font-normal"
-      >
+      <div className="text-xs font-normal absolute bottom-4 right-4 left-4 text-center z-10">
         {page}
       </div>
     </>

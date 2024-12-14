@@ -2,13 +2,17 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 
-import QueryProviders from "@/components/providers/query-provider";
-import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 
-import "./globals.css";
+import QueryProviders from "@/components/providers/query-provider";
+import { Toaster } from "@/components/ui/toaster";
+
 import UploadBookModal from "@/features/books/components/upload-book-modal";
 import BookReaderModal from "@/features/books/components/book-reader-modal";
+
+import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import ToolBarModal from "@/components/tool-bar-modal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,16 +30,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "antialiased min-h-screen")}>
-        <QueryProviders>
-          <NuqsAdapter>
-            <UploadBookModal />
-            <BookReaderModal />
-            <Toaster />
-            {children}
-          </NuqsAdapter>
-        </QueryProviders>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProviders>
+            <NuqsAdapter>
+              <UploadBookModal />
+              <BookReaderModal />
+              <Toaster />
+              {children}
+            </NuqsAdapter>
+          </QueryProviders>
+        </ThemeProvider>
       </body>
     </html>
   );

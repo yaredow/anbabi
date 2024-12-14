@@ -1,8 +1,6 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { ReactReader } from "react-reader";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -18,30 +16,6 @@ type BookInfoProps = {
 export default function BookInfo({ bookId }: BookInfoProps) {
   const { book, isPending } = useGetBook({ bookId });
   const { open } = useBookReaderModal();
-
-  /* const fetchBookFile = async (bookUrl) => {
-    const response = await fetch(bookUrl);
-    const blob = await response.blob();
-    return blob;
-  };
-
-  const createObjectUrl = (blob) => {
-    return URL.createObjectURL(blob);
-  };
-
-  const fetchAndPrepareBook = async (bookUrl) => {
-    try {
-      const blob = await fetchBookFile(bookUrl);
-      const fileUrl = createObjectUrl(blob); // Use this URL in React-Reader
-      setBookUrl(fileUrl);
-    } catch (error) {
-      console.error("Failed to fetch or convert book:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAndPrepareBook(book?.bookUrl);
-  }, []); */
 
   if (isPending) {
     return (
