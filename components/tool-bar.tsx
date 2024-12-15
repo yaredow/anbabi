@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
+import { Rendition } from "epubjs";
+
+import { ITheme, RenditionRef } from "@/features/books/types";
+import { themes } from "@/features/books/constants";
+
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { ITheme, RenditionRef } from "@/features/books/types";
-import { Rendition } from "epubjs";
-import { Check, Moon, Sun } from "lucide-react";
-import { themes } from "@/features/books/constants";
 
 type ToolbarContentProps = {
   fontSize: number;
@@ -65,7 +66,7 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
                 </span>
               )}
             </button>
-          ))}{" "}
+          ))}
         </div>
       </div>
       {onClose && (

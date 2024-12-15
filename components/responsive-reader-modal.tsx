@@ -1,16 +1,18 @@
 import React, { ReactElement, useState } from "react";
+import { X, Maximize2, Minimize2, Settings } from "lucide-react";
 import { useMedia } from "react-use";
+
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
+
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { X, Maximize2, Minimize2, Settings } from "lucide-react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
 
 interface ResponsiveModalProps {
   open: boolean;
@@ -52,7 +54,7 @@ export default function ResponsiveReaderModal({
           }}
         >
           <div className="absolute top-2 right-2 z-10 flex gap-2">
-            <Button variant="ghost" onClick={openToolBar}>
+            <Button variant="link" onClick={openToolBar}>
               <Settings className="size-4" />
             </Button>
 

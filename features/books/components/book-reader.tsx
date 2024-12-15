@@ -1,16 +1,17 @@
-import { useEffect, useRef, useState } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useGetBook } from "../api/use-get-book";
-import { useBookId } from "../hooks/use-book-id";
+import { useRef, useState } from "react";
+import { Rendition } from "epubjs";
 import {
   ReactReader,
   ReactReaderStyle,
   type IReactReaderStyle,
 } from "react-reader";
-import { Rendition } from "epubjs";
+
 import ToolBarModal from "@/components/tool-bar-modal";
+
+import { useGetBook } from "../api/use-get-book";
+import { useBookId } from "../hooks/use-book-id";
 import { ITheme } from "../types";
-import { themes } from "../constants";
 
 type TocItem = {
   href: string;
@@ -112,15 +113,16 @@ export default function BookReader() {
             updateTheme(rendition, theme);
           }}
           tocChanged={(toc) => (tocRef.current = toc)}
-          readerStyles={
-            theme === "dark"
+          readerStyles={{
+            ...ownStyle,
+            ...(theme === "dark"
               ? darkReaderTheme
               : theme === "sepia"
                 ? sepiaReaderTheme
                 : theme === "greenish"
                   ? greenReaderTheme
-                  : lightReaderTheme
-          }
+                  : lightReaderTheme),
+          }}
           epubOptions={{
             allowPopups: true,
             allowScriptedContent: true,
@@ -181,24 +183,74 @@ const darkReaderTheme: IReactReaderStyle = {
 
 const sepiaReaderTheme: IReactReaderStyle = {
   ...ReactReaderStyle,
+  arrow: {
+    ...ReactReaderStyle.arrow,
+    color: "#5b4636", // Sepia tone for consistency with text
+  },
+  arrowHover: {
+    ...ReactReaderStyle.arrowHover,
+    color: "#4a3c28", // Slightly darker sepia tone for hover effect
+  },
   readerArea: {
     ...ReactReaderStyle.readerArea,
-    backgroundColor: "#f5deb3",
+    backgroundColor: "#f5deb3", // Sepia background color
+    transition: undefined,
   },
   titleArea: {
     ...ReactReaderStyle.titleArea,
-    color: "#5b4636",
+    color: "#5b4636", // Sepia color for text
+  },
+  tocArea: {
+    ...ReactReaderStyle.tocArea,
+    background: "#f5deb3", // Same sepia background for TOC to match the reader area
+  },
+  tocButtonExpanded: {
+    ...ReactReaderStyle.tocButtonExpanded,
+    background: "#e0c3a1", // Lighter sepia tone for expanded buttons
+  },
+  tocButtonBar: {
+    ...ReactReaderStyle.tocButtonBar,
+    background: "#5b4636", // Darker sepia for button bar for contrast
+  },
+  tocButton: {
+    ...ReactReaderStyle.tocButton,
+    color: "#f5deb3", // Light text color to contrast with dark background
   },
 };
 
 const greenReaderTheme: IReactReaderStyle = {
   ...ReactReaderStyle,
+  arrow: {
+    ...ReactReaderStyle.arrow,
+    color: "#3e4e3f", // Matches the title text color for consistency
+  },
+  arrowHover: {
+    ...ReactReaderStyle.arrowHover,
+    color: "#2f3b30", // A darker greenish tone for hover feedback
+  },
   readerArea: {
     ...ReactReaderStyle.readerArea,
-    backgroundColor: "#e4f7e7",
+    backgroundColor: "#e4f7e7", // The main greenish background
+    transition: undefined,
   },
   titleArea: {
     ...ReactReaderStyle.titleArea,
-    color: "#3e4e3f",
+    color: "#3e4e3f", // Compliments the background with a dark green
+  },
+  tocArea: {
+    ...ReactReaderStyle.tocArea,
+    background: "#d5efe0", // A lighter greenish tone for contrast
+  },
+  tocButtonExpanded: {
+    ...ReactReaderStyle.tocButtonExpanded,
+    background: "#cbe6d6", // Slightly darker than tocArea for hierarchy
+  },
+  tocButtonBar: {
+    ...ReactReaderStyle.tocButtonBar,
+    background: "#3e4e3f", // Matches arrow and title for consistency
+  },
+  tocButton: {
+    ...ReactReaderStyle.tocButton,
+    color: "#e4f7e7", // Contrast with the darker button background
   },
 };
