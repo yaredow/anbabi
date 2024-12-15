@@ -19,11 +19,10 @@ type ToolbarContentProps = {
 export const ToolBar: React.FC<ToolbarContentProps> = ({
   fontSize,
   setFontSize,
-  updateTheme,
   renditionRef,
   onClose,
 }) => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, updateTheme } = useTheme();
 
   useEffect(() => {
     if (renditionRef?.current) {
