@@ -13,6 +13,7 @@ import BookReaderModal from "@/features/books/components/book-reader-modal";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ToolBarModal from "@/components/tool-bar-modal";
+import { ReaderThemeProvider } from "@/context/reader-theme-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,14 +39,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProviders>
-            <NuqsAdapter>
-              <UploadBookModal />
-              <BookReaderModal />
-              <Toaster />
-              {children}
-            </NuqsAdapter>
-          </QueryProviders>
+          <ReaderThemeProvider>
+            <QueryProviders>
+              <NuqsAdapter>
+                <UploadBookModal />
+                <BookReaderModal />
+                <Toaster />
+                {children}
+              </NuqsAdapter>
+            </QueryProviders>
+          </ReaderThemeProvider>
         </ThemeProvider>
       </body>
     </html>

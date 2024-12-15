@@ -58,7 +58,7 @@ export default function ResponsiveReaderModal({
               <Settings className="size-4" />
             </Button>
 
-            <Button onClick={handleMaximizeToggle} variant="ghost" size="icon">
+            <Button onClick={handleMaximizeToggle} variant="link" size="icon">
               {isMaximized ? (
                 <Minimize2 className="h-4 w-4" />
               ) : (
@@ -67,7 +67,7 @@ export default function ResponsiveReaderModal({
             </Button>
             <Button
               onClick={() => onOpenChange(false)}
-              variant="ghost"
+              variant="link"
               size="icon"
               className="text-red-500 hover:text-red-700"
             >

@@ -10,17 +10,13 @@ import { Rendition } from "epubjs";
 type ToolBarModalProps = {
   fontSize: number;
   setFontSize: (fontSize: number) => void;
-  setTheme: (theme: ITheme) => void;
-  currentTheme: ITheme;
-  renditionRef: RenditionRef | null;
+  renditionRef: RenditionRef | undefined;
   updateTheme: (rendition: Rendition, theme: ITheme) => void;
 };
 
 export default function ToolBarModal({
   setFontSize,
   fontSize,
-  setTheme,
-  currentTheme,
   renditionRef,
   updateTheme,
 }: ToolBarModalProps) {
@@ -32,8 +28,6 @@ export default function ToolBarModal({
         fontSize={fontSize}
         setFontSize={setFontSize}
         renditionRef={renditionRef}
-        setTheme={setTheme}
-        currentTheme={currentTheme}
         updateTheme={updateTheme}
       />
     </ResponsiveToolBarModal>

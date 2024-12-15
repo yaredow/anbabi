@@ -6,32 +6,31 @@ import { themes } from "@/features/books/constants";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useTheme } from "@/context/reader-theme-context";
 
 type ToolbarContentProps = {
   fontSize: number;
   setFontSize: (size: number) => void;
-  setTheme: (theme: ITheme) => void;
-  currentTheme: ITheme;
   onClose?: () => void;
-  renditionRef: RenditionRef | null;
+  renditionRef: RenditionRef | undefined;
   updateTheme: (rendition: Rendition, theme: ITheme) => void;
 };
 
 export const ToolBar: React.FC<ToolbarContentProps> = ({
   fontSize,
   setFontSize,
-  currentTheme,
   updateTheme,
-  setTheme,
   renditionRef,
   onClose,
 }) => {
+  const { theme, setTheme } = useTheme();
+
   useEffect(() => {
     if (renditionRef?.current) {
       renditionRef?.current.themes.fontSize(`${fontSize}%`);
-      updateTheme(renditionRef.current, currentTheme);
+      updateTheme(renditionRef.current, theme);
     }
-  }, [fontSize, renditionRef, currentTheme]);
+  }, [fontSize, renditionRef, theme]);
 
   return (
     <div className="flex flex-col space-y-4">
@@ -50,18 +49,18 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
       <div className="space-y-2">
         <h3 className="text-sm font-medium leading-none">Theme</h3>
         <div className="flex space-x-2">
-          {themes.map((theme) => (
+          {themes.map((item) => (
             <button
-              key={theme.name}
+              key={item.name}
               className={`rounded-full w-8 h-8 p-0 ${
-                currentTheme === theme.name ? "ring-2 ring-primary" : ""
+                theme === item.name ? "ring-2 ring-primary" : ""
               }`}
-              style={{ backgroundColor: theme.backgroundColor }}
-              onClick={() => setTheme(theme.name as ITheme)}
-              aria-label={`Set ${theme.name} theme`}
+              style={{ backgroundColor: item.backgroundColor }}
+              onClick={() => setTheme(item.name as ITheme)}
+              aria-label={`Set ${item.name} theme`}
             >
-              {currentTheme === theme.name && (
-                <span className="h-4 w-4" style={{ color: theme.textColor }}>
+              {theme === item.name && (
+                <span className="h-4 w-4" style={{ color: item.textColor }}>
                   ✔
                 </span>
               )}
