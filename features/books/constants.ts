@@ -1,9 +1,10 @@
 import { IReactReaderStyle, ReactReaderStyle } from "react-reader";
 
 export const themes = [
-  { name: "white", backgroundColor: "#ffffff", textColor: "#000000" },
+  { name: "light", backgroundColor: "#ffffff", textColor: "#000000" },
   { name: "dark", backgroundColor: "#000000", textColor: "#ffffff" },
   { name: "sepia", backgroundColor: "#f5deb3", textColor: "#5b4636" },
+  { name: "greenish", backgroundColor: "#e4f7e7", textColor: "#3e4e3f" },
 ];
 
 export const lightReaderTheme: IReactReaderStyle = {
@@ -87,5 +88,42 @@ export const sepiaReaderTheme: IReactReaderStyle = {
   tocButton: {
     ...ReactReaderStyle.tocButton,
     color: "#f5deb3",
+  },
+};
+
+export const greenReaderTheme: IReactReaderStyle = {
+  ...ReactReaderStyle,
+  arrow: {
+    ...ReactReaderStyle.arrow,
+    color: "#3e4e3f",
+  },
+  arrowHover: {
+    ...ReactReaderStyle.arrowHover,
+    color: "#2f3b30",
+  },
+  readerArea: {
+    ...ReactReaderStyle.readerArea,
+    backgroundColor: "#e4f7e7",
+    transition: undefined,
+  },
+  titleArea: {
+    ...ReactReaderStyle.titleArea,
+    color: "#3e4e3f",
+  },
+  tocArea: {
+    ...ReactReaderStyle.tocArea,
+    background: "#d5efe0",
+  },
+  tocButtonExpanded: {
+    ...ReactReaderStyle.tocButtonExpanded,
+    background: "#cbe6d6",
+  },
+  tocButtonBar: {
+    ...ReactReaderStyle.tocButtonBar,
+    background: "#3e4e3f",
+  },
+  tocButton: {
+    ...ReactReaderStyle.tocButton,
+    color: "#e4f7e7",
   },
 };

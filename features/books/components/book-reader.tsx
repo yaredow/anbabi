@@ -7,13 +7,14 @@ import ToolBarModal from "@/components/tool-bar-modal";
 
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
-import { ITheme } from "../types";
 import { useTheme } from "@/context/reader-theme-context";
 import {
   darkReaderTheme,
+  greenReaderTheme,
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
+import { useMedia } from "react-use";
 
 type TocItem = {
   href: string;
@@ -40,6 +41,7 @@ const ownStyle = {
 };
 
 export default function BookReader() {
+  const isDesktop = useMedia("(min-width: 1024px)", true);
   const bookId = useBookId();
   const { book } = useGetBook({ bookId });
   const [location, setLocation] = useState<string | number>(0);
@@ -52,12 +54,16 @@ export default function BookReader() {
   const { theme, updateTheme } = useTheme();
 
   let themeStyles;
+
   switch (theme) {
     case "dark":
       themeStyles = darkReaderTheme;
       break;
     case "sepia":
       themeStyles = sepiaReaderTheme;
+      break;
+    case "greenish":
+      themeStyles = greenReaderTheme;
       break;
     default:
       themeStyles = lightReaderTheme;
@@ -123,7 +129,9 @@ export default function BookReader() {
           renditionRef={renditionRef}
         />
       </VisuallyHidden>
-      <div className="relative h-[95vh] top-0 w-full m-0 p-0 text-left">
+      <div
+        className={`relative top-0 w-full m-0 p-0 text-left ${isDesktop ? "h-full" : "h-[95vh]"}`}
+      >
         <ReactReader
           location={location}
           url={book?.bookUrl as string}
@@ -137,6 +145,7 @@ export default function BookReader() {
                 background: "orange",
               },
             });
+            setSelections([]);
             updateTheme(rendition, theme);
           }}
           tocChanged={(toc) => (tocRef.current = toc)}

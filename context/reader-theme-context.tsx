@@ -41,6 +41,10 @@ export const ReaderThemeProvider: React.FC<{ children: ReactNode }> = ({
         themes.override("background", "#f5deb3");
         break;
       }
+      case "greenish":
+        themes.override("color", "#3e4e3f");
+        themes.override("background", "#e4f7e7");
+        break;
     }
   };
 

@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useTheme } from "@/context/reader-theme-context";
+import { themes } from "@/features/books/constants";
 
 interface ResponsiveModalProps {
   open: boolean;
@@ -28,6 +30,7 @@ export default function ResponsiveReaderModal({
   const isDesktop = useMedia("(min-width: 1024px)", true);
   const { open: openToolBar } = useToolBarModal();
   const [isMaximized, setIsMaximized] = useState(false);
+  const { theme } = useTheme();
 
   const handleMaximizeToggle = () => setIsMaximized((prev) => !prev);
 
@@ -54,11 +57,20 @@ export default function ResponsiveReaderModal({
           }}
         >
           <div className="absolute top-2 right-2 z-10 flex gap-2">
-            <Button variant="link" onClick={openToolBar}>
+            <Button
+              variant="link"
+              onClick={openToolBar}
+              className={`${theme === "dark" && "text-white"}`}
+            >
               <Settings className="size-4" />
             </Button>
 
-            <Button onClick={handleMaximizeToggle} variant="link" size="icon">
+            <Button
+              onClick={handleMaximizeToggle}
+              variant="link"
+              size="icon"
+              className={`${theme === "dark" && "text-white"}`}
+            >
               {isMaximized ? (
                 <Minimize2 className="h-4 w-4" />
               ) : (
@@ -69,7 +81,7 @@ export default function ResponsiveReaderModal({
               onClick={() => onOpenChange(false)}
               variant="link"
               size="icon"
-              className="text-red-500 hover:text-red-700"
+              className={`${theme === "dark" && "text-white"}`}
             >
               <X className="h-4 w-4" />
             </Button>
