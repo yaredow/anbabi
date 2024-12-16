@@ -1,5 +1,6 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useEffect, useRef, useState } from "react";
+import merge from "lodash.merge";
 import { Rendition } from "epubjs";
 import { ReactReader, ReactReaderStyle } from "react-reader";
 

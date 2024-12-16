@@ -9,6 +9,10 @@ export const themes = [
 
 export const lightReaderTheme: IReactReaderStyle = {
   ...ReactReaderStyle,
+  arrow: {
+    ...ReactReaderStyle.arrow,
+    fontSize: "30px",
+  },
   readerArea: {
     ...ReactReaderStyle.readerArea,
     transition: undefined,
@@ -22,6 +26,7 @@ export const darkReaderTheme: IReactReaderStyle = {
   arrow: {
     ...ReactReaderStyle.arrow,
     color: "white",
+    fontSize: "30px",
   },
   arrowHover: {
     ...ReactReaderStyle.arrowHover,
@@ -59,6 +64,7 @@ export const sepiaReaderTheme: IReactReaderStyle = {
   arrow: {
     ...ReactReaderStyle.arrow,
     color: "#5b4636",
+    fontSize: "30px",
   },
   arrowHover: {
     ...ReactReaderStyle.arrowHover,
@@ -96,6 +102,7 @@ export const greenReaderTheme: IReactReaderStyle = {
   arrow: {
     ...ReactReaderStyle.arrow,
     color: "#3e4e3f",
+    fontSize: "30px",
   },
   arrowHover: {
     ...ReactReaderStyle.arrowHover,
