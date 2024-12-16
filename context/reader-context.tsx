@@ -1,5 +1,6 @@
 "use client";
 
+import { fontFamilies } from "@/features/books/constants";
 import { ITheme } from "@/features/books/types";
 import { Rendition } from "epubjs";
 import {
@@ -14,14 +15,21 @@ type ThemeContextType = {
   theme: ITheme;
   setTheme: (theme: ITheme) => void;
   updateTheme: (rendition: Rendition, theme: ITheme) => void;
+  fontFamily: string;
+  changeFontFamily: (font: string) => void;
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ReaderThemeProvider: React.FC<{ children: ReactNode }> = ({
+export const ReaderProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [theme, setTheme] = useState<ITheme>("light");
+  const [fontFamily, setFontFamily] = useState(fontFamilies[0].fontFamily);
+
+  const changeFontFamily = (fontFamily: string) => {
+    setFontFamily(fontFamily);
+  };
 
   const updateTheme = (rendition: Rendition, theme: ITheme) => {
     const themes = rendition.themes;
@@ -57,10 +65,19 @@ export const ReaderThemeProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     localStorage.setItem("reader-theme", theme);
-  }, [theme]);
+    localStorage.setItem("reader-font-family", fontFamily);
+  }, [theme, fontFamily]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, updateTheme }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme,
+        updateTheme,
+        fontFamily,
+        changeFontFamily,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );

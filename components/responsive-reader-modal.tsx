@@ -13,8 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useTheme } from "@/context/reader-theme-context";
-import { themes } from "@/features/books/constants";
+import { useTheme } from "@/context/reader-context";
 
 interface ResponsiveModalProps {
   open: boolean;

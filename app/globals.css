@@ -62,6 +62,104 @@ body {
   }
 }
 
+@font-face {
+  font-family: "Amazon Ember";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/amazon-ember/AmazonEmber.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Amazon Ember";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/fonts/amazon-ember/AmazonEmber-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Amazon Ember";
+  font-weight: 400;
+  font-style: italic;
+  src: url("/fonts/amazon-ember/AmazonEmber-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Palatino";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/palatino/Palatino.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open Dyslexic";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/open-dyslexic/OpenDyslexic-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open Dyslexic";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/fonts/open-dyslexic/OpenDyslexic-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Open Dyslexic";
+  font-weight: 400;
+  font-style: italic;
+  src: url("/fonts/open-dyslexic/OpenDyslexic-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Lucida";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/lucida/Lucida-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Helvetica";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/helvetica/Helvetica.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Georgia";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/georgia/Georgia.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Baskerville";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/fonts/baskerville/Baskerville-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Bookerly";
+  font-weight: 400;
+  font-style: normal;
+  src: url("/fonts/bookerly/Bookerly.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Bookerly";
+  font-weight: 700;
+  font-style: normal;
+  src: url("/fonts/bookerly/Bookerly-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Bookerly";
+  font-weight: 400;
+  font-style: italic;
+  src: url("/fonts/bookerly/Bookerly-Italic.ttf") format("truetype");
+}
+
 @layer base {
   * {
     @apply border-border;

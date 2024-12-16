@@ -7,6 +7,20 @@ export const themes = [
   { name: "greenish", backgroundColor: "#e4f7e7", textColor: "#3e4e3f" },
 ];
 
+export const fontFamilies = [
+  { name: "Amazon Ember", path: "/fonts/amazon-ember/Amazom Ember.ttf" },
+  { name: "Palatino", path: "/fonts/palatino/palr45w.ttf" },
+  {
+    name: "Open Dyslexic",
+    path: "/fonts/opendyslexic/OpenDyslexic-Regular.ttf",
+  },
+  { name: "Lucida", path: "" },
+  { name: "Helvetica", path: "/fonts/howvetica/Howvetica-Aayp.ttf" },
+  { name: "Georgia", path: "/fonts/georgia-2/georgia.ttf" },
+  { name: "Baskerville", path: "/fonts/baskerville/baskerville bold.ttf" },
+  { name: "Bookerly", path: "/fonts/Bookerly.ttf" },
+];
+
 export const lightReaderTheme: IReactReaderStyle = {
   ...ReactReaderStyle,
   arrow: {

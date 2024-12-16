@@ -1,21 +1,21 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useEffect, useRef, useState } from "react";
-import merge from "lodash.merge";
-import { Rendition } from "epubjs";
 import { ReactReader, ReactReaderStyle } from "react-reader";
+import { useEffect, useRef, useState } from "react";
+import { useMedia } from "react-use";
+import { Rendition } from "epubjs";
 
 import ToolBarModal from "@/components/tool-bar-modal";
 
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
-import { useTheme } from "@/context/reader-theme-context";
+import { useTheme } from "@/context/reader-context";
 import {
   darkReaderTheme,
+  fontFamilies,
   greenReaderTheme,
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
-import { useMedia } from "react-use";
 
 type TocItem = {
   href: string;
@@ -52,7 +52,8 @@ export default function BookReader() {
   const renditionRef = useRef<Rendition | undefined>(undefined);
   const [size, setSize] = useState(100);
   const tocRef = useRef<TocItem[] | null>(null);
-  const { theme, updateTheme } = useTheme();
+  const { theme, updateTheme, fontFamily } = useTheme();
+  console.log({ fontFamily });
 
   let themeStyles;
 
@@ -146,6 +147,15 @@ export default function BookReader() {
                 background: "orange",
               },
             });
+
+            renditionRef.current.themes.register("custom", {
+              p: {
+                "font-family": "Palatino",
+              },
+            });
+
+            renditionRef.current.themes.select("custom");
+
             setSelections([]);
             updateTheme(rendition, theme);
           }}

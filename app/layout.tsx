@@ -1,8 +1,6 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Inter } from "next/font/google";
-import type { Metadata } from "next";
-
-import { cn } from "@/lib/utils";
+import localFont from "next/font/local";
 
 import QueryProviders from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,12 +10,116 @@ import BookReaderModal from "@/features/books/components/book-reader-modal";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import ToolBarModal from "@/components/tool-bar-modal";
-import { ReaderThemeProvider } from "@/context/reader-theme-context";
+import { ReaderProvider } from "@/context/reader-context";
+import { Metadata } from "next";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
+});
+
+const amazon_ember = localFont({
+  src: [
+    {
+      path: "./fonts/amazon-ember/Amazon Ember.ttf",
+      style: "normal",
+      weight: "400",
+    },
+    {
+      path: "./fonts/amazon-ember/Amazon Ember Bold.ttf",
+      style: "bold",
+      weight: "700",
+    },
+    {
+      path: "./fonts/amazon-ember/Amazon Ember Bold Italic.ttf",
+      style: "italic",
+      weight: "700",
+    },
+  ],
+  variable: "--font-amazon",
+});
+
+const open_dyslexic = localFont({
+  src: [
+    {
+      path: "./fonts/opendyslexic/OpenDyslexic-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/opendyslexic/OpenDyslexic-Bold.ttf",
+      weight: "700",
+      style: "bold",
+    },
+    {
+      path: "./fonts/opendyslexic/OpenDyslexic-Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+  ],
+  variable: "--font-dyslexic",
+});
+
+const baskerville = localFont({
+  src: [
+    {
+      path: "./fonts/baskerville/baskerville bold bt.ttf",
+      style: "bold",
+      weight: "700",
+    },
+  ],
+  variable: "--font-baskerville",
+});
+
+const georgia = localFont({
+  src: [
+    {
+      path: "./fonts/georgia-2/georgia.ttf",
+      style: "normal",
+      weight: "400",
+    },
+  ],
+  variable: "--font-georgia",
+});
+
+const helvetica = localFont({
+  src: [
+    {
+      path: "./fonts/howvetica/Howvetica-Aayp.ttf",
+      style: "normal",
+    },
+  ],
+  variable: "--font-helvetica",
+});
+
+const palatino = localFont({
+  src: [
+    {
+      path: "./fonts/palatino/palr45w.ttf",
+      style: "normal",
+    },
+  ],
+  variable: "--font-palatino",
+});
+
+const bookerly = localFont({
+  src: [
+    {
+      path: "./fonts/bookerly/Bookerly.ttf",
+      style: "normal",
+      weight: "400",
+    },
+    {
+      path: "./fonts/bookerly/Bookerly Bold.ttf",
+      style: "bold",
+      weight: "700",
+    },
+    {
+      path: "./fonts/bookerly/Bookerly Italic.ttf",
+      style: "italic",
+    },
+  ],
+  variable: "--font-bookerly",
 });
 
 export const metadata: Metadata = {
@@ -32,14 +134,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(inter.className, "antialiased min-h-screen")}>
+      <body
+        className={`${amazon_ember.variable} ${inter.className} ${open_dyslexic.variable} ${baskerville.variable} ${georgia.variable} ${palatino.variable} ${bookerly.variable} ${helvetica.variable} antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
-          <ReaderThemeProvider>
+          <ReaderProvider>
             <QueryProviders>
               <NuqsAdapter>
                 <UploadBookModal />
@@ -48,7 +152,7 @@ export default function RootLayout({
                 {children}
               </NuqsAdapter>
             </QueryProviders>
-          </ReaderThemeProvider>
+          </ReaderProvider>
         </ThemeProvider>
       </body>
     </html>

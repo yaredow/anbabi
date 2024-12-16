@@ -1,19 +1,17 @@
-import React, { useEffect } from "react";
-import { Rendition } from "epubjs";
+import React, { useEffect, useState } from "react";
 
 import { ITheme, RenditionRef } from "@/features/books/types";
-import { themes } from "@/features/books/constants";
+import { fontFamilies, themes } from "@/features/books/constants";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useTheme } from "@/context/reader-theme-context";
+import { useTheme } from "@/context/reader-context";
 
 type ToolbarContentProps = {
   fontSize: number;
   setFontSize: (size: number) => void;
   onClose?: () => void;
   renditionRef: RenditionRef | undefined;
-  updateTheme: (rendition: Rendition, theme: ITheme) => void;
 };
 
 export const ToolBar: React.FC<ToolbarContentProps> = ({
@@ -22,7 +20,25 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   renditionRef,
   onClose,
 }) => {
-  const { theme, setTheme, updateTheme } = useTheme();
+  const { theme, setTheme, updateTheme, fontFamily, changeFontFamily } =
+    useTheme();
+
+  const injectLocalFont = (fontName, fontPath) => {
+    const fontFaceRule = `
+    @font-face {
+      font-family: '${fontName}';
+      src: url('${fontPath}');
+    }
+  `;
+
+    renditionRef?.current?.themes.register("custom", {
+      p: {
+        "font-family": fontName,
+      },
+    });
+
+    renditionRef?.current?.themes.select("custom");
+  };
 
   useEffect(() => {
     if (renditionRef?.current) {
@@ -67,6 +83,22 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
           ))}
         </div>
       </div>
+
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium leading-none">Font Family</h3>
+        <select
+          value={fontFamily}
+          onChange={(e) => changeFontFamily(e.target.value)}
+          className="border rounded p-1"
+        >
+          {fontFamilies.map((font) => (
+            <option key={font.name} value={font.fontFamily}>
+              {font.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {onClose && (
         <Button variant="outline" onClick={onClose}>
           Close

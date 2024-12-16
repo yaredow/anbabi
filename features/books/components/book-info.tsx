@@ -50,7 +50,7 @@ export default function BookInfo({ bookId }: BookInfoProps) {
 
           <div className="space-y-6">
             <div>
-              <h1 className="text-4xl font-bold">{book.title}</h1>
+              <h1 className="text-4xl font-bold font-georgia">{book.title}</h1>
               <p className="text-xl text-muted-foreground">{`by ${book.author}`}</p>
             </div>
 

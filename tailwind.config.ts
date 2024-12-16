@@ -1,4 +1,6 @@
+import { Baskervville } from "next/font/google";
 import type { Config } from "tailwindcss";
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 export default {
   darkMode: ["class"],
@@ -58,6 +60,16 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+    },
+    fontFamily: {
+      amazon: ["Amazon Ember", ...defaultTheme.fontFamily.sans],
+      palatino: ["Palatino", ...defaultTheme.fontFamily.serif],
+      openDyslexic: ["Open Dyslexic", ...defaultTheme.fontFamily.sans],
+      lucida: ["Lucida", ...defaultTheme.fontFamily.sans],
+      helvetica: ["Helvetica", ...defaultTheme.fontFamily.sans],
+      georgia: ["Georgia", ...defaultTheme.fontFamily.serif],
+      baskerville: ["Baskerville", ...defaultTheme.fontFamily.serif],
+      bookerly: ["Bookerly", ...defaultTheme.fontFamily.serif],
     },
   },
   plugins: [require("tailwindcss-animate")],
