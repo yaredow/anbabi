@@ -23,21 +23,14 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   const { theme, setTheme, updateTheme, fontFamily, changeFontFamily } =
     useTheme();
 
-  const injectLocalFont = (fontName, fontPath) => {
-    const fontFaceRule = `
-    @font-face {
-      font-family: '${fontName}';
-      src: url('${fontPath}');
+  const handleFontChange = (font) => {
+    changeFontFamily(font.name);
+    if (renditionRef?.current) {
+      renditionRef.current.themes.register("custom", {
+        p: { "font-family": font.name },
+      });
+      renditionRef.current.themes.select("custom");
     }
-  `;
-
-    renditionRef?.current?.themes.register("custom", {
-      p: {
-        "font-family": fontName,
-      },
-    });
-
-    renditionRef?.current?.themes.select("custom");
   };
 
   useEffect(() => {
@@ -86,17 +79,11 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
 
       <div className="space-y-2">
         <h3 className="text-sm font-medium leading-none">Font Family</h3>
-        <select
-          value={fontFamily}
-          onChange={(e) => changeFontFamily(e.target.value)}
-          className="border rounded p-1"
-        >
-          {fontFamilies.map((font) => (
-            <option key={font.name} value={font.fontFamily}>
-              {font.name}
-            </option>
-          ))}
-        </select>
+        {fontFamilies.map((font) => (
+          <button key={font.name} onClick={() => handleFontChange(font)}>
+            {font.name}
+          </button>
+        ))}
       </div>
 
       {onClose && (

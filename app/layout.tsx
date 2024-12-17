@@ -12,13 +12,14 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ReaderProvider } from "@/context/reader-context";
 import { Metadata } from "next";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
 
-const amazon_ember = localFont({
+/* const amazon_ember = localFont({
   src: [
     {
       path: "./fonts/amazon-ember/Amazon Ember.ttf",
@@ -121,6 +122,7 @@ const bookerly = localFont({
   ],
   variable: "--font-bookerly",
 });
+ */
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -134,9 +136,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${amazon_ember.variable} ${inter.className} ${open_dyslexic.variable} ${baskerville.variable} ${georgia.variable} ${palatino.variable} ${bookerly.variable} ${helvetica.variable} antialiased`}
-      >
+      <body className={cn(`${inter.className} antialiased`)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

@@ -11,7 +11,6 @@ import { useBookId } from "../hooks/use-book-id";
 import { useTheme } from "@/context/reader-context";
 import {
   darkReaderTheme,
-  fontFamilies,
   greenReaderTheme,
   lightReaderTheme,
   sepiaReaderTheme,
@@ -53,7 +52,6 @@ export default function BookReader() {
   const [size, setSize] = useState(100);
   const tocRef = useRef<TocItem[] | null>(null);
   const { theme, updateTheme, fontFamily } = useTheme();
-  console.log({ fontFamily });
 
   let themeStyles;
 
@@ -150,7 +148,7 @@ export default function BookReader() {
 
             renditionRef.current.themes.register("custom", {
               p: {
-                "font-family": "Palatino",
+                "font-family": fontFamily,
               },
             });
 

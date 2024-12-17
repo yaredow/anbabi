@@ -25,7 +25,7 @@ export const ReaderProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [theme, setTheme] = useState<ITheme>("light");
-  const [fontFamily, setFontFamily] = useState(fontFamilies[0].fontFamily);
+  const [fontFamily, setFontFamily] = useState(fontFamilies[0].name);
 
   const changeFontFamily = (fontFamily: string) => {
     setFontFamily(fontFamily);

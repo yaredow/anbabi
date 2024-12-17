@@ -8,17 +8,13 @@ export const themes = [
 ];
 
 export const fontFamilies = [
-  { name: "Amazon Ember", path: "/fonts/amazon-ember/Amazom Ember.ttf" },
-  { name: "Palatino", path: "/fonts/palatino/palr45w.ttf" },
-  {
-    name: "Open Dyslexic",
-    path: "/fonts/opendyslexic/OpenDyslexic-Regular.ttf",
-  },
-  { name: "Lucida", path: "" },
-  { name: "Helvetica", path: "/fonts/howvetica/Howvetica-Aayp.ttf" },
-  { name: "Georgia", path: "/fonts/georgia-2/georgia.ttf" },
-  { name: "Baskerville", path: "/fonts/baskerville/baskerville bold.ttf" },
-  { name: "Bookerly", path: "/fonts/Bookerly.ttf" },
+  { name: "Arial" },
+  { name: "Georgia" },
+  { name: "Courier New" },
+  { name: "Verdana" },
+  { name: "Helvetica" },
+  { name: "Comic Sans MS" },
+  { name: "Lucida Console" },
 ];
 
 export const lightReaderTheme: IReactReaderStyle = {
