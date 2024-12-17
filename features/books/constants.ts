@@ -8,12 +8,12 @@ export const themes = [
 ];
 
 export const fontFamilies = [
-  { name: "Arial" },
+  { name: "Helvetica" },
   { name: "Georgia" },
+  { name: "Arial" },
   { name: "Courier New" },
   { name: "Verdana" },
-  { name: "Helvetica" },
-  { name: "Comic Sans MS" },
+  { name: "Comic Sans" },
 ];
 
 export const lightReaderTheme: IReactReaderStyle = {

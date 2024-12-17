@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTheme as useNextTheme } from "next-themes";
 
 import { ITheme, RenditionRef } from "@/features/books/types";
 import { fontFamilies, themes } from "@/features/books/constants";
@@ -6,6 +7,10 @@ import { fontFamilies, themes } from "@/features/books/constants";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/context/reader-context";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Slider } from "./ui/slider";
+import DottedSeparator from "./dotted-separator";
+import { Check } from "lucide-react";
+import { Switch } from "./ui/switch";
 
 type ToolbarContentProps = {
   fontSize: number;
@@ -23,7 +28,14 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   const { theme, setTheme, updateTheme, fontFamily, changeFontFamily } =
     useTheme();
 
-  const handleFontChange = (font) => {
+  const [useSystemTheme, setUseSystemTheme] = useState(theme === "system");
+
+  const handleSystemThemeToggle = (checked: boolean) => {
+    setUseSystemTheme(checked);
+    setTheme(checked ? "system" : "light"); // Default to "light" if system theme is disabled
+  };
+
+  const handleFontChange = (font: any) => {
     changeFontFamily(font.name);
     if (renditionRef?.current) {
       renditionRef.current.themes.register("custom", {
@@ -45,13 +57,13 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
       <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-4 border-b border-border">
         <TabsTrigger
           value="font"
-          className="data-[state=active]:text-primary data-[state=active]:font-semibold rounded-none pb-2"
+          className="data-[state=active]:text-primary data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none pb-2 transition-all"
         >
           Font
         </TabsTrigger>
         <TabsTrigger
           value="layout"
-          className="data-[state=active]:text-primary data-[state=active]:font-semibold rounded-none pb-2"
+          className="data-[state=active]:text-primary data-[state=active]:font-semibold data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none pb-2 transition-all"
         >
           Layout
         </TabsTrigger>
@@ -62,10 +74,8 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
           More
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="font" className="space-y-4"></TabsContent>
       <TabsContent value="font" className="space-y-4">
         <div className="space-y-2">
-          <h3 className="text-sm font-medium leading-none mb-4">Font Family</h3>
           <div className="flex flex-wrap gap-4">
             {fontFamilies.map((font) => (
               <div
@@ -78,7 +88,7 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
                 onClick={() => handleFontChange(font)}
               >
                 <span
-                  className="text-2xl mb-1"
+                  className="text-xl font-semibold"
                   style={{ fontFamily: font.name }}
                 >
                   Aa
@@ -88,10 +98,75 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
             ))}
           </div>
         </div>
+
+        <DottedSeparator />
+
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm">A</span>
+            <Slider
+              value={[fontSize]}
+              onValueChange={(value) => setFontSize(value[0])}
+              min={80}
+              max={200}
+              step={10}
+              className="flex-grow"
+            />
+            <span className="text-xl">A</span>
+          </div>
+        </div>
       </TabsContent>
-      <TabsContent value="more" className="space-y-4">
-        {/* More content will go here */}
+
+      <TabsContent value="layout" className="space-y-4">
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium leading-none mb-4">Theme</h3>
+          <div className="flex flex-wrap gap-4">
+            {themes.map((item) => (
+              <button
+                key={item.name}
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  theme === item.name ? "ring-2 ring-primary" : ""
+                }`}
+                style={{ backgroundColor: item.backgroundColor }}
+                onClick={() => setTheme(item.name as ITheme)}
+                aria-label={`Set ${item.name} theme`}
+              >
+                {theme === item.name && (
+                  <Check
+                    className="h-4 w-4"
+                    style={{ color: item.textColor }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-normal">
+              Update page using system theme
+            </span>
+            <Switch
+              checked={useSystemTheme}
+              onCheckedChange={setUseSystemTheme}
+              aria-label="Use system theme"
+            />
+          </div>
+
+          <div className="py-4">
+            <DottedSeparator />
+          </div>
+
+          {/* <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Continuous scrolling</span>
+            <Switch
+              checked={continuousScrolling}
+              onCheckedChange={setContinuousScrolling}
+              aria-label="Enable continuous scrolling"
+            />
+          </div> */}
+        </div>
       </TabsContent>
+      <TabsContent value="more" className="space-y-4"></TabsContent>
       {onClose && (
         <Button variant="outline" onClick={onClose} className="mt-4 w-full">
           Close

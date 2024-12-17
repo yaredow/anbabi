@@ -58,12 +58,8 @@ export const ReaderProvider: React.FC<{ children: ReactNode }> = ({
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("reader-theme") as ITheme;
-    const savedFontFamily = localStorage.getItem(
-      "reader-font-family",
-    ) as string;
-    if (savedTheme || savedFontFamily) {
+    if (savedTheme) {
       setTheme(savedTheme);
-      setFontFamily(savedFontFamily);
     }
   }, []);
 
