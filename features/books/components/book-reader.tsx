@@ -15,6 +15,9 @@ import {
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
+import Image from "next/image";
+import { Loader, Loader2 } from "lucide-react";
+import BookShelfLoader from "./book-loader";
 
 type TocItem = {
   href: string;
@@ -52,6 +55,7 @@ export default function BookReader() {
   const [size, setSize] = useState(100);
   const tocRef = useRef<TocItem[] | null>(null);
   const { theme, updateTheme, fontFamily } = useTheme();
+  console.log({ image: book?.coverImage });
 
   let themeStyles;
 
@@ -137,6 +141,11 @@ export default function BookReader() {
           url={book?.bookUrl as string}
           epubInitOptions={{ openAs: "epub" }}
           locationChanged={locationChanged}
+          loadingView={
+            <div className="flex items-center justify-center h-full w-full">
+              <Loader className="animate-spin size-6 text-gray-500" />
+            </div>
+          }
           getRendition={(rendition) => {
             renditionRef.current = rendition;
             renditionRef.current.themes.fontSize(`${size}%`);

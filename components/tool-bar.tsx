@@ -28,13 +28,6 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   const { theme, setTheme, updateTheme, fontFamily, changeFontFamily } =
     useTheme();
 
-  const [useSystemTheme, setUseSystemTheme] = useState(theme === "system");
-
-  const handleSystemThemeToggle = (checked: boolean) => {
-    setUseSystemTheme(checked);
-    setTheme(checked ? "system" : "light"); // Default to "light" if system theme is disabled
-  };
-
   const handleFontChange = (font: any) => {
     changeFontFamily(font.name);
     if (renditionRef?.current) {
@@ -77,25 +70,30 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
       <TabsContent value="font" className="space-y-4">
         <div className="space-y-2">
           <div className="flex flex-wrap gap-4">
-            {fontFamilies.map((font) => (
-              <div
-                key={font.name}
-                className={`flex flex-col items-center cursor-pointer transition-colors duration-200 ${
-                  fontFamily === font.name
-                    ? "text-primary"
-                    : "text-foreground hover:text-primary"
-                }`}
-                onClick={() => handleFontChange(font)}
-              >
-                <span
-                  className="text-xl font-semibold"
-                  style={{ fontFamily: font.name }}
+            {fontFamilies.map((font) => {
+              const isSelectedFontFamily = font.name === fontFamily;
+
+              console.log({ isSelectedFontFamily });
+              return (
+                <div
+                  key={font.name}
+                  className={`flex flex-col items-center cursor-pointer transition-colors duration-200 ${
+                    fontFamily === font.name
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                  }`}
+                  onClick={() => handleFontChange(font)}
                 >
-                  Aa
-                </span>
-                <span className="text-xs">{font.name}</span>
-              </div>
-            ))}
+                  <span
+                    className={`text-xl font-semibold ${fontFamily === font.name && "underline underline-offset-4"}`}
+                    style={{ fontFamily: font.name }}
+                  >
+                    Aa
+                  </span>
+                  <span className="text-xs">{font.name}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -141,7 +139,7 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
             ))}
           </div>
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <span className="text-sm font-normal">
               Update page using system theme
             </span>
@@ -150,11 +148,11 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
               onCheckedChange={setUseSystemTheme}
               aria-label="Use system theme"
             />
-          </div>
+          </div> */}
 
-          <div className="py-4">
+          {/* <div className="py-4">
             <DottedSeparator />
-          </div>
+          </div> */}
 
           {/* <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Continuous scrolling</span>
