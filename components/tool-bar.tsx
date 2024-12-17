@@ -4,8 +4,8 @@ import { ITheme, RenditionRef } from "@/features/books/types";
 import { fontFamilies, themes } from "@/features/books/constants";
 
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { useTheme } from "@/context/reader-context";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 type ToolbarContentProps = {
   fontSize: number;
@@ -41,56 +41,62 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   }, [fontSize, renditionRef, theme]);
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex items-center justify-between mt-4">
-        <span className="text-sm font-medium">Font Size</span>
-        <Slider
-          value={[fontSize]}
-          onValueChange={(value) => setFontSize(value[0])}
-          min={80}
-          max={200}
-          step={1}
-          className="w-[100px]"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <h3 className="text-sm font-medium leading-none">Theme</h3>
-        <div className="flex space-x-2">
-          {themes.map((item) => (
-            <button
-              key={item.name}
-              className={`rounded-full w-8 h-8 p-0 ${
-                theme === item.name ? "ring-2 ring-primary" : ""
-              }`}
-              style={{ backgroundColor: item.backgroundColor }}
-              onClick={() => setTheme(item.name as ITheme)}
-              aria-label={`Set ${item.name} theme`}
-            >
-              {theme === item.name && (
-                <span className="h-4 w-4" style={{ color: item.textColor }}>
-                  ✔
+    <Tabs defaultValue="font" className="w-full">
+      <TabsList className="grid w-full grid-cols-3 bg-transparent p-0 mb-4 border-b border-border">
+        <TabsTrigger
+          value="font"
+          className="data-[state=active]:text-primary data-[state=active]:font-semibold rounded-none pb-2"
+        >
+          Font
+        </TabsTrigger>
+        <TabsTrigger
+          value="layout"
+          className="data-[state=active]:text-primary data-[state=active]:font-semibold rounded-none pb-2"
+        >
+          Layout
+        </TabsTrigger>
+        <TabsTrigger
+          value="more"
+          className="data-[state=active]:text-primary data-[state=active]:font-semibold rounded-none pb-2"
+        >
+          More
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="font" className="space-y-4"></TabsContent>
+      <TabsContent value="font" className="space-y-4">
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium leading-none mb-4">Font Family</h3>
+          <div className="flex flex-wrap gap-4">
+            {fontFamilies.map((font) => (
+              <div
+                key={font.name}
+                className={`flex flex-col items-center cursor-pointer transition-colors duration-200 ${
+                  fontFamily === font.name
+                    ? "text-primary"
+                    : "text-foreground hover:text-primary"
+                }`}
+                onClick={() => handleFontChange(font)}
+              >
+                <span
+                  className="text-2xl mb-1"
+                  style={{ fontFamily: font.name }}
+                >
+                  Aa
                 </span>
-              )}
-            </button>
-          ))}
+                <span className="text-xs">{font.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-
-      <div className="space-y-2">
-        <h3 className="text-sm font-medium leading-none">Font Family</h3>
-        {fontFamilies.map((font) => (
-          <button key={font.name} onClick={() => handleFontChange(font)}>
-            {font.name}
-          </button>
-        ))}
-      </div>
-
+      </TabsContent>
+      <TabsContent value="more" className="space-y-4">
+        {/* More content will go here */}
+      </TabsContent>
       {onClose && (
-        <Button variant="outline" onClick={onClose}>
+        <Button variant="outline" onClick={onClose} className="mt-4 w-full">
           Close
         </Button>
       )}
-    </div>
+    </Tabs>
   );
 };

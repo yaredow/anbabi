@@ -14,7 +14,6 @@ export const fontFamilies = [
   { name: "Verdana" },
   { name: "Helvetica" },
   { name: "Comic Sans MS" },
-  { name: "Lucida Console" },
 ];
 
 export const lightReaderTheme: IReactReaderStyle = {
