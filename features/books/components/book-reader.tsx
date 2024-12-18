@@ -16,6 +16,7 @@ import {
   sepiaReaderTheme,
 } from "../constants";
 import { Loader2 } from "lucide-react";
+import { useBookStore } from "../store/book-store";
 
 type TocItem = {
   href: string;
@@ -52,7 +53,8 @@ export default function BookReader() {
   const renditionRef = useRef<Rendition | undefined>(undefined);
   const [size, setSize] = useState(100);
   const tocRef = useRef<TocItem[] | null>(null);
-  const { theme, updateTheme, fontFamily } = useTheme();
+  const { fontFamily } = useTheme();
+  const { theme, updateTheme } = useBookStore();
 
   let themeStyles;
 

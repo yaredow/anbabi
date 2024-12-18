@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Slider } from "./ui/slider";
 import DottedSeparator from "./dotted-separator";
 import { Check } from "lucide-react";
-import { Switch } from "./ui/switch";
+import { useBookStore } from "@/features/books/store/book-store";
 
 type ToolbarContentProps = {
   fontSize: number;
@@ -25,8 +25,8 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   renditionRef,
   onClose,
 }) => {
-  const { theme, setTheme, updateTheme, fontFamily, changeFontFamily } =
-    useTheme();
+  const { fontFamily, changeFontFamily } = useTheme();
+  const { theme, setTheme, updateTheme } = useBookStore();
 
   const handleFontChange = (font: any) => {
     changeFontFamily(font.name);

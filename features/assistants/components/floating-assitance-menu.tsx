@@ -16,9 +16,9 @@ import {
 import { useMedia } from "react-use";
 import { DictionaryCard } from "./dictionary-card";
 import { WikipediaCard } from "./wikipedia-card";
-import TranslateCard from "./google-translate-card";
 import { AIChatCard } from "./ai-chat-card";
 import { NoteCard } from "./note-card";
+import { TranslateCard } from "./google-translate-card";
 
 const EnhancedReader: React.FC = () => {
   const [selectedText, setSelectedText] = useState("");
