@@ -1,15 +1,23 @@
 import { create } from "zustand";
 import { ITheme } from "../types";
 import { Rendition } from "epubjs";
+import { set } from "lodash";
 
 type BookStoreState = {
+  // Theme related state
   theme: ITheme;
   setTheme: (newTheme: ITheme) => void;
   updateTheme: (rendition: Rendition, theme: ITheme) => void;
   initializeTheme: () => void;
+
+  // font size related state
+  fontSize: number;
+  setFontSize: (newFontSize: number) => void;
+  updateFontSize: (rendition: Rendition, fontSize: number) => void;
 };
 
 export const useBookStore = create<BookStoreState>((set) => ({
+  // Theme state
   theme: "light",
   setTheme: (newTheme) => {
     set({ theme: newTheme });
@@ -43,6 +51,17 @@ export const useBookStore = create<BookStoreState>((set) => ({
     const savedTheme = localStorage.getItem("reader-theme") as ITheme;
     if (savedTheme) {
       set({ theme: savedTheme });
+    }
+  },
+
+  // Font size state
+  fontSize: 100,
+  setFontSize: (newFontSize) => {
+    set({ fontSize: newFontSize });
+  },
+  updateFontSize: (rendition, fontSize) => {
+    if (rendition) {
+      rendition.themes.fontSize(`${fontSize}%`);
     }
   },
 }));

@@ -6,25 +6,15 @@ import { ToolBar } from "./tool-bar";
 import { RenditionRef } from "@/features/books/types";
 
 type ToolBarModalProps = {
-  fontSize: number;
-  setFontSize: (fontSize: number) => void;
   renditionRef: RenditionRef | undefined;
 };
 
-export default function ToolBarModal({
-  setFontSize,
-  fontSize,
-  renditionRef,
-}: ToolBarModalProps) {
+export default function ToolBarModal({ renditionRef }: ToolBarModalProps) {
   const { isOpen, setIsOpen, close } = useToolBarModal();
 
   return (
     <ResponsiveToolBarModal open={isOpen} onOpenChange={setIsOpen}>
-      <ToolBar
-        fontSize={fontSize}
-        setFontSize={setFontSize}
-        renditionRef={renditionRef}
-      />
+      <ToolBar renditionRef={renditionRef} />
     </ResponsiveToolBarModal>
   );
 }

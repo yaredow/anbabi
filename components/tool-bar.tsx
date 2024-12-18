@@ -13,20 +13,23 @@ import { Check } from "lucide-react";
 import { useBookStore } from "@/features/books/store/book-store";
 
 type ToolbarContentProps = {
-  fontSize: number;
-  setFontSize: (size: number) => void;
   onClose?: () => void;
   renditionRef: RenditionRef | undefined;
 };
 
 export const ToolBar: React.FC<ToolbarContentProps> = ({
-  fontSize,
-  setFontSize,
   renditionRef,
   onClose,
 }) => {
   const { fontFamily, changeFontFamily } = useTheme();
-  const { theme, setTheme, updateTheme } = useBookStore();
+  const {
+    theme,
+    setTheme,
+    updateTheme,
+    fontSize,
+    setFontSize,
+    updateFontSize,
+  } = useBookStore();
 
   const handleFontChange = (font: any) => {
     changeFontFamily(font.name);
@@ -40,7 +43,7 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
 
   useEffect(() => {
     if (renditionRef?.current) {
-      renditionRef?.current.themes.fontSize(`${fontSize}%`);
+      updateFontSize(renditionRef.current, fontSize);
       updateTheme(renditionRef.current, theme);
     }
   }, [fontSize, renditionRef, theme]);

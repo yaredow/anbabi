@@ -51,10 +51,9 @@ export default function BookReader() {
   const [firstRenderDone, setFirstRenderDone] = useState(false);
   const [page, setPage] = useState("");
   const renditionRef = useRef<Rendition | undefined>(undefined);
-  const [size, setSize] = useState(100);
   const tocRef = useRef<TocItem[] | null>(null);
   const { fontFamily } = useTheme();
-  const { theme, updateTheme } = useBookStore();
+  const { theme, updateTheme, fontSize } = useBookStore();
 
   let themeStyles;
 
@@ -126,11 +125,7 @@ export default function BookReader() {
   return (
     <>
       <VisuallyHidden>
-        <ToolBarModal
-          setFontSize={setSize}
-          fontSize={size}
-          renditionRef={renditionRef}
-        />
+        <ToolBarModal renditionRef={renditionRef} />
       </VisuallyHidden>
       <div
         className={`relative top-0 w-full m-0 p-0 text-left ${isDesktop ? "h-full" : "h-[95vh]"}`}
@@ -147,7 +142,7 @@ export default function BookReader() {
           }
           getRendition={(rendition) => {
             renditionRef.current = rendition;
-            renditionRef.current.themes.fontSize(`${size}%`);
+            renditionRef.current.themes.fontSize(`${fontSize}%`);
             renditionRef.current.themes.default({
               "::selection": {
                 background: "orange",
