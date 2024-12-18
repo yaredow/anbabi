@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTheme } from "@/context/reader-context";
+import { useBookStore } from "@/features/books/store/book-store";
 
 interface ResponsiveModalProps {
   open: boolean;
@@ -29,7 +30,7 @@ export default function ResponsiveReaderModal({
   const isDesktop = useMedia("(min-width: 1024px)", true);
   const { open: openToolBar } = useToolBarModal();
   const [isMaximized, setIsMaximized] = useState(false);
-  const { theme } = useTheme();
+  const { theme } = useBookStore();
 
   const handleMaximizeToggle = () => setIsMaximized((prev) => !prev);
 

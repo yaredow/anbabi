@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useTheme as useNextTheme } from "next-themes";
+import { Check } from "lucide-react";
 
 import { ITheme, RenditionRef } from "@/features/books/types";
 import { fontFamilies, themes } from "@/features/books/constants";
 
-import { Button } from "@/components/ui/button";
-import { useTheme } from "@/context/reader-context";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Slider } from "./ui/slider";
-import DottedSeparator from "./dotted-separator";
-import { Check } from "lucide-react";
 import { useBookStore } from "@/features/books/store/book-store";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import DottedSeparator from "./dotted-separator";
+
+import { Slider } from "./ui/slider";
 
 type ToolbarContentProps = {
   onClose?: () => void;
@@ -21,7 +21,6 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
   renditionRef,
   onClose,
 }) => {
-  const { fontFamily, changeFontFamily } = useTheme();
   const {
     theme,
     setTheme,
@@ -29,24 +28,22 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
     fontSize,
     setFontSize,
     updateFontSize,
+    fontFamily,
+    setFontFamily,
+    updateFontFamily,
   } = useBookStore();
 
-  const handleFontChange = (font: any) => {
-    changeFontFamily(font.name);
-    if (renditionRef?.current) {
-      renditionRef.current.themes.register("custom", {
-        p: { "font-family": font.name },
-      });
-      renditionRef.current.themes.select("custom");
-    }
+  const handleFontChange = (font: string) => {
+    setFontFamily(font);
   };
 
   useEffect(() => {
     if (renditionRef?.current) {
       updateFontSize(renditionRef.current, fontSize);
       updateTheme(renditionRef.current, theme);
+      updateFontFamily(renditionRef.current, fontFamily);
     }
-  }, [fontSize, renditionRef, theme]);
+  }, [fontSize, fontFamily, renditionRef, theme]);
 
   return (
     <Tabs defaultValue="font" className="w-full">
@@ -74,9 +71,6 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
         <div className="space-y-2">
           <div className="flex flex-wrap gap-4">
             {fontFamilies.map((font) => {
-              const isSelectedFontFamily = font.name === fontFamily;
-
-              console.log({ isSelectedFontFamily });
               return (
                 <div
                   key={font.name}
@@ -85,7 +79,7 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
                       ? "text-primary"
                       : "text-muted-foreground hover:text-primary"
                   }`}
-                  onClick={() => handleFontChange(font)}
+                  onClick={() => handleFontChange(font.name)}
                 >
                   <span
                     className={`text-xl font-semibold ${fontFamily === font.name && "underline underline-offset-4"}`}

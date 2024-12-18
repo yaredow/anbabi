@@ -8,7 +8,6 @@ import ToolBarModal from "@/components/tool-bar-modal";
 
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
-import { useTheme } from "@/context/reader-context";
 import {
   darkReaderTheme,
   greenReaderTheme,
@@ -52,8 +51,8 @@ export default function BookReader() {
   const [page, setPage] = useState("");
   const renditionRef = useRef<Rendition | undefined>(undefined);
   const tocRef = useRef<TocItem[] | null>(null);
-  const { fontFamily } = useTheme();
-  const { theme, updateTheme, fontSize } = useBookStore();
+  const { theme, updateTheme, fontSize, fontFamily, updateFontFamily } =
+    useBookStore();
 
   let themeStyles;
 
@@ -100,7 +99,7 @@ export default function BookReader() {
         renditionRef.current?.off("selected", setRenderSelection);
       };
     }
-  }, [setSelections, selections]);
+  }, [setSelections, selections, fontFamily, updateFontFamily, renditionRef]);
 
   const locationChanged = (epubcifi: string) => {
     if (!firstRenderDone) {

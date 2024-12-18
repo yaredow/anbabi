@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { ITheme } from "../types";
 import { Rendition } from "epubjs";
-import { set } from "lodash";
+import { fontFamilies } from "../constants";
 
 type BookStoreState = {
   // Theme related state
@@ -14,6 +14,11 @@ type BookStoreState = {
   fontSize: number;
   setFontSize: (newFontSize: number) => void;
   updateFontSize: (rendition: Rendition, fontSize: number) => void;
+
+  // font family realted state
+  fontFamily: string;
+  setFontFamily: (newFontFamily: string) => void;
+  updateFontFamily: (rendition: Rendition, fontFamily: string) => void;
 };
 
 export const useBookStore = create<BookStoreState>((set) => ({
@@ -62,6 +67,21 @@ export const useBookStore = create<BookStoreState>((set) => ({
   updateFontSize: (rendition, fontSize) => {
     if (rendition) {
       rendition.themes.fontSize(`${fontSize}%`);
+    }
+  },
+
+  // Font family state
+  fontFamily: fontFamilies[0].name,
+  setFontFamily: (newFontFamily) => {
+    set({ fontFamily: newFontFamily });
+    localStorage.setItem("reader-font-family", newFontFamily);
+  },
+  updateFontFamily: (rendition, fontFamily) => {
+    if (rendition) {
+      rendition.themes.register("custom", {
+        p: { "font-family": fontFamily },
+      });
+      rendition.themes.select("custom");
     }
   },
 }));
