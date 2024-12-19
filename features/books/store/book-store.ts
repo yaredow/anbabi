@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ITheme } from "../types";
+import { ITheme, Selection } from "../types";
 import { Rendition } from "epubjs";
 import { fontFamilies } from "../constants";
 
@@ -19,6 +19,12 @@ type BookStoreState = {
   fontFamily: string;
   setFontFamily: (newFontFamily: string) => void;
   updateFontFamily: (rendition: Rendition, fontFamily: string) => void;
+
+  // text selection related state
+  selections: Selection[];
+  addSelection: (selection: Selection) => void;
+  removeSelection: (cfiRange: string) => void;
+  clearSelections: () => void;
 };
 
 export const useBookStore = create<BookStoreState>((set) => ({
@@ -84,4 +90,16 @@ export const useBookStore = create<BookStoreState>((set) => ({
       rendition.themes.select("custom");
     }
   },
+
+  // Text selection state
+  selections: [],
+  addSelection: (selection) =>
+    set((state) => ({ selections: [...state.selections, selection] })),
+  removeSelection: (cfiRange) =>
+    set((state) => ({
+      selections: state.selections.filter(
+        (selection) => selection.cfiRange !== cfiRange,
+      ),
+    })),
+  clearSelections: () => set({ selections: [] }),
 }));

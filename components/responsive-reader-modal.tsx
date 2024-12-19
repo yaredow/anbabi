@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { X, Maximize2, Minimize2, Settings } from "lucide-react";
+import { X, Maximize2, Minimize2, Settings, Bookmark } from "lucide-react";
 import { useMedia } from "react-use";
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -13,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useTheme } from "@/context/reader-context";
 import { useBookStore } from "@/features/books/store/book-store";
 
 interface ResponsiveModalProps {
@@ -56,7 +55,13 @@ export default function ResponsiveReaderModal({
             transform: isMaximized ? "none" : "translate(-50%, -50%)",
           }}
         >
-          <div className="absolute top-2 right-2 z-10 flex gap-2">
+          <div className="absolute top-2 right-2 z-10 flex">
+            <Button
+              variant="link"
+              className={`${theme === "dark" && "text-white"}`}
+            >
+              <Bookmark />
+            </Button>
             <Button
               variant="link"
               onClick={openToolBar}

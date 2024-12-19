@@ -37,3 +37,13 @@ export interface UploadState {
 export type RenditionRef = RefObject<Rendition | undefined>;
 
 export type ITheme = "light" | "dark" | "sepia" | "greenish" | "system";
+
+export type TocItem = {
+  href: string;
+  label: string;
+};
+
+export type Selection = {
+  text: string;
+  cfiRange: string;
+};

@@ -16,16 +16,9 @@ import {
 } from "../constants";
 import { Loader2 } from "lucide-react";
 import { useBookStore } from "../store/book-store";
-
-type TocItem = {
-  href: string;
-  label: string;
-};
-
-type Selection = {
-  text: string;
-  cfiRange: string;
-};
+import { Selection, TocItem } from "../types";
+import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
+import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -46,13 +39,21 @@ export default function BookReader() {
   const bookId = useBookId();
   const { book } = useGetBook({ bookId });
   const [location, setLocation] = useState<string | number>(0);
-  const [selections, setSelections] = useState<Selection[]>([]);
   const [firstRenderDone, setFirstRenderDone] = useState(false);
   const [page, setPage] = useState("");
   const renditionRef = useRef<Rendition | undefined>(undefined);
   const tocRef = useRef<TocItem[] | null>(null);
-  const { theme, updateTheme, fontSize, fontFamily, updateFontFamily } =
-    useBookStore();
+  const { open } = useAssistantMenuModal();
+  const {
+    theme,
+    updateTheme,
+    fontSize,
+    fontFamily,
+    selections,
+    addSelection,
+    removeSelection,
+    clearSelections,
+  } = useBookStore();
 
   let themeStyles;
 
@@ -70,36 +71,50 @@ export default function BookReader() {
       themeStyles = lightReaderTheme;
   }
 
+  const handleDictionaryOpen = () => {
+    open();
+  };
+
   useEffect(() => {
     if (renditionRef.current) {
-      const setRenderSelection = (cfiRange: string, contents: any) => {
-        setSelections((prevSelections) => [
-          ...prevSelections,
-          {
-            text: renditionRef.current?.getRange(cfiRange).toString() ?? "",
+      const handleTextSelection = (cfiRange: string, contents: any) => {
+        const text = renditionRef?.current?.getRange(cfiRange).toString();
+        console.log("Extracted text", text);
+
+        if (text) {
+          addSelection({ text, cfiRange });
+
+          // Add highlight annotation
+          renditionRef?.current?.annotations.add(
+            "highlight",
             cfiRange,
-          },
-        ]);
+            {},
+            undefined,
+            "hl",
+            {
+              fill: "red",
+              "fill-opacity": "0.5",
+              "mix-blend-mode": "multiply",
+            },
+          );
 
-        renditionRef.current?.annotations.add(
-          "highlight",
-          cfiRange,
-          {},
-          undefined,
-          "hl",
-          { fill: "red", "fill-opacity": "0.5", "mix-blend-mode": "multiply" },
-        );
-
-        contents.window.getSelection().removeAllRanges();
+          // Clear the browser's selection
+          contents.window.getSelection().removeAllRanges();
+        }
       };
 
-      renditionRef.current.on("selected", setRenderSelection);
+      // Attach the 'selected' event to the rendition
+      renditionRef.current.on("selected", handleTextSelection);
 
       return () => {
-        renditionRef.current?.off("selected", setRenderSelection);
+        renditionRef.current?.off("selected", handleTextSelection);
       };
     }
-  }, [setSelections, selections, fontFamily, updateFontFamily, renditionRef]);
+  }, [addSelection, selections]);
+
+  useEffect(() => {
+    handleDictionaryOpen();
+  }, [selections]);
 
   const locationChanged = (epubcifi: string) => {
     if (!firstRenderDone) {
@@ -125,9 +140,13 @@ export default function BookReader() {
     <>
       <VisuallyHidden>
         <ToolBarModal renditionRef={renditionRef} />
+        <AssistantMenuModal />
       </VisuallyHidden>
+
       <div
-        className={`relative top-0 w-full m-0 p-0 text-left ${isDesktop ? "h-full" : "h-[95vh]"}`}
+        className={`relative top-0 w-full m-0 p-0 text-left ${
+          isDesktop ? "h-full" : "h-[95vh]"
+        }`}
       >
         <ReactReader
           location={location}
@@ -148,6 +167,8 @@ export default function BookReader() {
               },
             });
 
+            clearSelections();
+
             renditionRef.current.themes.register("custom", {
               p: {
                 "font-family": fontFamily,
@@ -156,7 +177,6 @@ export default function BookReader() {
 
             renditionRef.current.themes.select("custom");
 
-            setSelections([]);
             updateTheme(rendition, theme);
           }}
           tocChanged={(toc) => (tocRef.current = toc)}

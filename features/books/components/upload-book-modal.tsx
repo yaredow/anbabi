@@ -2,7 +2,6 @@
 
 import ResponsiveModal from "@/components/responsive-modal";
 import { useUploadBookModal } from "../hooks/use-upload-book-modal";
-import EpubUploader from "./book-uploader";
 import BookUploader from "./book-uploader";
 
 export default function UploadBookModal() {

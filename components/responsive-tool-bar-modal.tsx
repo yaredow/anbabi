@@ -28,7 +28,7 @@ export default function ResponsiveToolBarModal({
 
   if (isDesktop) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
         <DialogHeader>
           <VisuallyHidden>
             <DialogTitle>Title</DialogTitle>

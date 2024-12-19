@@ -3,19 +3,19 @@ import { Button } from "@/components/ui/button";
 
 interface DictionaryCardProps {
   word: string;
-  onClose: () => void;
+  onCancel: () => void;
 }
 
 export const DictionaryCard: React.FC<DictionaryCardProps> = ({
   word,
-  onClose,
+  onCancel,
 }) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           Dictionary
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <Button variant="ghost" size="sm" onClick={onCancel}>
             Close
           </Button>
         </CardTitle>
