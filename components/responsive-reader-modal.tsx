@@ -42,7 +42,6 @@ export default function ResponsiveReaderModal({
           </VisuallyHidden>
         </DialogHeader>
         <DialogContent
-          id="reader-modal"
           className={`fixed p-0 border-none overflow-hidden bg-background ${
             isMaximized
               ? "w-screen h-screen max-w-none max-h-none inset-0 z-50"

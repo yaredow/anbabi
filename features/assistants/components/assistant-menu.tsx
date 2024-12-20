@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Languages,
 } from "lucide-react";
 import { useBookStore } from "@/features/books/store/book-store";
 import { RenditionRef } from "@/features/books/types";
@@ -66,7 +67,7 @@ export default function AssistantMenu({
     },
 
     {
-      icon: <Globe className="h-4 w-4" />,
+      icon: <Languages className="h-4 w-4" />,
       label: "Translate",
       action: handleTranslate,
     },

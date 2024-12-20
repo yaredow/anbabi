@@ -75,6 +75,7 @@ export default function BookReader() {
       themeStyles = lightReaderTheme;
   }
 
+  // Open the assisstant menu when a highlight get clicked
   const handleHighlightClick = (cfiRange: string) => {
     setSelectedCfiRange(cfiRange);
     const highlightedSelections = useBookStore.getState().selections;
@@ -87,12 +88,6 @@ export default function BookReader() {
     }
   };
 
-  const handleDictionaryOpen = () => {
-    if (isSelected) {
-      open();
-    }
-  };
-
   useEffect(() => {
     if (renditionRef.current) {
       const handleTextSelection = (cfiRange: string, contents: any) => {
@@ -100,6 +95,9 @@ export default function BookReader() {
 
         if (text) {
           addSelection({ text, cfiRange });
+
+          // Open the assisstant menu when text selected
+          open();
 
           // Add highlight annotation
           renditionRef?.current?.annotations.add(
@@ -128,10 +126,6 @@ export default function BookReader() {
       };
     }
   }, [addSelection, selections]);
-
-  useEffect(() => {
-    handleDictionaryOpen();
-  }, [selections]);
 
   const locationChanged = (epubcifi: string) => {
     if (!firstRenderDone) {
