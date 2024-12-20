@@ -40,6 +40,7 @@ export default function BookReader() {
   const { book } = useGetBook({ bookId });
   const [location, setLocation] = useState<string | number>(0);
   const [firstRenderDone, setFirstRenderDone] = useState(false);
+  const [selectedCfiRange, setSelectedCfiRange] = useState("");
   const [page, setPage] = useState("");
   const renditionRef = useRef<Rendition | undefined>(undefined);
   const tocRef = useRef<TocItem[] | null>(null);
@@ -75,6 +76,7 @@ export default function BookReader() {
   }
 
   const handleHighlightClick = (cfiRange: string) => {
+    setSelectedCfiRange(cfiRange);
     const highlightedSelections = useBookStore.getState().selections;
     const matchingSelection = highlightedSelections.find(
       (selection) => selection.cfiRange === cfiRange,
@@ -155,7 +157,10 @@ export default function BookReader() {
     <>
       <VisuallyHidden>
         <ToolBarModal renditionRef={renditionRef} />
-        <AssistantMenuModal renditionRef={renditionRef} />
+        <AssistantMenuModal
+          renditionRef={renditionRef}
+          selectedCfiRange={selectedCfiRange}
+        />
       </VisuallyHidden>
 
       <div

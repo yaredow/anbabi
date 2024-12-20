@@ -8,16 +8,21 @@ import { RenditionRef } from "@/features/books/types";
 
 type AssistantMenuModalProps = {
   renditionRef: RenditionRef | undefined;
+  selectedCfiRange: string;
 };
 
 export default function AssistantMenuModal({
   renditionRef,
+  selectedCfiRange,
 }: AssistantMenuModalProps) {
   const { isOpen, setIsOpen, close } = useAssistantMenuModal();
 
   return (
     <ResponsiveAssistantMenuModal open={isOpen} onOpenChange={setIsOpen}>
-      <AssistantMenu renditionRef={renditionRef} />
+      <AssistantMenu
+        renditionRef={renditionRef}
+        selectedCfiRange={selectedCfiRange}
+      />
     </ResponsiveAssistantMenuModal>
   );
 }

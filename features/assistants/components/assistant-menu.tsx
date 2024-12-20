@@ -28,9 +28,13 @@ interface MenuItem {
 
 type AssistantMenuProps = {
   renditionRef: RenditionRef | undefined;
+  selectedCfiRange: string;
 };
 
-export default function AssistantMenu({ renditionRef }: AssistantMenuProps) {
+export default function AssistantMenu({
+  renditionRef,
+  selectedCfiRange,
+}: AssistantMenuProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState<MenuPosition>({ top: 0, left: 0 });
   const [selectedText, setSelectedText] = useState("");
@@ -126,15 +130,13 @@ export default function AssistantMenu({ renditionRef }: AssistantMenuProps) {
 
   function handleRemoveSelection() {
     const matchingSelection = selections.find(
-      (selection) => (selection.text = selectedText),
+      (selection) => selection.cfiRange === selectedCfiRange,
     );
 
     if (matchingSelection) {
-      const { cfiRange } = matchingSelection;
+      renditionRef?.current?.annotations.remove(selectedCfiRange, "highlight");
 
-      renditionRef?.current?.annotations.remove(cfiRange, "highlight");
-
-      removeSelection(cfiRange);
+      removeSelection(selectedCfiRange);
     }
   }
 
