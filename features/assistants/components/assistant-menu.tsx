@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Copy,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useBookStore } from "@/features/books/store/book-store";
 import { RenditionRef } from "@/features/books/types";
+import { toast } from "@/hooks/use-toast";
 
 interface MenuPosition {
   top: number;
@@ -29,17 +30,17 @@ interface MenuItem {
 type AssistantMenuProps = {
   renditionRef: RenditionRef | undefined;
   selectedCfiRange: string;
+  onClose: () => void;
 };
 
 export default function AssistantMenu({
   renditionRef,
   selectedCfiRange,
+  onClose,
 }: AssistantMenuProps) {
-  const [isVisible, setIsVisible] = useState(false);
-  const [position, setPosition] = useState<MenuPosition>({ top: 0, left: 0 });
-  const [selectedText, setSelectedText] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const { removeSelection, selections } = useBookStore();
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const menuItems: MenuItem[] = [
     {
@@ -79,53 +80,39 @@ export default function AssistantMenu({
   const itemsPerPage = 5;
   const totalPages = Math.ceil(menuItems.length / itemsPerPage);
 
-  const handleTextSelection = useCallback(() => {
-    const selection = window.getSelection();
-    if (selection && selection.toString().trim().length > 0) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      setPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      });
-      setSelectedText(selection.toString());
-      setIsVisible(true);
-      setCurrentPage(0);
-    } else {
-      setIsVisible(false);
+  async function handleCopy() {
+    const selections = useBookStore.getState().selections;
+    const matchingSelection = selections.find(
+      (selection) => selection.cfiRange === selectedCfiRange,
+    );
+
+    if (matchingSelection) {
+      try {
+        await navigator.clipboard.writeText(matchingSelection.text);
+        toast({
+          description: "Text copied to clipboard",
+        });
+        onClose();
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("selectionchange", handleTextSelection);
-    return () => {
-      document.removeEventListener("selectionchange", handleTextSelection);
-    };
-  }, [handleTextSelection]);
-
-  function handleCopy() {
-    navigator.clipboard.writeText(selectedText);
-    setIsVisible(false);
   }
 
   function handleBookmark() {
-    alert(`Bookmarked: "${selectedText}"`);
-    setIsVisible(false);
+    alert(`Bookmarked: "${selections[0].text}"`);
   }
 
   function handleTranslate() {
-    alert(`Translate: "${selectedText}"`);
-    setIsVisible(false);
+    alert(`Translate: "${selections[0].text}"`);
   }
 
   function handleAskAI() {
-    alert(`Ask AI: "${selectedText}"`);
-    setIsVisible(false);
+    alert(`Ask AI: "${selections[0].text}"`);
   }
 
   function handleDictionary() {
-    alert(`Dictionary: "${selectedText}"`);
-    setIsVisible(false);
+    alert(`Dictionary: "${selections[0].text}"`);
   }
 
   function handleRemoveSelection() {
@@ -137,6 +124,7 @@ export default function AssistantMenu({
       renditionRef?.current?.annotations.remove(selectedCfiRange, "highlight");
 
       removeSelection(selectedCfiRange);
+      onClose();
     }
   }
 
@@ -148,8 +136,28 @@ export default function AssistantMenu({
     setCurrentPage((prev) => Math.max(prev - 1, 0));
   }
 
+  useEffect(() => {
+    // Handler to close the menu when clicked outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    // Attach the event listener to detect clicks outside the menu
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   return (
-    <div className="z-10 w-full bg-white rounded-lg shadow-lg p-2 flex items-center ">
+    <div
+      ref={menuRef}
+      className="z-10 w-full bg-white rounded-lg shadow-lg p-2 flex items-center "
+    >
       <Button
         variant="ghost"
         size="icon"

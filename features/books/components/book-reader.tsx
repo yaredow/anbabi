@@ -109,8 +109,8 @@ export default function BookReader() {
             () => handleHighlightClick(cfiRange),
             undefined,
             {
-              fill: "red",
-              "fill-opacity": "0.5",
+              fill: "#FFFFE0",
+              "fill-opacity": "0.6",
               "mix-blend-mode": "multiply",
             },
           );
@@ -183,7 +183,7 @@ export default function BookReader() {
             renditionRef.current.themes.fontSize(`${fontSize}%`);
             renditionRef.current.themes.default({
               "::selection": {
-                background: "orange",
+                background: "#FFFF99",
               },
             });
 

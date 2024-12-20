@@ -2,7 +2,6 @@
 
 import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 import ResponsiveAssistantMenuModal from "./responsive-assistant-menu-modal";
-import { useBookStore } from "@/features/books/store/book-store";
 import AssistantMenu from "./assistant-menu";
 import { RenditionRef } from "@/features/books/types";
 
@@ -22,6 +21,7 @@ export default function AssistantMenuModal({
       <AssistantMenu
         renditionRef={renditionRef}
         selectedCfiRange={selectedCfiRange}
+        onClose={close}
       />
     </ResponsiveAssistantMenuModal>
   );
