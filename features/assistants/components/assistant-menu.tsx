@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Copy,
   Bookmark,
-  Globe,
   MessageSquareIcon as MessageSquareQuestion,
   Book,
   ChevronLeft,
@@ -16,6 +15,7 @@ import {
 import { useBookStore } from "@/features/books/store/book-store";
 import { RenditionRef } from "@/features/books/types";
 import { toast } from "@/hooks/use-toast";
+import { useGetWordDefination } from "../api/use-get-words-defination";
 
 interface MenuPosition {
   top: number;
@@ -42,6 +42,15 @@ export default function AssistantMenu({
   const [currentPage, setCurrentPage] = useState(0);
   const { removeSelection, selections } = useBookStore();
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const selectedWord = useMemo(() => {
+    return (
+      selections.find((selection) => selection.cfiRange === selectedCfiRange)
+        ?.text || ""
+    );
+  }, [selections]);
+
+  const { defination } = useGetWordDefination({ word: selectedWord });
+  console.log({ defination });
 
   const menuItems: MenuItem[] = [
     {
