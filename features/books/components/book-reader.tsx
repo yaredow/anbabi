@@ -1,6 +1,6 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ReactReader, ReactReaderStyle } from "react-reader";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMedia } from "react-use";
 import { Rendition } from "epubjs";
 
@@ -16,7 +16,7 @@ import {
 } from "../constants";
 import { Loader2 } from "lucide-react";
 import { useBookStore } from "../store/book-store";
-import { Selection, TocItem } from "../types";
+import { TocItem } from "../types";
 import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
 import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
 
@@ -51,9 +51,12 @@ export default function BookReader() {
     fontFamily,
     selections,
     addSelection,
-    removeSelection,
     clearSelections,
   } = useBookStore();
+
+  const isSelected = useMemo(() => {
+    return selections.some((selection) => selection.text.trim() !== "");
+  }, [selections]);
 
   let themeStyles;
 
@@ -72,7 +75,9 @@ export default function BookReader() {
   }
 
   const handleDictionaryOpen = () => {
-    open();
+    if (isSelected) {
+      open();
+    }
   };
 
   useEffect(() => {

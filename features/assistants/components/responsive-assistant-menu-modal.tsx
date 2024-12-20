@@ -25,7 +25,7 @@ export default function ResponsiveAssistantMenuModal({
           <DialogTitle>Title</DialogTitle>
         </VisuallyHidden>
       </DialogHeader>
-      <DialogContent className="w-full sm:max-w-lg p-0 bordr-none overflow-y-auto max-h-[80vh] hide-scrollbar">
+      <DialogContent className="w-[19rem] sm:max-w-lg p-0 bordr-none overflow-y-auto  hide-scrollbar">
         {children}
       </DialogContent>
     </Dialog>

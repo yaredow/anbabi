@@ -1,93 +1,168 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
+  Copy,
+  Bookmark,
+  Globe,
+  MessageSquareIcon as MessageSquareQuestion,
+  Book,
   ChevronLeft,
   ChevronRight,
-  BookOpen,
-  Globe,
-  Languages,
-  Pencil,
-  Copy,
-  MessageSquare,
+  X,
 } from "lucide-react";
 
-interface FloatingMenuProps {
-  position: { x: number; y: number };
-  onItemClick: (
-    type: "dictionary" | "wikipedia" | "translate" | "note" | "ai-chat",
-  ) => void;
-  onCopy: () => void;
+interface MenuPosition {
+  top: number;
+  left: number;
 }
 
-export default function FloatingMenu({
-  position,
-  onItemClick,
-  onCopy,
-}: FloatingMenuProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const menuItems = [
+interface MenuItem {
+  icon: React.ReactNode;
+  label: string;
+  action: () => void;
+}
+
+export default function KindleMenu() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [position, setPosition] = useState<MenuPosition>({ top: 0, left: 0 });
+  const [selectedText, setSelectedText] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const menuItems: MenuItem[] = [
     {
-      icon: <Pencil size={16} />,
-      label: "Note",
-      action: () => onItemClick("note"),
+      icon: <X size={16} />,
+      label: "Remove Highlight",
+      action: handleRemoveSelection,
     },
-    { icon: <Copy size={16} />, label: "Copy", action: onCopy },
     {
-      icon: <MessageSquare size={16} />,
-      label: "Chat with AI",
-      action: () => onItemClick("ai-chat"),
+      icon: <Copy className="h-4 w-4" />,
+      label: "Copy",
+      action: handleCopy,
     },
     {
-      icon: <BookOpen size={16} />,
+      icon: <Bookmark className="h-4 w-4" />,
+      label: "Bookmark",
+      action: handleBookmark,
+    },
+
+    {
+      icon: <Book className="h-4 w-4" />,
       label: "Dictionary",
-      action: () => onItemClick("dictionary"),
+      action: handleDictionary,
     },
+
     {
-      icon: <Globe size={16} />,
-      label: "Wikipedia",
-      action: () => onItemClick("wikipedia"),
-    },
-    {
-      icon: <Languages size={16} />,
+      icon: <Globe className="h-4 w-4" />,
       label: "Translate",
-      action: () => onItemClick("translate"),
+      action: handleTranslate,
+    },
+    {
+      icon: <MessageSquareQuestion className="h-4 w-4" />,
+      label: "Ask AI",
+      action: handleAskAI,
     },
   ];
 
-  const visibleItems = menuItems.slice(currentIndex, currentIndex + 3);
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(menuItems.length / itemsPerPage);
+
+  const handleTextSelection = useCallback(() => {
+    const selection = window.getSelection();
+    if (selection && selection.toString().trim().length > 0) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+      setSelectedText(selection.toString());
+      setIsVisible(true);
+      setCurrentPage(0);
+    } else {
+      setIsVisible(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("selectionchange", handleTextSelection);
+    return () => {
+      document.removeEventListener("selectionchange", handleTextSelection);
+    };
+  }, [handleTextSelection]);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(selectedText);
+    setIsVisible(false);
+  }
+
+  function handleBookmark() {
+    alert(`Bookmarked: "${selectedText}"`);
+    setIsVisible(false);
+  }
+
+  function handleTranslate() {
+    alert(`Translate: "${selectedText}"`);
+    setIsVisible(false);
+  }
+
+  function handleAskAI() {
+    alert(`Ask AI: "${selectedText}"`);
+    setIsVisible(false);
+  }
+
+  function handleDictionary() {
+    alert(`Dictionary: "${selectedText}"`);
+    setIsVisible(false);
+  }
+
+  function handleRemoveSelection() {}
+
+  function nextPage() {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+  }
+
+  function prevPage() {
+    setCurrentPage((prev) => Math.max(prev - 1, 0));
+  }
 
   return (
-    <div className="absolute bg-white shadow-lg rounded-lg overflow-hidden z-10 flex items-center">
+    <div className="z-10 w-full bg-white rounded-lg shadow-lg p-2 flex items-center ">
       <Button
         variant="ghost"
         size="icon"
-        onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
-        disabled={currentIndex === 0}
+        onClick={prevPage}
+        disabled={currentPage === 0}
+        aria-label="Previous options"
       >
-        <ChevronLeft size={16} />
+        <ChevronLeft className="h-4 w-4" />
       </Button>
-      {visibleItems.map((item, index) => (
-        <Button
-          key={index}
-          variant="ghost"
-          onClick={item.action}
-          className="flex items-center gap-2"
-        >
-          {item.icon}
-          <span>{item.label}</span>
-        </Button>
-      ))}
+      <ul className="flex w-full flex-row gap-2 items-center">
+        {menuItems
+          .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+          .map((item, index) => (
+            <li className="">
+              <Button
+                key={index}
+                variant="ghost"
+                size="icon"
+                onClick={item.action}
+                aria-label={item.label}
+              >
+                {item.icon}
+              </Button>
+            </li>
+          ))}
+      </ul>
       <Button
         variant="ghost"
         size="icon"
-        onClick={() =>
-          setCurrentIndex(Math.min(menuItems.length - 3, currentIndex + 1))
-        }
-        disabled={currentIndex >= menuItems.length - 3}
+        onClick={nextPage}
+        disabled={currentPage === totalPages - 1}
+        aria-label="More options"
       >
-        <ChevronRight size={16} />
+        <ChevronRight className="h-4 w-4" />
       </Button>
     </div>
   );
