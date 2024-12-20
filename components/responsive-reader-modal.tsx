@@ -36,11 +36,11 @@ export default function ResponsiveReaderModal({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <VisuallyHidden>
-          <DialogHeader>
+        <DialogHeader>
+          <VisuallyHidden>
             <DialogTitle>Reader</DialogTitle>
-          </DialogHeader>
-        </VisuallyHidden>
+          </VisuallyHidden>
+        </DialogHeader>
         <DialogContent
           id="reader-modal"
           className={`fixed p-0 border-none overflow-hidden ${

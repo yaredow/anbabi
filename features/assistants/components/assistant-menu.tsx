@@ -12,6 +12,8 @@ import {
   ChevronRight,
   X,
 } from "lucide-react";
+import { useBookStore } from "@/features/books/store/book-store";
+import { RenditionRef } from "@/features/books/types";
 
 interface MenuPosition {
   top: number;
@@ -24,11 +26,16 @@ interface MenuItem {
   action: () => void;
 }
 
-export default function KindleMenu() {
+type AssistantMenuProps = {
+  renditionRef: RenditionRef | undefined;
+};
+
+export default function AssistantMenu({ renditionRef }: AssistantMenuProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [position, setPosition] = useState<MenuPosition>({ top: 0, left: 0 });
   const [selectedText, setSelectedText] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const { removeSelection, selections } = useBookStore();
 
   const menuItems: MenuItem[] = [
     {
@@ -117,7 +124,19 @@ export default function KindleMenu() {
     setIsVisible(false);
   }
 
-  function handleRemoveSelection() {}
+  function handleRemoveSelection() {
+    const matchingSelection = selections.find(
+      (selection) => (selection.text = selectedText),
+    );
+
+    if (matchingSelection) {
+      const { cfiRange } = matchingSelection;
+
+      renditionRef?.current?.annotations.remove(cfiRange, "highlight");
+
+      removeSelection(cfiRange);
+    }
+  }
 
   function nextPage() {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
@@ -142,7 +161,7 @@ export default function KindleMenu() {
         {menuItems
           .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
           .map((item, index) => (
-            <li className="">
+            <li className="" key={index}>
               <Button
                 key={index}
                 variant="ghost"

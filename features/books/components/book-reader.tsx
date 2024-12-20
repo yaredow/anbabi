@@ -74,6 +74,17 @@ export default function BookReader() {
       themeStyles = lightReaderTheme;
   }
 
+  const handleHighlightClick = (cfiRange: string) => {
+    const highlightedSelections = useBookStore.getState().selections;
+    const matchingSelection = highlightedSelections.find(
+      (selection) => selection.cfiRange === cfiRange,
+    );
+
+    if (matchingSelection) {
+      open();
+    }
+  };
+
   const handleDictionaryOpen = () => {
     if (isSelected) {
       open();
@@ -84,7 +95,6 @@ export default function BookReader() {
     if (renditionRef.current) {
       const handleTextSelection = (cfiRange: string, contents: any) => {
         const text = renditionRef?.current?.getRange(cfiRange).toString();
-        console.log("Extracted text", text);
 
         if (text) {
           addSelection({ text, cfiRange });
@@ -94,8 +104,8 @@ export default function BookReader() {
             "highlight",
             cfiRange,
             {},
+            () => handleHighlightClick(cfiRange),
             undefined,
-            "hl",
             {
               fill: "red",
               "fill-opacity": "0.5",
@@ -145,7 +155,7 @@ export default function BookReader() {
     <>
       <VisuallyHidden>
         <ToolBarModal renditionRef={renditionRef} />
-        <AssistantMenuModal />
+        <AssistantMenuModal renditionRef={renditionRef} />
       </VisuallyHidden>
 
       <div

@@ -4,14 +4,20 @@ import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 import ResponsiveAssistantMenuModal from "./responsive-assistant-menu-modal";
 import { useBookStore } from "@/features/books/store/book-store";
 import AssistantMenu from "./assistant-menu";
+import { RenditionRef } from "@/features/books/types";
 
-export default function AssistantMenuModal() {
+type AssistantMenuModalProps = {
+  renditionRef: RenditionRef | undefined;
+};
+
+export default function AssistantMenuModal({
+  renditionRef,
+}: AssistantMenuModalProps) {
   const { isOpen, setIsOpen, close } = useAssistantMenuModal();
-  const { selections } = useBookStore();
 
   return (
     <ResponsiveAssistantMenuModal open={isOpen} onOpenChange={setIsOpen}>
-      <AssistantMenu />
+      <AssistantMenu renditionRef={renditionRef} />
     </ResponsiveAssistantMenuModal>
   );
 }

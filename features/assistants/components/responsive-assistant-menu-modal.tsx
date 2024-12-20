@@ -19,7 +19,7 @@ export default function ResponsiveAssistantMenuModal({
   onOpenChange,
 }: ResponsiveAssistantMenuModalProps): ReactElement {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} modal={false}>
+    <Dialog open={open} onOpenChange={onOpenChange} modal>
       <DialogHeader>
         <VisuallyHidden>
           <DialogTitle>Title</DialogTitle>
