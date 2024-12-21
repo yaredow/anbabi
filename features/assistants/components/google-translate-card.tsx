@@ -15,7 +15,7 @@ interface TranslateCardProps {
   onClose: () => void;
 }
 
-export const TranslateCard: React.FC<TranslateCardProps> = ({
+export const GoogleTranslateCard: React.FC<TranslateCardProps> = ({
   word,
   onClose,
 }) => {

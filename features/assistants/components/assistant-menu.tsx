@@ -1,37 +1,29 @@
-"use client";
-
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  Copy,
-  Bookmark,
-  MessageSquareIcon as MessageSquareQuestion,
-  Book,
   ChevronLeft,
   ChevronRight,
   X,
+  Copy,
+  Bookmark,
+  Book,
   Languages,
+  MessageCircleIcon,
 } from "lucide-react";
 import { useBookStore } from "@/features/books/store/book-store";
-import { RenditionRef } from "@/features/books/types";
+import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import { toast } from "@/hooks/use-toast";
-import { useGetWordDefination } from "../api/use-get-words-defination";
+import { Button } from "@/components/ui/button";
 
-interface MenuPosition {
-  top: number;
-  left: number;
-}
+type AssistantMenuProps = {
+  renditionRef?: any;
+  selectedCfiRange: string;
+  onClose: () => void;
+};
 
-interface MenuItem {
+type MenuItem = {
   icon: React.ReactNode;
   label: string;
   action: () => void;
-}
-
-type AssistantMenuProps = {
-  renditionRef: RenditionRef | undefined;
-  selectedCfiRange: string;
-  onClose: () => void;
 };
 
 export default function AssistantMenu({
@@ -41,16 +33,10 @@ export default function AssistantMenu({
 }: AssistantMenuProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const { removeSelection, selections } = useBookStore();
+  const { open, setActiveView } = useAssistantMenuItemModal();
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const selectedWord = useMemo(() => {
-    return (
-      selections.find((selection) => selection.cfiRange === selectedCfiRange)
-        ?.text || ""
-    );
-  }, [selections]);
 
-  const { defination } = useGetWordDefination({ word: selectedWord });
-  console.log({ defination });
+  const itemsPerPage = 5;
 
   const menuItems: MenuItem[] = [
     {
@@ -66,107 +52,76 @@ export default function AssistantMenu({
     {
       icon: <Bookmark className="h-4 w-4" />,
       label: "Bookmark",
-      action: handleBookmark,
+      action: () => handleOpenModal("bookmark"),
     },
-
     {
       icon: <Book className="h-4 w-4" />,
       label: "Dictionary",
-      action: handleDictionary,
+      action: () => handleOpenModal("dictionary"),
     },
-
     {
       icon: <Languages className="h-4 w-4" />,
       label: "Translate",
-      action: handleTranslate,
+      action: () => handleOpenModal("googleTranslate"),
     },
     {
-      icon: <MessageSquareQuestion className="h-4 w-4" />,
+      icon: <MessageCircleIcon className="h-4 w-4" />,
       label: "Ask AI",
-      action: handleAskAI,
+      action: () => handleOpenModal("aiChat"),
     },
   ];
 
-  const itemsPerPage = 5;
   const totalPages = Math.ceil(menuItems.length / itemsPerPage);
 
   async function handleCopy() {
-    const selections = useBookStore.getState().selections;
     const matchingSelection = selections.find(
       (selection) => selection.cfiRange === selectedCfiRange,
     );
-
     if (matchingSelection) {
       try {
         await navigator.clipboard.writeText(matchingSelection.text);
-        toast({
-          description: "Text copied to clipboard",
-        });
+        toast({ description: "Text copied to clipboard" });
         onClose();
       } catch (error) {
-        console.error(error);
+        console.error("Failed to copy text:", error);
       }
     }
-  }
-
-  function handleBookmark() {
-    alert(`Bookmarked: "${selections[0].text}"`);
-  }
-
-  function handleTranslate() {
-    alert(`Translate: "${selections[0].text}"`);
-  }
-
-  function handleAskAI() {
-    alert(`Ask AI: "${selections[0].text}"`);
-  }
-
-  function handleDictionary() {
-    alert(`Dictionary: "${selections[0].text}"`);
   }
 
   function handleRemoveSelection() {
     const matchingSelection = selections.find(
       (selection) => selection.cfiRange === selectedCfiRange,
     );
-
     if (matchingSelection) {
       renditionRef?.current?.annotations.remove(selectedCfiRange, "highlight");
-
       removeSelection(selectedCfiRange);
       onClose();
     }
   }
 
-  function nextPage() {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
-  }
+  const handleOpenModal = (view: string) => {
+    setActiveView(view);
+    open(view);
+  };
 
-  function prevPage() {
-    setCurrentPage((prev) => Math.max(prev - 1, 0));
-  }
+  const nextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+  const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 0));
 
   useEffect(() => {
-    // Handler to close the menu when clicked outside
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
-
-    // Attach the event listener to detect clicks outside the menu
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
   return (
     <div
       ref={menuRef}
-      className="z-10 w-full bg-white rounded-lg shadow-lg p-2 flex items-center "
+      className="z-10 w-full bg-white rounded-lg shadow-lg p-2 flex items-center"
     >
       <Button
         variant="ghost"
@@ -181,9 +136,8 @@ export default function AssistantMenu({
         {menuItems
           .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
           .map((item, index) => (
-            <li className="" key={index}>
+            <li key={index}>
               <Button
-                key={index}
                 variant="ghost"
                 size="icon"
                 onClick={item.action}
