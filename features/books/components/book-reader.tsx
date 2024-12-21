@@ -56,10 +56,6 @@ export default function BookReader() {
     clearSelections,
   } = useBookStore();
 
-  const isSelected = useMemo(() => {
-    return selections.some((selection) => selection.text.trim() !== "");
-  }, [selections]);
-
   let themeStyles;
 
   switch (theme) {

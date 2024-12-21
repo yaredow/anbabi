@@ -44,14 +44,32 @@ export default function DictionaryCard({
   renditionRef,
 }: DictionaryCardProps) {
   const { defination, isPending } = useGetWordDefination({ word });
+
   const playAudio = () => {
-    const audio = new Audio(defination?.phonetics[0]?.audio);
-    audio.play();
+    const audioUrl = defination?.phonetics?.find((p) => p.audio)?.audio;
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play();
+    }
   };
+
+  console.log({ defination });
 
   if (isPending) {
     return (
       <Loader2 className="flex items-center justify-center mx-auto animate-spin h-full" />
+    );
+  }
+
+  if (!defination) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardContent className="p-6">
+          <p className="text-center text-muted-foreground">
+            No definition found.
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -61,13 +79,13 @@ export default function DictionaryCard({
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-3xl font-bold">
-              {defination?.word}
+              {defination.word}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              {defination?.phonetic}
+              {defination.phonetic}
             </p>
           </div>
-          {defination?.phonetics[0]?.audio && (
+          {defination.phonetics?.some((p) => p.audio) && (
             <Button variant="outline" size="icon" onClick={playAudio}>
               <Play className="h-4 w-4" />
               <span className="sr-only">Play pronunciation</span>
@@ -76,17 +94,17 @@ export default function DictionaryCard({
         </div>
       </CardHeader>
       <CardContent>
-        {defination?.origin && (
+        {defination.origin && (
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-muted-foreground">
               Origin
             </h3>
-            <p className="text-sm">{defination?.origin}</p>
+            <p className="text-sm">{defination.origin}</p>
           </div>
         )}
         <DottedSeparator className="my-4" />
         <div className="space-y-4">
-          {defination?.meanings.map((meaning: any, index: number) => (
+          {defination.meanings?.map((meaning: any, index: number) => (
             <WordMeaning key={index} meaning={meaning} />
           ))}
         </div>

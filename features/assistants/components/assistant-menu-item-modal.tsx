@@ -18,15 +18,16 @@ export default function AssistantItemsModal({
   selectedCfiRange,
 }: AssistantMenuModalProps) {
   const { close } = useAssistantMenuItemModal();
-  const selections = useBookStore((state) => state.selections);
   const activeView = useBookStore.getState().activeView;
   const selectedText = useMemo(() => {
-    return (
-      selections.find(
-        (selection) => selection.cfiRange.trim() === selectedCfiRange.trim(),
-      )?.text || ""
+    const selections = useBookStore.getState().selections;
+    const selection = selections.find(
+      (selection) => selection.cfiRange === selectedCfiRange,
     );
-  }, [selections, selectedCfiRange]);
+    return selection?.text || "";
+  }, [selectedCfiRange]);
+
+  console.log(selectedText);
 
   const renderContent = () => {
     switch (activeView) {

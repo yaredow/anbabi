@@ -28,7 +28,7 @@ type BookStoreState = {
 
   // Assistant menu item related states
   activeView: string | null;
-  setActiveView: (activeView) => void;
+  setActiveView: (activeView: string) => void;
   clearActiveView: () => void;
 };
 
