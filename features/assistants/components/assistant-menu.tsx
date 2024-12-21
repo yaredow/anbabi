@@ -100,7 +100,8 @@ export default function AssistantMenu({
   }
 
   const handleOpenModal = (view: string) => {
-    open(view);
+    useBookStore.getState().setActiveView(view);
+    open();
   };
 
   const nextPage = () =>

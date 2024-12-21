@@ -25,6 +25,11 @@ type BookStoreState = {
   addSelection: (selection: Selection) => void;
   removeSelection: (cfiRange: string) => void;
   clearSelections: () => void;
+
+  // Assistant menu item related states
+  activeView: string | null;
+  setActiveView: (activeView) => void;
+  clearActiveView: () => void;
 };
 
 export const useBookStore = create<BookStoreState>((set) => ({
@@ -102,4 +107,9 @@ export const useBookStore = create<BookStoreState>((set) => ({
       ),
     })),
   clearSelections: () => set({ selections: [] }),
+
+  // Assistant menu items modal state
+  activeView: null,
+  setActiveView: (view) => set({ activeView: view }),
+  clearActiveView: () => set({ activeView: null }),
 }));

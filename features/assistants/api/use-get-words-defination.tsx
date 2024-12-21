@@ -21,6 +21,7 @@ export const useGetWordDefination = ({ word }: UseGetWordDefinationProps) => {
       }
 
       const data = await response.json();
+      console.log(data);
       return data;
     },
     enabled: !!word,

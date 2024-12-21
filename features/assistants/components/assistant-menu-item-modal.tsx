@@ -17,14 +17,16 @@ export default function AssistantItemsModal({
   renditionRef,
   selectedCfiRange,
 }: AssistantMenuModalProps) {
-  const { activeView, close } = useAssistantMenuItemModal();
+  const { close } = useAssistantMenuItemModal();
   const selections = useBookStore((state) => state.selections);
+  const activeView = useBookStore.getState().activeView;
   const selectedText = useMemo(() => {
     return (
-      selections.find((selection) => selection.cfiRange === selectedCfiRange)
-        ?.text || ""
+      selections.find(
+        (selection) => selection.cfiRange.trim() === selectedCfiRange.trim(),
+      )?.text || ""
     );
-  }, [selections]);
+  }, [selections, selectedCfiRange]);
 
   const renderContent = () => {
     switch (activeView) {
@@ -36,6 +38,7 @@ export default function AssistantItemsModal({
             renditionRef={renditionRef}
           />
         );
+
       case "googleTranslate":
         return (
           <GoogleTranslateCard
@@ -44,6 +47,7 @@ export default function AssistantItemsModal({
             renditionRef={renditionRef}
           />
         );
+
       case "aiChat":
         return <AIChatCard text={selectedCfiRange} onClose={close} />;
       case "wikipedia":

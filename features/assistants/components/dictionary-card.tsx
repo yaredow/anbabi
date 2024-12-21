@@ -51,7 +51,7 @@ export default function DictionaryCard({
 
   if (isPending) {
     return (
-      <Loader2 className="flex items-center justify-center mx-auto animate-pulse" />
+      <Loader2 className="flex items-center justify-center mx-auto animate-spin h-full" />
     );
   }
 

@@ -2,19 +2,16 @@ import { parseAsBoolean, useQueryState } from "nuqs";
 import { useState } from "react";
 
 export const useAssistantMenuItemModal = () => {
-  const [activeView, setActiveView] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useQueryState(
     "open-assistant",
     parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true }),
   );
 
-  const open = (view: string) => {
-    setActiveView(view);
+  const open = () => {
     setIsOpen(true);
   };
 
   const close = () => {
-    setActiveView(null);
     setIsOpen(false);
   };
 
@@ -22,8 +19,6 @@ export const useAssistantMenuItemModal = () => {
     open,
     close,
     isOpen,
-    activeView,
     setIsOpen,
-    setActiveView,
   };
 };
