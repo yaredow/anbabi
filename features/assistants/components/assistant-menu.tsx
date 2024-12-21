@@ -33,7 +33,7 @@ export default function AssistantMenu({
 }: AssistantMenuProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const { removeSelection, selections } = useBookStore();
-  const { open, setActiveView } = useAssistantMenuItemModal();
+  const { open } = useAssistantMenuItemModal();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const itemsPerPage = 5;
@@ -100,7 +100,6 @@ export default function AssistantMenu({
   }
 
   const handleOpenModal = (view: string) => {
-    setActiveView(view);
     open(view);
   };
 

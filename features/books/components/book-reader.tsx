@@ -19,6 +19,7 @@ import { useBookStore } from "../store/book-store";
 import { TocItem } from "../types";
 import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
 import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
+import AssistantItemsModal from "@/features/assistants/components/assistant-menu-item-modal";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -155,6 +156,7 @@ export default function BookReader() {
           renditionRef={renditionRef}
           selectedCfiRange={selectedCfiRange}
         />
+        <AssistantItemsModal selectedCfiRange={selectedCfiRange} />
       </VisuallyHidden>
 
       <div

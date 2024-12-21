@@ -28,7 +28,7 @@ const WordMeaning: React.FC<WordMeaningProps> = ({ meaning }) => {
             <span>{def.definition}</span>
             {def.example && (
               <p className="text-muted-foreground italic mt-1">
-                "{def.example}"
+                {def.example}"
               </p>
             )}
           </li>
