@@ -9,6 +9,7 @@ import {
   Languages,
   MessageCircleIcon,
 } from "lucide-react";
+import { FaWikipediaW } from "react-icons/fa6";
 import { useBookStore } from "@/features/books/store/book-store";
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import { toast } from "@/hooks/use-toast";
@@ -59,10 +60,16 @@ export default function AssistantMenu({
       label: "Dictionary",
       action: () => handleOpenModal("dictionary"),
     },
+
     {
       icon: <Languages className="h-4 w-4" />,
       label: "Translate",
       action: () => handleOpenModal("googleTranslate"),
+    },
+    {
+      icon: <FaWikipediaW className="h-4 w-4" />,
+      label: "Wikipedia",
+      action: () => handleOpenModal("wikipedia"),
     },
     {
       icon: <MessageCircleIcon className="h-4 w-4" />,

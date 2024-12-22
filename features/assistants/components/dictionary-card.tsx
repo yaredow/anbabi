@@ -8,7 +8,7 @@ import DottedSeparator from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 
 import { useGetWordDefination } from "../api/use-get-words-defination";
-import { Definition, Meaning } from "../types";
+import { Meaning } from "../types";
 
 type DictionaryCardProps = {
   word: string;
@@ -77,7 +77,7 @@ export default function DictionaryCard({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto mt-2 overflow-y-auto">
+    <Card className="w-full max-w-2xl mx-auto overflow-y-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -105,7 +105,6 @@ export default function DictionaryCard({
             <p className="text-sm">{defination.origin}</p>
           </div>
         )}
-        <DottedSeparator className="my-2" />
         <div className="space-y-4">
           {defination.meanings?.map((meaning: any, index: number) => (
             <WordMeaning key={index} meaning={meaning} />
