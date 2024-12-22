@@ -56,6 +56,8 @@ export default function BookReader() {
     clearSelections,
   } = useBookStore();
 
+  console.log({ selections, cfiRange: selectedCfiRange });
+
   let themeStyles;
 
   switch (theme) {
@@ -92,6 +94,7 @@ export default function BookReader() {
 
         if (text) {
           addSelection({ text, cfiRange });
+          setSelectedCfiRange(cfiRange);
 
           // Open the assisstant menu when text selected
           open();
