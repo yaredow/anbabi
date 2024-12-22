@@ -41,7 +41,7 @@ export default function AssistantItemsModal({
     switch (activeView) {
       case "dictionary":
         return (
-          <div className="bg-[#eaecf0] p-2 h-12 border-b border-gray-300">
+          <div className="bg-neutral-200 p-2 h-12 border-b border-gray-300">
             <span className="font-serif text-lg text-[#202122]">
               Dictionary
             </span>
@@ -49,7 +49,7 @@ export default function AssistantItemsModal({
         );
       case "googleTranslate":
         return (
-          <div className="bg-[#eaecf0] p-2 h-12 border-b border-gray-300">
+          <div className="bg-neutral-200 p-2 h-12 border-b border-gray-300">
             <span className="font-serif text-lg text-[#202122]">
               Google Translate
             </span>
@@ -57,13 +57,13 @@ export default function AssistantItemsModal({
         );
       case "aiChat":
         return (
-          <div className="bg-[#eaecf0] p-2 h-12 border-b border-gray-300">
+          <div className="bg-neutral-200 p-2 h-12 border-b border-gray-300">
             <span className="font-serif text-lg text-[#202122]">AI Chat</span>
           </div>
         );
       case "wikipedia":
         return (
-          <div className="bg-[#eaecf0] p-2 border-b border-gray-300">
+          <div className="bg-neutral-200 p-2 border-b border-gray-300">
             <span className="font-serif text-lg text-[#202122]">Wikipedia</span>
           </div>
         );
@@ -110,7 +110,7 @@ export default function AssistantItemsModal({
       </DialogHeader>
 
       <DialogContent
-        className="w-[16rem] md:h-72 sm:max-w-lg p-0 border-none overflow-hidden hide-scrollbar 
+        className="w-[16rem] bg-neutral-50 md:h-72 sm:max-w-lg p-0 border-none overflow-hidden hide-scrollbar 
              fixed top-1/2 right-1/2 transform -translate-y-1/2 -translate-x-1/2 
              sm:w-[20rem] sm:h-full "
       >

@@ -66,7 +66,7 @@ export default function DictionaryCard({
 
   if (!defination) {
     return (
-      <Card className="w-full max-w-2xl mx-auto">
+      <Card className="w-full rounded-none border-none bg-neutral-50 max-w-2xl mx-auto">
         <CardContent className="p-6">
           <p className="text-center text-muted-foreground">
             No definition found.
@@ -77,7 +77,7 @@ export default function DictionaryCard({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto overflow-y-auto">
+    <Card className="w-full max-w-2xl mx-auto border-none bg-neutral-50 rounded-none overflow-y-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -105,6 +105,7 @@ export default function DictionaryCard({
             <p className="text-sm">{defination.origin}</p>
           </div>
         )}
+        <DottedSeparator className="my-2" />
         <div className="space-y-4">
           {defination.meanings?.map((meaning: any, index: number) => (
             <WordMeaning key={index} meaning={meaning} />

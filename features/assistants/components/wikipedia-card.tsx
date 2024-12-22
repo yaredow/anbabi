@@ -54,14 +54,14 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
   const url = `https://en.wikipedia.org/?curid=${page.pageid}`;
 
   return (
-    <Card className="w-full max-w-3xl h-full mx-auto bg-[#f8f9fa] overflow-y-auto">
+    <Card className="w-full max-w-3xl rounded-none border-none h-full mx-auto bg-slate-50 overflow-y-auto">
       <CardHeader className="border-b">
         <CardTitle className="text-3xl font-serif text-[#202122]">
           {title}
         </CardTitle>
         <p className="text-sm text-[#202122] italic">{summary}</p>
       </CardHeader>
-      <CardContent className="">
+      <CardContent className="p-6">
         <ScrollArea className="h-[300px] pr-4">
           <div className="space-y-4">
             <p className="text-[#202122] leading-7">{content}</p>
