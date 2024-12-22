@@ -1,10 +1,14 @@
 import React from "react";
 import { Loader2, Play } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import DottedSeparator from "@/components/dotted-separator";
-import { useGetWordDefination } from "../api/use-get-words-defination";
+
 import { RenditionRef } from "@/features/books/types";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import DottedSeparator from "@/components/dotted-separator";
+import { Button } from "@/components/ui/button";
+
+import { useGetWordDefination } from "../api/use-get-words-defination";
+import { Definition, Meaning } from "../types";
 
 type DictionaryCardProps = {
   word: string;
@@ -13,10 +17,10 @@ type DictionaryCardProps = {
 };
 
 type WordMeaningProps = {
-  meaning: any;
+  meaning: Meaning;
 };
 
-const WordMeaning: React.FC<WordMeaningProps> = ({ meaning }) => {
+const WordMeaning = ({ meaning }: WordMeaningProps) => {
   return (
     <div>
       <h3 className="text-lg font-semibold capitalize">
@@ -47,13 +51,12 @@ export default function DictionaryCard({
 
   const playAudio = () => {
     const audioUrl = defination?.phonetics?.find((p) => p.audio)?.audio;
+    console.log({ audioUrl });
     if (audioUrl) {
       const audio = new Audio(audioUrl);
       audio.play();
     }
   };
-
-  console.log({ defination });
 
   if (isPending) {
     return (
@@ -74,7 +77,7 @@ export default function DictionaryCard({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto mt-2 overflow-y-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -102,7 +105,7 @@ export default function DictionaryCard({
             <p className="text-sm">{defination.origin}</p>
           </div>
         )}
-        <DottedSeparator className="my-4" />
+        <DottedSeparator className="my-2" />
         <div className="space-y-4">
           {defination.meanings?.map((meaning: any, index: number) => (
             <WordMeaning key={index} meaning={meaning} />

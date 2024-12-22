@@ -56,8 +56,6 @@ export default function BookReader() {
     clearSelections,
   } = useBookStore();
 
-  console.log({ selections, cfiRange: selectedCfiRange });
-
   let themeStyles;
 
   switch (theme) {

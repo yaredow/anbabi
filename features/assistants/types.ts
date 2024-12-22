@@ -1,18 +1,24 @@
 export type DictionaryApiResponse = {
   word: string;
   phonetic?: string;
-  phonetics: Array<{
-    text?: string;
-    audio?: string;
-  }>;
+  phonetics: Phonetic[];
   origin?: string;
-  meanings: Array<{
-    partOfSpeech: string;
-    definitions: Array<{
-      definition: string;
-      example?: string;
-      synonyms: string[];
-      antonyms: string[];
-    }>;
-  }>;
+  meanings: Meaning[];
+};
+
+export type Phonetic = {
+  text?: string;
+  audio?: string;
+};
+
+export type Meaning = {
+  partOfSpeech: string;
+  definitions: Definition[];
+};
+
+export type Definition = {
+  definition: string;
+  example?: string;
+  synonyms: string[];
+  antonyms: string[];
 };
