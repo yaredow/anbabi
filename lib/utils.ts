@@ -26,5 +26,5 @@ export function detectLanguage(text: string) {
   if (lang === "und") {
     return "en";
   }
-  return lang;
+  return lang.slice(0, 2);
 }

@@ -24,8 +24,8 @@ type TranslateCardProps = {
 
 export default function TranslateCard({ selectedText }: TranslateCardProps) {
   const detectedLanguage = detectLanguage(selectedText);
-  const [fromLang, setFromLang] = useState(detectedLanguage);
-  const [toLang, setToLang] = useState("es");
+  const [fromLang, setFromLang] = useState<string>(detectedLanguage);
+  const [toLang, setToLang] = useState<string>("am");
   const {
     translatedText,
     isPending: isTranslationPending,
@@ -35,6 +35,8 @@ export default function TranslateCard({ selectedText }: TranslateCardProps) {
     sourceLang: fromLang,
     targetLang: toLang,
   });
+
+  console.log({ detectedLanguage });
 
   useEffect(() => {
     if (selectedText) {
