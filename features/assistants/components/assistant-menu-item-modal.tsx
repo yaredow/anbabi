@@ -8,6 +8,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
 
@@ -37,38 +38,18 @@ export default function AssistantItemsModal({
     return selection?.text || "";
   }, [selectedCfiRange]);
 
-  const renderHeader = () => {
+  const renderDynamicTitle = () => {
     switch (activeView) {
       case "dictionary":
-        return (
-          <div className="bg-neutral-200 p-2 h-10 border-b border-gray-300">
-            <span className="font-serif text-lg text-[#202122]">
-              Dictionary
-            </span>
-          </div>
-        );
+        return "Dictionary";
       case "googleTranslate":
-        return (
-          <div className="bg-neutral-200 p-2 h-10 border-b border-gray-300">
-            <span className="font-serif text-lg text-[#202122]">
-              Google Translate
-            </span>
-          </div>
-        );
+        return "Translate";
       case "aiChat":
-        return (
-          <div className="bg-neutral-200 p-2 h-10 border-b border-gray-300">
-            <span className="font-serif text-lg text-[#202122]">AI Chat</span>
-          </div>
-        );
+        return "AI Chat";
       case "wikipedia":
-        return (
-          <div className="bg-neutral-200 h-10 p-2 border-b border-gray-300">
-            <span className="font-serif text-lg text-[#202122]">Wikipedia</span>
-          </div>
-        );
+        return "Wikipedia";
       default:
-        return null;
+        return "Assistant";
     }
   };
 
@@ -97,18 +78,14 @@ export default function AssistantItemsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} modal={false}>
-      <DialogHeader>
-        <VisuallyHidden>
-          <DialogTitle>title</DialogTitle>
-        </VisuallyHidden>
-      </DialogHeader>
-
       <DialogContent
-        className="w-[16rem] bg-neutral-50 md:h-72 sm:max-w-lg p-0 border-none overflow-hidden hide-scrollbar 
+        className="w-[16rem] hide-scrollbar md:h-72 sm:max-w-lg p-0 border-none overflow-hidden hide-scrollbar 
              fixed top-1/2 right-1/2 transform -translate-y-1/2 -translate-x-1/2 
              sm:w-[20rem] sm:h-full"
       >
-        {renderHeader()}
+        <DialogHeader className="p-2 h-8 bg-neutral-200">
+          <DialogTitle className="">{renderDynamicTitle()}</DialogTitle>
+        </DialogHeader>
         {renderContent()}
       </DialogContent>
     </Dialog>

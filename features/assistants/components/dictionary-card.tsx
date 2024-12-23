@@ -77,7 +77,7 @@ export default function DictionaryCard({
   }
 
   return (
-    <Card className="w-full h-full max-w-2xl mx-auto border-none bg-neutral-50 rounded-none p-0 overflow-y-auto">
+    <Card className="w-full h-full max-w-2xl mx-auto bg-neutral-50 overflow-y-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

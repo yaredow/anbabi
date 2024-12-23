@@ -14,6 +14,12 @@ import { useBookStore } from "@/features/books/store/book-store";
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type AssistantMenuProps = {
   renditionRef?: any;
@@ -144,14 +150,23 @@ export default function AssistantMenu({
           .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
           .map((item, index) => (
             <li key={index}>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={item.action}
-                aria-label={item.label}
-              >
-                {item.icon}
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={item.action}
+                      aria-label={item.label}
+                    >
+                      {item.icon}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>{item.label}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </li>
           ))}
       </ul>
