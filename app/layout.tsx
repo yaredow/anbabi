@@ -10,7 +10,6 @@ import BookReaderModal from "@/features/books/components/book-reader-modal";
 
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ReaderProvider } from "@/context/reader-context";
 import { Metadata } from "next";
 import { cn } from "@/lib/utils";
 
@@ -38,16 +37,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ReaderProvider>
-            <QueryProviders>
-              <NuqsAdapter>
-                <UploadBookModal />
-                <BookReaderModal />
-                <Toaster />
-                {children}
-              </NuqsAdapter>
-            </QueryProviders>
-          </ReaderProvider>
+          <QueryProviders>
+            <NuqsAdapter>
+              <UploadBookModal />
+              <BookReaderModal />
+              <Toaster />
+              {children}
+            </NuqsAdapter>
+          </QueryProviders>
         </ThemeProvider>
       </body>
     </html>

@@ -60,7 +60,7 @@ export default function DictionaryCard({
 
   if (isPending) {
     return (
-      <Loader2 className="flex items-center justify-center mx-auto animate-spin h-full" />
+      <Loader2 className="flex items-center justify-center mx-auto animate-spin h-[85%]" />
     );
   }
 
@@ -77,7 +77,7 @@ export default function DictionaryCard({
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto border-none bg-neutral-50 rounded-none overflow-y-auto">
+    <Card className="w-full h-full max-w-2xl mx-auto border-none bg-neutral-50 rounded-none p-0 overflow-y-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -96,7 +96,7 @@ export default function DictionaryCard({
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="h-full">
         {defination.origin && (
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-muted-foreground">

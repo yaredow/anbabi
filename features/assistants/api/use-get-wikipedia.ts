@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { WikipediaApiResponse } from "../types";
-import { pages } from "next/dist/build/templates/app-page";
 
 type UseGetWikipedia = {
   selectedText: string;

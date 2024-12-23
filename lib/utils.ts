@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { franc } from "franc-min";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,4 +18,13 @@ export function arrayBufferToBase64(buffer: ArrayBuffer): string {
 
   // Convert binary string to base64
   return btoa(binaryString);
+}
+
+export function detectLanguage(text: string) {
+  const lang = franc(text);
+
+  if (lang === "und") {
+    return "en";
+  }
+  return lang;
 }

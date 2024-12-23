@@ -56,7 +56,7 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
   return (
     <Card className="w-full max-w-3xl rounded-none border-none h-full mx-auto bg-slate-50 overflow-y-auto">
       <CardHeader className="border-b">
-        <CardTitle className="text-3xl font-serif text-[#202122]">
+        <CardTitle className="text-3xl font-serif text-[#202122] truncate">
           {title}
         </CardTitle>
         <p className="text-sm text-[#202122] italic">{summary}</p>
