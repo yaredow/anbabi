@@ -1,69 +1,108 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { BookOpen, Send } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAskAI } from "../api/use-ask-ai";
 
-interface AIChatCardProps {
-  word: string;
-  onClose: () => void;
-}
+type AIChatCardProps = {
+  text: string;
+};
 
-export const AIChatCard: React.FC<AIChatCardProps> = ({ word, onClose }) => {
-  const [messages, setMessages] = useState([
-    { role: "system", content: `Let's discuss the word or phrase: "${word}"` },
-  ]);
-  const [input, setInput] = useState("");
+export function AIChatCard({ text }: AIChatCardProps) {
+  const { chat, isPending } = useAskAI();
 
-  const handleSend = () => {
-    if (input.trim()) {
-      setMessages([...messages, { role: "user", content: input }]);
-      // Here you would typically send the message to an AI service and get a response
-      // For this example, we'll just echo the user's message
-      setTimeout(() => {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: `You said: ${input}` },
-        ]);
-      }, 500);
-      setInput("");
-    }
+  const [messages, setMessages] = useState<
+    { role: "user" | "assistant"; content: string }[]
+  >([]);
+  const [input, setInput] = useState<string>("");
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const userMessage = { role: "user", content: input };
+    setMessages((prev) => [...prev, { role: "user", content: input }]);
+    setInput("");
+
+    chat(
+      { json: { messages: [...messages, userMessage] } },
+      {
+        onSuccess: (data) => {
+          setMessages((prev) => [
+            ...prev,
+            { role: data.role, content: data.content },
+          ]);
+        },
+        onError: (error) => {
+          console.error("Error in AI response:", error);
+        },
+      },
+    );
   };
 
   return (
-    <Card>
+    <Card className="w-full max-w-[450px] shadow-lg">
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          AI Chat
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            Close
-          </Button>
+        <CardTitle className="flex items-center gap-2">
+          <BookOpen className="h-5 w-5" />
+          <span>Book AI Assistant</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-48 overflow-y-auto mb-4 border rounded p-2">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`mb-2 ${msg.role === "user" ? "text-right" : ""}`}
-            >
-              <span
-                className={`inline-block p-2 rounded ${msg.role === "user" ? "bg-blue-100" : "bg-gray-100"}`}
+        <ScrollArea className="h-[400px] w-full pr-4">
+          {messages.map((m, index) => (
+            <div key={index} className="flex gap-3 mb-4">
+              <Avatar>
+                <AvatarFallback>
+                  {m.role === "user" ? "U" : "AI"}
+                </AvatarFallback>
+                <AvatarImage
+                  src={
+                    m.role === "user"
+                      ? "/placeholder.svg?height=40&width=40"
+                      : "/placeholder.svg?height=40&width=40"
+                  }
+                />
+              </Avatar>
+              <div
+                className={`rounded-lg p-2 ${
+                  m.role === "user"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted"
+                }`}
               >
-                {msg.content}
-              </span>
+                {m.content}
+              </div>
             </div>
           ))}
-        </div>
-        <div className="flex gap-2">
+        </ScrollArea>
+      </CardContent>
+      <CardFooter>
+        <form
+          onSubmit={handleSendMessage}
+          className="flex w-full items-center space-x-2"
+        >
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            onKeyPress={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Ask about the book..."
+            disabled={isPending}
           />
-          <Button onClick={handleSend}>Send</Button>
-        </div>
-      </CardContent>
+          <Button type="submit" size="icon" disabled={isPending}>
+            <Send className="h-4 w-4" />
+            <span className="sr-only">Send</span>
+          </Button>
+        </form>
+      </CardFooter>
     </Card>
   );
-};
+}

@@ -12,9 +12,9 @@ import {
 
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import DictionaryCard from "./dictionary-card";
-import { AIChatCard } from "./ai-chat-card";
 import WikipediaCard from "./wikipedia-card";
 import TranslateCard from "./translate-card";
+import { AIChatCard } from "./ai-chat-card";
 
 type AssistantMenuModalProps = {
   renditionRef?: RenditionRef;
@@ -66,7 +66,7 @@ export default function AssistantItemsModal({
         return <TranslateCard selectedText={selectedText} onClose={close} />;
 
       case "aiChat":
-        return <AIChatCard text={selectedCfiRange} onClose={close} />;
+        return <AIChatCard text={selectedText} />;
       case "wikipedia":
         return <WikipediaCard selectedText={selectedText} onClose={close} />;
       default:
