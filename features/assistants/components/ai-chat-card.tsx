@@ -26,7 +26,7 @@ export function AIChatCard({ text }: AIChatCardProps) {
 
   const [messages, setMessages] = useState<
     { role: "user" | "assistant"; content: string }[]
-  >([]);
+  >([{ role: "user", content: text }]);
   const [input, setInput] = useState<string>("");
 
   const handleSendMessage = (e: React.FormEvent) => {
