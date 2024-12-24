@@ -41,6 +41,12 @@ export default function TranslateCard({ selectedText }: TranslateCardProps) {
     }
   }, [detectedLanguage, isDetectionPending]);
 
+  useEffect(() => {
+    if (fromLang && toLang) {
+      refetch();
+    }
+  }, [fromLang, toLang, refetch]);
+
   return (
     <Card className="w-full h-full shadow-none max-w-2xl mx-auto border-none bg-neutral-50 rounded-none p-0 overflow-y-auto">
       <CardContent className="p-2">
