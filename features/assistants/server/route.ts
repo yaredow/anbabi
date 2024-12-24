@@ -9,17 +9,15 @@ const app = new Hono().post(
   "/ask-ai",
   zValidator("json", AiChatSchema),
   async (c) => {
-    const { messages } = c.req.valid("json");
+    const { messages, author, title } = c.req.valid("json");
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const chatHistory = messages.map((msg) => ({
-      role: msg.role,
-      parts: msg.content,
-    }));
-
     const chat = model.startChat({
-      history: chatHistory,
+      history: messages.map((msg) => ({
+        role: msg.role,
+        parts: [{ text: msg.content }],
+      })),
       generationConfig: {
         maxOutputTokens: 1000,
       },
@@ -37,7 +35,9 @@ const app = new Hono().post(
       Engage in discussions about plot analysis, character development, and themes in literature. 
       Offer reading suggestions based on user preferences and help with book-related queries.
       
-      User query: ${messages[messages.length - 1].content}
+      Book title: ${title}
+      Author: ${author}
+      User query: ${userQuery}
     `);
 
     const response = result.response;

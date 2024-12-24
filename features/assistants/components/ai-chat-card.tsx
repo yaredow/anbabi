@@ -12,13 +12,17 @@ import { BookOpen, Send } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAskAI } from "../api/use-ask-ai";
+import { useGetBook } from "@/features/books/api/use-get-book";
+import { useBookId } from "@/features/books/hooks/use-book-id";
 
 type AIChatCardProps = {
   text: string;
 };
 
 export function AIChatCard({ text }: AIChatCardProps) {
+  const bookId = useBookId();
   const { chat, isPending } = useAskAI();
+  const { book } = useGetBook({ bookId });
 
   const [messages, setMessages] = useState<
     { role: "user" | "assistant"; content: string }[]
@@ -34,7 +38,13 @@ export function AIChatCard({ text }: AIChatCardProps) {
     setInput("");
 
     chat(
-      { json: { messages: [...messages, userMessage] } },
+      {
+        json: {
+          messages: [...messages, userMessage],
+          title: book?.title!,
+          author: book?.author!,
+        },
+      },
       {
         onSuccess: (data) => {
           setMessages((prev) => [
@@ -50,15 +60,12 @@ export function AIChatCard({ text }: AIChatCardProps) {
   };
 
   return (
-    <Card className="w-full max-w-[450px] shadow-lg">
+    <Card className="w-full  shadow-lg">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <BookOpen className="h-5 w-5" />
-          <span>Book AI Assistant</span>
-        </CardTitle>
+        <CardTitle className="flex items-center gap-2"></CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[400px] w-full pr-4">
+        <ScrollArea className=" w-full pr-4 overflow-y-auto">
           {messages.map((m, index) => (
             <div key={index} className="flex gap-3 mb-4">
               <Avatar>

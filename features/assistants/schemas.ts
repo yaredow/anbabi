@@ -7,4 +7,6 @@ export const AiChatSchema = z.object({
       content: z.string().min(1),
     }),
   ),
+  title: z.string(),
+  author: z.string(),
 });
