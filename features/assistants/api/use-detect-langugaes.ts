@@ -1,16 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
+import { LanguageDetectionResponse } from "../types";
 
 type UseDetectLanguagesProps = {
   text: string;
 };
 
+const API_KEY = process.env.NEXT_PUBLIC_DETECT_LANGUAGE_API_KEY;
+
 export const useDetectLanguages = ({ text }: UseDetectLanguagesProps) => {
-  const { data: detectedLanguage, isPending } = useQuery<string, Error>({
+  const { data, isPending } = useQuery<LanguageDetectionResponse, Error>({
     queryKey: ["detected-languages", text],
     queryFn: async () => {
-      const response = await fetch("https://libretranslate.com/detect", {
+      const response = await fetch("https://ws.detectlanguage.com/0.2/detect", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -23,8 +27,11 @@ export const useDetectLanguages = ({ text }: UseDetectLanguagesProps) => {
       }
 
       const data = await response.json();
-      return data[0].language;
+      return data;
     },
   });
+
+  const detectedLanguage = data?.data?.detections?.[0]?.language || "";
+
   return { detectedLanguage, isPending };
 };

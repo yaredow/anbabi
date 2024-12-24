@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -15,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { languages } from "../constants";
 import { useTranslateText } from "../api/use-translate-text";
-import { detectLanguage } from "@/lib/utils";
+import { useDetectLanguages } from "../api/use-detect-langugaes";
 
 type TranslateCardProps = {
   selectedText: string;
@@ -23,9 +17,14 @@ type TranslateCardProps = {
 };
 
 export default function TranslateCard({ selectedText }: TranslateCardProps) {
-  const detectedLanguage = detectLanguage(selectedText);
-  const [fromLang, setFromLang] = useState<string>(detectedLanguage);
+  const [fromLang, setFromLang] = useState<string>("");
   const [toLang, setToLang] = useState<string>("am");
+
+  const { detectedLanguage, isPending: isDetectionPending } =
+    useDetectLanguages({
+      text: selectedText,
+    });
+
   const {
     translatedText,
     isPending: isTranslationPending,
@@ -37,10 +36,10 @@ export default function TranslateCard({ selectedText }: TranslateCardProps) {
   });
 
   useEffect(() => {
-    if (selectedText) {
-      refetch();
+    if (detectedLanguage && !isDetectionPending) {
+      setFromLang(detectedLanguage);
     }
-  }, [fromLang, toLang]);
+  }, [detectedLanguage, isDetectionPending]);
 
   return (
     <Card className="w-full h-full shadow-none max-w-2xl mx-auto border-none bg-neutral-50 rounded-none p-0 overflow-y-auto">
@@ -62,7 +61,11 @@ export default function TranslateCard({ selectedText }: TranslateCardProps) {
             onValueChange={(value) => setFromLang(value)}
           >
             <SelectTrigger id="from-lang">
-              <SelectValue placeholder={detectedLanguage || "Detecting..."} />
+              <SelectValue
+                placeholder={
+                  !isDetectionPending ? detectedLanguage : "Detecting..."
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               {languages.map((lang) => (

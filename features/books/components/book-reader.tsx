@@ -157,7 +157,7 @@ export default function BookReader() {
       </VisuallyHidden>
 
       <div
-        className={`relative top-0 w-full m-0 p-0 text-left ${
+        className={`relative my-0 mx-auto top-0 w-full m-0 p-0 text-left ${
           isDesktop ? "h-full" : "h-[95vh]"
         }`}
       >
@@ -165,6 +165,8 @@ export default function BookReader() {
           location={location}
           url={book?.bookUrl as string}
           epubInitOptions={{ openAs: "epub" }}
+          title={book?.title}
+          showToc
           locationChanged={locationChanged}
           loadingView={
             <div className="flex items-center justify-center h-full w-full">

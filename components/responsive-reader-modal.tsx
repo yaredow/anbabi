@@ -45,7 +45,7 @@ export default function ResponsiveReaderModal({
           className={`fixed p-0 border-none overflow-hidden bg-background ${
             isMaximized
               ? "w-screen h-screen max-w-none max-h-none inset-0 z-50"
-              : "w-[400px] h-[667px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+              : "w-[450px] h-[667px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
           }`}
           style={{
             position: isMaximized ? "fixed" : "absolute",
@@ -61,6 +61,7 @@ export default function ResponsiveReaderModal({
             >
               <Bookmark />
             </Button>
+
             <Button
               variant="link"
               onClick={openToolBar}
@@ -102,7 +103,10 @@ export default function ResponsiveReaderModal({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent id="reader-modal" className="h-[85vh] p-0 overflow-hidden">
+      <DrawerContent
+        id="reader-modal"
+        className="h-screen p-0 overflow-hidden border-none fixed"
+      >
         <div className="absolute top-2 right-2 z-10">
           <Button
             onClick={() => onOpenChange(false)}

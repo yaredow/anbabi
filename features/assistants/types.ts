@@ -46,3 +46,13 @@ export type WikipediaApiResponse = {
     };
   };
 };
+
+export type LanguageDetectionResponse = {
+  data: {
+    detections: {
+      language: string; // ISO 639-1 language code, e.g., "en"
+      isReliable: boolean; // Indicates whether the detection is reliable
+      confidence: number; // Confidence score (0-100)
+    }[];
+  };
+};

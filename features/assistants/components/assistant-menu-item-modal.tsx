@@ -1,4 +1,3 @@
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import React, { useMemo } from "react";
 
 import { useBookStore } from "@/features/books/store/book-store";
@@ -8,7 +7,6 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
 

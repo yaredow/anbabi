@@ -31,7 +31,7 @@ export const useTranslateText = ({
       const data = await response.json();
       return data.responseData.translatedText;
     },
-    enabled: !!text && !!targetLang,
+    enabled: !!text && !!sourceLang && !!targetLang,
   });
 
   return { translatedText, isPending, refetch };
