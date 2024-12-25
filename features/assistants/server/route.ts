@@ -10,6 +10,7 @@ const app = new Hono().post(
   zValidator("json", AiChatSchema),
   async (c) => {
     const { messages, author, title } = c.req.valid("json");
+    console.log({ messages });
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -41,7 +42,7 @@ const app = new Hono().post(
       - Answer book-related queries and contribute to a deeper understanding of literature.
 
       When responding:
-      1. Always acknowledge the context of the selected text within the book.
+      1. Always acknowledge the context of the selected text within the book except when they send a word or a phrase with out any context
       2. Tailor your response to the user's current reading material to maintain relevance.
       3. If the query is general, provide thoughtful insights into books, authors, literary genres, and recommendations.
 

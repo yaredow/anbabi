@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAskAI } from "../api/use-ask-ai";
@@ -18,6 +18,11 @@ import { useBookId } from "@/features/books/hooks/use-book-id";
 type AIChatCardProps = {
   text: string;
 };
+
+enum Role {
+  User = "user",
+  Assistant = "assistant",
+}
 
 export function AIChatCard({ text }: AIChatCardProps) {
   const bookId = useBookId();
@@ -29,13 +34,8 @@ export function AIChatCard({ text }: AIChatCardProps) {
   >([{ role: "user", content: text }]);
   const [input, setInput] = useState<string>("");
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    const userMessage = { role: "user", content: input };
-    setMessages((prev) => [...prev, { role: "user", content: input }]);
-    setInput("");
+  const sendChatMessage = (message: string) => {
+    const userMessage = { role: Role.User, content: message };
 
     chat(
       {
@@ -58,6 +58,20 @@ export function AIChatCard({ text }: AIChatCardProps) {
       },
     );
   };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    sendChatMessage(input);
+    setInput("");
+  };
+
+  useEffect(() => {
+    if (text) {
+      sendChatMessage(text);
+    }
+  }, [text, chat]);
 
   return (
     <Card className="w-full  shadow-lg">
