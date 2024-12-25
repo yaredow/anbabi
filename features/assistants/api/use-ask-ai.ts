@@ -1,13 +1,14 @@
 import { client } from "@/lib/hono";
 import { useMutation } from "@tanstack/react-query";
 import { InferRequestType } from "hono";
+import { Role } from "../types";
 
 type ApiResponse = {
-  data: { role: string; content: string };
+  data: { role: Role; content: string };
 };
 
 type TransformedResponse = {
-  role: "user" | "assistant";
+  role: Role;
   content: string;
 };
 
@@ -30,7 +31,7 @@ export const useAskAI = () => {
         throw new Error("Something went wrong");
       }
 
-      const data: ApiResponse = await response.json();
+      const data = (await response.json()) as ApiResponse;
 
       return {
         role: data.data.role,

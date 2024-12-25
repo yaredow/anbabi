@@ -6,7 +6,7 @@ type UseGetWordDefinationProps = {
 };
 
 export const useGetWordDefination = ({ word }: UseGetWordDefinationProps) => {
-  const { data: defination, isPending } = useQuery<
+  const { data: definition, isPending } = useQuery<
     DictionaryApiResponse,
     Error
   >({
@@ -25,5 +25,5 @@ export const useGetWordDefination = ({ word }: UseGetWordDefinationProps) => {
     },
     enabled: !!word,
   });
-  return { defination, isPending };
+  return { definition, isPending };
 };

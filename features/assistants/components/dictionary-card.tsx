@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Loader2, Play } from "lucide-react";
 
 import { RenditionRef } from "@/features/books/types";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 
 import { useGetWordDefination } from "../api/use-get-words-defination";
 import { Meaning } from "../types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type DictionaryCardProps = {
   word: string;
@@ -47,13 +48,15 @@ export default function DictionaryCard({
   onClose,
   renditionRef,
 }: DictionaryCardProps) {
-  const { defination, isPending } = useGetWordDefination({ word });
+  const [isPlaying, setIsPlaying] = useState(false);
+  const { definition, isPending } = useGetWordDefination({ word });
 
   const playAudio = () => {
-    const audioUrl = defination?.phonetics?.find((p) => p.audio)?.audio;
-    console.log({ audioUrl });
+    const audioUrl = definition?.phonetics?.find((p) => p.audio)?.audio;
     if (audioUrl) {
+      setIsPlaying(true);
       const audio = new Audio(audioUrl);
+      audio.onended = () => setIsPlaying(false);
       audio.play();
     }
   };
@@ -64,54 +67,56 @@ export default function DictionaryCard({
     );
   }
 
-  if (!defination) {
+  if (!definition) {
     return (
-      <Card className="w-full rounded-none border-none bg-neutral-50 max-w-2xl mx-auto">
-        <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">
-            No definition found.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="w-full h-full bg-neutral-50 flex items-center justify-center">
+        <p className="text-center text-muted-foreground">
+          No definition found.
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card className="w-full h-full max-w-2xl mx-auto bg-neutral-50 overflow-y-auto">
-      <CardHeader>
+    <div className="w-full h-full bg-neutral-50 overflow-hidden flex flex-col">
+      <div className="p-4 border-b">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-3xl font-bold">
-              {defination.word}
-            </CardTitle>
+            <h2 className="text-2xl font-bold">{definition.word}</h2>
             <p className="text-sm text-muted-foreground">
-              {defination.phonetic}
+              {definition.phonetic}
             </p>
           </div>
-          {defination.phonetics?.some((p) => p.audio) && (
-            <Button variant="outline" size="icon" onClick={playAudio}>
+          {definition.phonetics?.some((p) => p.audio) && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={playAudio}
+              disabled={isPlaying}
+            >
               <Play className="h-4 w-4" />
-              <span className="sr-only">Play pronunciation</span>
+              <span className="sr-only">
+                {isPlaying ? "Playing pronunciation" : "Play pronunciation"}
+              </span>
             </Button>
           )}
         </div>
-      </CardHeader>
-      <CardContent className="h-full">
-        {defination.origin && (
+      </div>
+      <ScrollArea className="flex-grow p-4">
+        {definition.origin && (
           <div className="mb-4">
             <h3 className="text-sm font-semibold text-muted-foreground">
               Origin
             </h3>
-            <p className="text-sm">{defination.origin}</p>
+            <p className="text-sm">{definition.origin}</p>
           </div>
         )}
-        <DottedSeparator className="my-2" />
         <div className="space-y-4">
-          {defination.meanings?.map((meaning: any, index: number) => (
+          {definition.meanings?.map((meaning: Meaning, index: number) => (
             <WordMeaning key={index} meaning={meaning} />
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </ScrollArea>
+    </div>
   );
 }

@@ -1,27 +1,22 @@
-import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Send, Bot, User, Loader2 } from "lucide-react";
+import { useBookId } from "@/features/books/hooks/use-book-id";
 import { useAskAI } from "../api/use-ask-ai";
 import { useGetBook } from "@/features/books/api/use-get-book";
-import { useBookId } from "@/features/books/hooks/use-book-id";
+import { Role } from "../types";
+import ReactMarkdown from "react-markdown";
 
-type AIChatCardProps = {
+interface AIChatCardProps {
   text: string;
-};
+}
 
-enum Role {
-  User = "user",
-  Assistant = "assistant",
+interface Message {
+  role: Role;
+  content: string;
 }
 
 export function AIChatCard({ text }: AIChatCardProps) {
@@ -29,24 +24,28 @@ export function AIChatCard({ text }: AIChatCardProps) {
   const { chat, isPending } = useAskAI();
   const { book } = useGetBook({ bookId });
 
-  const [messages, setMessages] = useState<
-    { role: "user" | "assistant"; content: string }[]
-  >([{ role: "user", content: text }]);
+  const [messages, setMessages] = useState<Message[]>([
+    { role: Role.User, content: text },
+  ]);
   const [input, setInput] = useState<string>("");
+  const [isTyping, setIsTyping] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const sendChatMessage = (message: string) => {
-    const userMessage = { role: Role.User, content: message };
+  const sendChatMessage = async (message: string) => {
+    const userMessage: Message = { role: Role.User, content: message };
+    setIsTyping(true);
 
     chat(
       {
         json: {
           messages: [...messages, userMessage],
-          title: book?.title!,
-          author: book?.author!,
+          title: book?.title ?? "Unknown Book",
+          author: book?.author ?? "Unknown Author",
         },
       },
       {
         onSuccess: (data) => {
+          setIsTyping(false);
           setMessages((prev) => [
             ...prev,
             { role: data.role, content: data.content },
@@ -71,43 +70,74 @@ export function AIChatCard({ text }: AIChatCardProps) {
     if (text) {
       sendChatMessage(text);
     }
-  }, [text, chat]);
+  }, [text]);
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    }
+  }, [messages, isTyping]);
 
   return (
-    <Card className="w-full  shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"></CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className=" w-full pr-4 overflow-y-auto">
+    <div className="flex flex-col h-full bg-background">
+      <ScrollArea className="flex-grow pr-4 mb-4" ref={scrollAreaRef}>
+        <div className="space-y-4 p-4">
           {messages.map((m, index) => (
-            <div key={index} className="flex gap-3 mb-4">
+            <div
+              key={index}
+              className={`flex items-start gap-3 ${
+                m.role === Role.User ? "flex-row" : "flex-row-reverse"
+              }`}
+            >
+              {/* Avatar */}
               <Avatar>
                 <AvatarFallback>
-                  {m.role === "user" ? "U" : "AI"}
+                  {m.role === Role.User ? (
+                    <User className="h-4 w-4" />
+                  ) : (
+                    <Bot className="h-4 w-4" />
+                  )}
                 </AvatarFallback>
                 <AvatarImage
                   src={
-                    m.role === "user"
-                      ? "/placeholder.svg?height=40&width=40"
-                      : "/placeholder.svg?height=40&width=40"
+                    m.role === Role.User ? "/user-avatar.png" : "/ai-avatar.png"
                   }
+                  alt={m.role === Role.User ? "User Avatar" : "AI Avatar"}
                 />
               </Avatar>
+
+              {/* Message Bubble */}
               <div
-                className={`rounded-lg p-2 ${
-                  m.role === "user"
+                className={`rounded-lg p-3 max-w-[80%] ${
+                  m.role === Role.User
                     ? "bg-primary text-primary-foreground"
-                    : "bg-muted"
+                    : "bg-secondary text-secondary-foreground"
                 }`}
               >
-                {m.content}
+                <ReactMarkdown>{m.content}</ReactMarkdown>
               </div>
             </div>
           ))}
-        </ScrollArea>
-      </CardContent>
-      <CardFooter>
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex items-start gap-3 flex-row-reverse">
+              <Avatar>
+                <AvatarFallback>
+                  <Bot className="h-4 w-4" />
+                </AvatarFallback>
+                <AvatarImage src="/ai-avatar.png" alt="AI Avatar" />
+              </Avatar>
+              <div className="rounded-lg p-3 bg-secondary text-secondary-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </div>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+
+      {/* Input Section */}
+      <div className="p-4 border-t">
         <form
           onSubmit={handleSendMessage}
           className="flex w-full items-center space-x-2"
@@ -116,14 +146,15 @@ export function AIChatCard({ text }: AIChatCardProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about the book..."
-            disabled={isPending}
+            disabled={isPending || isTyping}
+            aria-label="Chat input"
           />
-          <Button type="submit" size="icon" disabled={isPending}>
+          <Button type="submit" size="icon" disabled={isPending || isTyping}>
             <Send className="h-4 w-4" />
-            <span className="sr-only">Send</span>
+            <span className="sr-only">Send message</span>
           </Button>
         </form>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 }

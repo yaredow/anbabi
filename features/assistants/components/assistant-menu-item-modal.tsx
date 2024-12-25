@@ -77,14 +77,23 @@ export default function AssistantItemsModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DialogContent
-        className="w-[16rem] hide-scrollbar md:h-72 sm:max-w-lg p-0 border-none overflow-hidden hide-scrollbar 
-             fixed top-1/2 right-1/2 transform -translate-y-1/2 -translate-x-1/2 
-             sm:w-[20rem] sm:h-full"
+        className={`p-0 border-none overflow-hidden hide-scrollbar 
+            fixed top-1/2 transform -translate-y-1/2
+            flex flex-col shadow-lg rounded-lg bg-background
+            ${
+              activeView === "aiChat"
+                ? "h-[30rem] w-[400px]"
+                : "h-[22rem] w-[300px]"
+            } 
+            max-h-[80vh] max-w-[90vw]
+            sm:right-4 md:right-8 lg:right-16`}
       >
-        <DialogHeader className="p-2 h-8 bg-neutral-200">
-          <DialogTitle className="">{renderDynamicTitle()}</DialogTitle>
+        <DialogHeader className="p-2 h-10 bg-muted w-full flex-shrink-0">
+          <DialogTitle className="text-sm font-medium">
+            {renderDynamicTitle()}
+          </DialogTitle>
         </DialogHeader>
-        {renderContent()}
+        <div className="flex-grow overflow-auto p-4">{renderContent()}</div>
       </DialogContent>
     </Dialog>
   );

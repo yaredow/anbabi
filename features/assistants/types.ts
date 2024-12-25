@@ -56,3 +56,8 @@ export type LanguageDetectionResponse = {
     }[];
   };
 };
+
+export enum Role {
+  User = "user",
+  Model = "model",
+}

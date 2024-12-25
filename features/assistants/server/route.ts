@@ -57,7 +57,7 @@ const app = new Hono().post(
     const response = result.response;
     const text = response.text();
 
-    return c.json({ data: { role: "assistant", content: text } });
+    return c.json({ data: { role: "model", content: text } });
   },
 );
 
