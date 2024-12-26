@@ -57,6 +57,7 @@ export default function BookReader() {
     clearSelections,
   } = useBookStore();
   const { selectedColor } = useAnnotationStore();
+  console.log({ selectedColor });
 
   let themeStyles;
 
@@ -125,7 +126,7 @@ export default function BookReader() {
         renditionRef.current?.off("selected", handleTextSelection);
       };
     }
-  }, [addSelection, selections]);
+  }, [addSelection, selections, selectedColor]);
 
   const locationChanged = (epubcifi: string) => {
     if (!firstRenderDone) {

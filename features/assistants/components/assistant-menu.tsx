@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { FaWikipediaW } from "react-icons/fa6";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,10 +10,13 @@ import {
   Languages,
   MessageCircleIcon,
 } from "lucide-react";
-import { FaWikipediaW } from "react-icons/fa6";
+
+import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
+import { ANNOTATION_COLORS } from "@/features/annotations/constants";
 import { useBookStore } from "@/features/books/store/book-store";
-import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
+
 import { toast } from "@/hooks/use-toast";
+
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -21,6 +25,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
+
 type AssistantMenuProps = {
   renditionRef?: any;
   selectedCfiRange: string;
@@ -28,9 +34,10 @@ type AssistantMenuProps = {
 };
 
 type MenuItem = {
-  icon: React.ReactNode;
-  label: string;
-  action: () => void;
+  icon?: React.ReactNode;
+  label?: string;
+  type?: string;
+  action?: () => void;
 };
 
 export default function AssistantMenu({
@@ -42,15 +49,44 @@ export default function AssistantMenu({
   const { removeSelection, selections } = useBookStore();
   const { open } = useAssistantMenuItemModal();
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const { selectedColor, setSelectedColor } = useAnnotationStore();
 
   const itemsPerPage = 5;
 
-  const menuItems: MenuItem[] = [
-    {
-      icon: <X size={16} />,
-      label: "Remove Highlight",
-      action: handleRemoveSelection,
+  const colorPickerItems = Object.entries(ANNOTATION_COLORS).map(
+    ([colorName, colorData]) => {
+      const isSelected = selectedColor?.fill === colorData.fill;
+
+      return {
+        icon: (
+          <div
+            className="w-6 h-6 relative flex items-center justify-center rounded-full"
+            style={{
+              backgroundColor: colorData.fill,
+              opacity: colorData.opacity,
+            }}
+            onClick={() => setSelectedColor(colorData)}
+          >
+            {isSelected && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemoveSelection();
+                }}
+                className="absolute top-0 right-0 bg-transparent text-white rounded-full p-1 cursor-pointer"
+              >
+                <X size={12} className="text-black" />
+              </div>
+            )}
+          </div>
+        ),
+        type: "color",
+      };
     },
+  );
+
+  const menuItems: MenuItem[] = [
+    ...colorPickerItems,
     {
       icon: <Copy className="h-4 w-4" />,
       label: "Copy",
@@ -150,23 +186,36 @@ export default function AssistantMenu({
           .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
           .map((item, index) => (
             <li key={index}>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={item.action}
-                      aria-label={item.label}
-                    >
-                      {item.icon}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">
-                    <p>{item.label}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {item.type === "color" ? (
+                // Render without tooltip for color items
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={item.label}
+                  className="rounded-full"
+                >
+                  {item.icon}
+                </Button>
+              ) : (
+                // Render with tooltip for other items
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={item.action}
+                        aria-label={item.label}
+                      >
+                        {item.icon}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>{item.label}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}{" "}
             </li>
           ))}
       </ul>
