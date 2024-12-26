@@ -178,7 +178,7 @@ export default function BookReader() {
             renditionRef.current.themes.fontSize(`${fontSize}%`);
             renditionRef.current.themes.default({
               "::selection": {
-                background: "#FFFF99",
+                background: "#CCE4F7",
               },
             });
 

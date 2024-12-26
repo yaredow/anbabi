@@ -82,7 +82,7 @@ export default function AssistantItemsModal({
             flex flex-col shadow-lg rounded-lg bg-background
             ${
               activeView === "aiChat"
-                ? "h-[30rem] w-[400px]"
+                ? "h-[25rem] w-[350px]"
                 : "h-[22rem] w-[300px]"
             } 
             max-h-[80vh] max-w-[90vw]

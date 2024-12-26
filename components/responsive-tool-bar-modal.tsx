@@ -44,7 +44,9 @@ export default function ResponsiveToolBarModal({
             <span className="sr-only">Open settings</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[450px]">{children}</DialogContent>
+        <DialogContent className="sm:max-w-[450px] md:max-w-[400px]">
+          {children}
+        </DialogContent>
       </Dialog>
     );
   }

@@ -48,7 +48,7 @@ export default function TranslateCard({ selectedText }: TranslateCardProps) {
   }, [fromLang, toLang, refetch]);
 
   return (
-    <div className="w-full h-full flex flex-col bg-neutral-50 overflow-hidden">
+    <div className="w-full -mt-3 h-full flex flex-col bg-neutral-50 overflow-hidden">
       <div className="flex-grow p-4 overflow-y-auto">
         <div className="space-y-4">
           <div className="p-4 bg-muted rounded-md min-h-[100px]">

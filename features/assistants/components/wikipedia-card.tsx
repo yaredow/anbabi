@@ -53,7 +53,7 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
 
   return (
     <div className="w-full h-full flex flex-col bg-[#f8f9fa] overflow-hidden">
-      <div className="p-4 border-b border-gray-300">
+      <div className="p-2 border-b border-gray-300">
         <h2 className="text-2xl font-serif text-[#202122] truncate">{title}</h2>
         <p className="text-sm text-[#202122] italic mt-2">{summary}</p>
       </div>
@@ -62,7 +62,7 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
           <p className="text-[#202122] leading-7">{content}</p>
         </div>
       </ScrollArea>
-      <div className="p-4 border-t border-gray-300 flex justify-end">
+      <div className="px-2 border-t border-gray-300 flex justify-end">
         <Button variant="link" asChild>
           <a
             href={url}

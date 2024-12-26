@@ -3,7 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, Bot, User, Loader2, Ellipsis } from "lucide-react";
 import { useBookId } from "@/features/books/hooks/use-book-id";
 import { useAskAI } from "../api/use-ask-ai";
 import { useGetBook } from "@/features/books/api/use-get-book";
@@ -79,7 +79,7 @@ export function AIChatCard({ text }: AIChatCardProps) {
   }, [messages, isTyping]);
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex -mt-3 flex-col h-full bg-background">
       <ScrollArea className="flex-grow pr-4 mb-4" ref={scrollAreaRef}>
         <div className="space-y-4 p-4">
           {messages.map((m, index) => (
@@ -129,7 +129,7 @@ export function AIChatCard({ text }: AIChatCardProps) {
                 <AvatarImage src="/ai-avatar.png" alt="AI Avatar" />
               </Avatar>
               <div className="rounded-lg p-3 bg-secondary text-secondary-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Ellipsis className="h-4 w-4 animate-ping" />
               </div>
             </div>
           )}
@@ -149,8 +149,8 @@ export function AIChatCard({ text }: AIChatCardProps) {
             disabled={isPending || isTyping}
             aria-label="Chat input"
           />
-          <Button type="submit" size="icon" disabled={isPending || isTyping}>
-            <Send className="h-4 w-4" />
+          <Button type="submit" size="default" disabled={isPending || isTyping}>
+            <Send className="size-4" />
             <span className="sr-only">Send message</span>
           </Button>
         </form>
