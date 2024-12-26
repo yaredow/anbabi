@@ -20,6 +20,7 @@ import { TocItem } from "../types";
 import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
 import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
 import AssistantItemsModal from "@/features/assistants/components/assistant-menu-item-modal";
+import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -55,6 +56,7 @@ export default function BookReader() {
     addSelection,
     clearSelections,
   } = useBookStore();
+  const { selectedColor } = useAnnotationStore();
 
   let themeStyles;
 
@@ -105,8 +107,8 @@ export default function BookReader() {
             () => handleHighlightClick(cfiRange),
             undefined,
             {
-              fill: "#FFFFE0",
-              "fill-opacity": "0.6",
+              fill: selectedColor.fill,
+              "fill-opacity": selectedColor.opacity,
               "mix-blend-mode": "multiply",
             },
           );
