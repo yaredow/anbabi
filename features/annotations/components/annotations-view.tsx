@@ -28,17 +28,16 @@ interface Annotation {
 
 interface AnnotationsViewProps {
   annotations: Annotation[];
-  isOpen: boolean;
-  onClose: () => void;
   chapter: string;
   count: number;
+  onClose: () => void;
 }
 
 export function AnnotationsView({
   annotations,
-  onClose,
   chapter,
   count,
+  onClose,
 }: AnnotationsViewProps) {
   const [isMobile, setIsMobile] = useState(false);
   const { isAnnotationOpen } = useAnnotationStore();

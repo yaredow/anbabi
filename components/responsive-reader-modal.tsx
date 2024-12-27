@@ -96,7 +96,7 @@ export default function ResponsiveReaderModal({
             </div>
           ) : (
             <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
-              <ReaderMenu />
+              <ReaderMenu handleMaximizeToggle={handleMaximizeToggle} />
             </div>
           )}
           <div

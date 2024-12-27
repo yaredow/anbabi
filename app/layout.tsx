@@ -12,6 +12,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Metadata } from "next";
 import { cn } from "@/lib/utils";
+import AnnotaionModal from "@/features/annotations/components/annotations-modal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default function RootLayout({
             <NuqsAdapter>
               <UploadBookModal />
               <BookReaderModal />
+              <AnnotaionModal />
               <Toaster />
               {children}
             </NuqsAdapter>
