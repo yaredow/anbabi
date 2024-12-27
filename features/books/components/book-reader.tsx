@@ -57,7 +57,6 @@ export default function BookReader() {
     clearSelections,
   } = useBookStore();
   const { selectedColor } = useAnnotationStore();
-  console.log({ selectedColor });
 
   let themeStyles;
 

@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from "react";
-import { X, Maximize2, Minimize2, Settings, Bookmark } from "lucide-react";
+import { X, Maximize2, Minimize2, Settings, NotebookIcon } from "lucide-react";
 import { useMedia } from "react-use";
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -14,6 +14,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useBookStore } from "@/features/books/store/book-store";
+import { AnnotationsView } from "@/features/annotations/components/annotations-view";
+import { SAMPLE_ANNOTATIONS } from "@/features/annotations/constants";
+import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
+import ReaderMenu from "@/features/books/components/reader-menu";
 
 interface ResponsiveModalProps {
   open: boolean;
@@ -30,6 +34,7 @@ export default function ResponsiveReaderModal({
   const { open: openToolBar } = useToolBarModal();
   const [isMaximized, setIsMaximized] = useState(false);
   const { theme } = useBookStore();
+  const { setAnnotationOpen } = useAnnotationStore();
 
   const handleMaximizeToggle = () => setIsMaximized((prev) => !prev);
 
@@ -54,45 +59,48 @@ export default function ResponsiveReaderModal({
             transform: isMaximized ? "none" : "translate(-50%, -50%)",
           }}
         >
-          <div className="absolute top-2 right-2 z-10 flex">
-            <Button
-              variant="link"
-              className={`${theme === "dark" && "text-white"}`}
-            >
-              <Bookmark />
-            </Button>
-
-            <Button
-              variant="link"
-              onClick={openToolBar}
-              className={`${theme === "dark" && "text-white"}`}
-            >
-              <Settings className="size-4" />
-            </Button>
-
-            <Button
-              onClick={handleMaximizeToggle}
-              variant="link"
-              size="icon"
-              className={`${theme === "dark" && "text-white"}`}
-            >
-              {isMaximized ? (
-                <Minimize2 className="h-4 w-4" />
-              ) : (
-                <Maximize2 className="h-4 w-4" />
-              )}
-            </Button>
-            <Button
-              onClick={() => onOpenChange(false)}
-              variant="link"
-              size="icon"
-              className={`${theme === "dark" && "text-white"}`}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          {isMaximized ? (
+            <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+              <Button
+                variant="ghost"
+                onClick={() => setAnnotationOpen((prev) => !prev)}
+                className={`${theme === "dark" && "text-white"}`}
+              >
+                <NotebookIcon className="h-5 w-5" />
+              </Button>
+              <AnnotationsView
+                onClose={() => setAnnotationOpen(false)}
+                annotations={SAMPLE_ANNOTATIONS}
+                chapter="Chapter 1"
+                count={SAMPLE_ANNOTATIONS.length}
+              />
+              <Button
+                variant="link"
+                onClick={openToolBar}
+                className={`${theme === "dark" && "text-white"}`}
+              >
+                <Settings className="size-4" />
+              </Button>
+              <Button
+                onClick={handleMaximizeToggle}
+                variant="link"
+                size="icon"
+                className={`${theme === "dark" && "text-white"}`}
+              >
+                {isMaximized ? (
+                  <Minimize2 className="h-4 w-4" />
+                ) : (
+                  <Maximize2 className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          ) : (
+            <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+              <ReaderMenu />
+            </div>
+          )}
           <div
-            className={`${isMaximized ? "h-screen" : "h-full"} overflow-hidden`}
+            className={`${isMaximized ? "h-screen" : "h-full"} overflow-hidden flex flex-col`}
           >
             {children}
           </div>

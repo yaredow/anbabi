@@ -26,9 +26,10 @@ import {
 } from "@/components/ui/tooltip";
 
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
+import { RenditionRef } from "@/features/books/types";
 
 type AssistantMenuProps = {
-  renditionRef?: any;
+  renditionRef?: RenditionRef;
   selectedCfiRange: string;
   onClose: () => void;
 };
@@ -157,16 +158,6 @@ export default function AssistantMenu({
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 0));
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
-
   return (
     <div
       ref={menuRef}
@@ -204,7 +195,6 @@ export default function AssistantMenu({
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={item.action}
                         aria-label={item.label}
                       >
                         {item.icon}
