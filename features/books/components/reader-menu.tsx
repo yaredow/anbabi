@@ -16,29 +16,33 @@ import {
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
 import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-modal";
+import { useState } from "react";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
 };
 
 export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const { close } = useBookReaderModal();
-  const { open: openToolBar, close: closeToolBar } = useToolBarModal();
+  const { open: openToolBar } = useToolBarModal();
   const { open: openAnnotationModal } = useAnnotationModal();
 
   const handleOpenSettings = (event: React.MouseEvent) => {
     event.preventDefault();
+    setIsOpen(false);
     openToolBar();
-    closeToolBar();
   };
 
   const handleOpenAnnotations = (event: React.MouseEvent) => {
     event.preventDefault();
+    setIsOpen(false);
     openAnnotationModal();
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost">
           <EllipsisVerticalIcon className="size-4" />

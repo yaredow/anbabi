@@ -196,6 +196,7 @@ export default function AssistantMenu({
                         variant="ghost"
                         size="icon"
                         aria-label={item.label}
+                        onClick={item.action}
                       >
                         {item.icon}
                       </Button>
