@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   EllipsisVerticalIcon,
   Maximize2,
@@ -13,12 +13,16 @@ import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-
 import { useBookReaderModal } from "@/features/books/hooks/use-book-reader-modal";
 
 import { Button } from "@/components/ui/button";
+import { useClickOutsideWithIframe } from "@/hooks/use-click-close";
+import { Rendition } from "epubjs";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
 };
 
 export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const renditionRef = useRef<Rendition | undefined>(undefined);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { close } = useBookReaderModal();
@@ -45,13 +49,22 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
     handleCloseMenu();
   };
 
+  useClickOutsideWithIframe({
+    ref: menuRef,
+    renditionRef: renditionRef,
+    callback: () => setIsOpen(false),
+  });
+
   return (
     <div className="relative">
       <Button variant="ghost" onClick={handleMenuToggle}>
         <EllipsisVerticalIcon className="size-4" />
       </Button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div
+          ref={menuRef}
+          className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+        >
           <div
             className="py-1"
             role="menu"
