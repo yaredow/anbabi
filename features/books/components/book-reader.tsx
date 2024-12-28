@@ -1,26 +1,27 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ReactReader, ReactReaderStyle } from "react-reader";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useMedia } from "react-use";
 import { Rendition } from "epubjs";
 
+import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
+import AssistantItemsModal from "@/features/assistants/components/assistant-menu-item-modal";
+import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
+import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
+
 import ToolBarModal from "@/components/tool-bar-modal";
 
+import { useBookStore } from "../store/book-store";
 import { useGetBook } from "../api/use-get-book";
 import { useBookId } from "../hooks/use-book-id";
+import { TocItem } from "../types";
 import {
   darkReaderTheme,
   greenReaderTheme,
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
-import { Loader2 } from "lucide-react";
-import { useBookStore } from "../store/book-store";
-import { TocItem } from "../types";
-import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
-import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
-import AssistantItemsModal from "@/features/assistants/components/assistant-menu-item-modal";
-import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -54,6 +55,7 @@ export default function BookReader() {
     fontFamily,
     selections,
     addSelection,
+    removeSelection,
     clearSelections,
   } = useBookStore();
   const { selectedColor } = useAnnotationStore();
@@ -88,6 +90,7 @@ export default function BookReader() {
   };
 
   useEffect(() => {
+    console.log("rerender");
     if (renditionRef.current) {
       const handleTextSelection = (cfiRange: string, contents: any) => {
         const text = renditionRef?.current?.getRange(cfiRange).toString();
@@ -96,10 +99,13 @@ export default function BookReader() {
           addSelection({ text, cfiRange });
           setSelectedCfiRange(cfiRange);
 
-          // Open the assisstant menu when text selected
+          // Open the assistant menu when text is selected
           open();
 
-          // Add highlight annotation
+          // Remove existing annotation for the selected range
+          removeSelection(cfiRange);
+
+          // Add highlight annotation with updated color
           renditionRef?.current?.annotations.add(
             "highlight",
             cfiRange,

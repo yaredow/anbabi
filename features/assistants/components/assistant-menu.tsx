@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { FaWikipediaW } from "react-icons/fa6";
 import {
   ChevronLeft,
@@ -11,11 +11,12 @@ import {
   MessageCircleIcon,
 } from "lucide-react";
 
+import { toast } from "@/hooks/use-toast";
+
 import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 import { ANNOTATION_COLORS } from "@/features/annotations/constants";
 import { useBookStore } from "@/features/books/store/book-store";
-
-import { toast } from "@/hooks/use-toast";
+import { RenditionRef } from "@/features/books/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +27,6 @@ import {
 } from "@/components/ui/tooltip";
 
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
-import { RenditionRef } from "@/features/books/types";
 
 type AssistantMenuProps = {
   renditionRef?: RenditionRef;
@@ -70,8 +70,8 @@ export default function AssistantMenu({
           >
             {isSelected && (
               <div
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={(event: React.MouseEvent) => {
+                  event.stopPropagation();
                   handleRemoveSelection();
                 }}
                 className="absolute top-0 right-0 bg-transparent text-white rounded-full p-1 cursor-pointer"

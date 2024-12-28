@@ -1,3 +1,17 @@
+import { useState } from "react";
+import {
+  EllipsisVerticalIcon,
+  Maximize2,
+  NotebookIcon,
+  Settings,
+  X,
+} from "lucide-react";
+
+import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
+
+import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-modal";
+import { useBookReaderModal } from "@/features/books/hooks/use-book-reader-modal";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,17 +20,6 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import {
-  EllipsisVerticalIcon,
-  Maximize2,
-  NotebookIcon,
-  Settings,
-  X,
-} from "lucide-react";
-import { useBookReaderModal } from "../hooks/use-book-reader-modal";
-import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
-import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-modal";
-import { useState } from "react";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
