@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   EllipsisVerticalIcon,
   Maximize2,
@@ -13,13 +13,6 @@ import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-
 import { useBookReaderModal } from "@/features/books/hooks/use-book-reader-modal";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
@@ -32,58 +25,72 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
   const { open: openToolBar } = useToolBarModal();
   const { open: openAnnotationModal } = useAnnotationModal();
 
+  const handleMenuToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const handleCloseMenu = () => {
+    setIsOpen(false);
+  };
+
   const handleOpenSettings = (event: React.MouseEvent) => {
     event.preventDefault();
-    setIsOpen(false);
     openToolBar();
+    handleCloseMenu();
   };
 
   const handleOpenAnnotations = (event: React.MouseEvent) => {
     event.preventDefault();
-    setIsOpen(false);
     openAnnotationModal();
+    handleCloseMenu();
   };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost">
-          <EllipsisVerticalIcon className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="mr-10">
-        <DropdownMenuItem
-          className="flex items-center justify-center gap-2"
-          onClick={handleMaximizeToggle}
-        >
-          <Maximize2 />
-          <span>Maximize</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="flex items-center justify-center gap-2"
-          onClick={handleOpenAnnotations}
-        >
-          <NotebookIcon />
-          <span>Annotations</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="flex items-center justify-center gap-2"
-          onClick={handleOpenSettings}
-        >
-          <Settings />
-          <span>Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="flex items-center justify-center gap-2"
-          onClick={() => close()}
-        >
-          <X />
-          <span>Close</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="relative">
+      <Button variant="ghost" onClick={handleMenuToggle}>
+        <EllipsisVerticalIcon className="size-4" />
+      </Button>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+          <div
+            className="py-1"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="options-menu"
+          >
+            <button
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={handleMaximizeToggle}
+            >
+              <Maximize2 className="mr-3 size-4" />
+              <span>Maximize</span>
+            </button>
+
+            <button
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={handleOpenAnnotations}
+            >
+              <NotebookIcon className="mr-3 size-4" />
+              <span>Annotations</span>
+            </button>
+
+            <button
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={handleOpenSettings}
+            >
+              <Settings className="mr-3 size-4" />
+              <span>Settings</span>
+            </button>
+            <button
+              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onClick={() => close()}
+            >
+              <X className="mr-3 size-4" />
+              <span>Close</span>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

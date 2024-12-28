@@ -1,18 +1,18 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Inter } from "next/font/google";
-import localFont from "next/font/local";
+import { Metadata } from "next";
 
-import QueryProviders from "@/components/providers/query-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
 
+import AnnotaionModal from "@/features/annotations/components/annotations-modal";
 import UploadBookModal from "@/features/books/components/upload-book-modal";
 import BookReaderModal from "@/features/books/components/book-reader-modal";
 
-import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Metadata } from "next";
-import { cn } from "@/lib/utils";
-import AnnotaionModal from "@/features/annotations/components/annotations-modal";
+import QueryProviders from "@/components/providers/query-provider";
+import { Toaster } from "@/components/ui/toaster";
+
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],

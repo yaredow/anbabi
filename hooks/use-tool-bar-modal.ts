@@ -4,7 +4,7 @@ import { parseAsBoolean, useQueryState } from "nuqs";
 
 export const useToolBarModal = () => {
   const [isOpen, setIsOpen] = useQueryState(
-    "toolbar-open",
+    "open-toolbar",
     parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true }),
   );
 
