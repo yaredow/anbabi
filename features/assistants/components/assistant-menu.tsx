@@ -28,6 +28,7 @@ import {
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
 import { useSearchParams } from "next/navigation";
+import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 
 type AssistantMenuProps = {
   selectedCfiRange: string;
@@ -50,9 +51,8 @@ export default function AssistantMenu({
 
   const { renditionRef, removeSelection, selections } = useBookStore();
   const { selectedColor, setSelectedColor } = useAnnotationStore();
-  const { open, close } = useAssistantMenuItemModal();
+  const { open, close, isOpen } = useAssistantMenuModal();
 
-  const isOpen = searchParams.get("open-menu") === "true";
   const menuRef = useRef<HTMLDivElement | null>(null);
   const itemsPerPage = 5;
 

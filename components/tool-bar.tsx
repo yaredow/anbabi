@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import DottedSeparator from "./dotted-separator";
 
 import { Slider } from "./ui/slider";
+import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
 
 type ToolbarContentProps = {
   onClose?: () => void;

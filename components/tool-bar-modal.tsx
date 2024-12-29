@@ -10,7 +10,7 @@ type ToolBarModalProps = {
 };
 
 export default function ToolBarModal({ renditionRef }: ToolBarModalProps) {
-  const { isOpen, setIsOpen, close } = useToolBarModal();
+  const { isOpen, setIsOpen } = useToolBarModal();
 
   return (
     <ResponsiveToolBarModal open={isOpen} onOpenChange={setIsOpen}>
