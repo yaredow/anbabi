@@ -13,8 +13,8 @@ import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-
 import { useBookReaderModal } from "@/features/books/hooks/use-book-reader-modal";
 
 import { Button } from "@/components/ui/button";
-import { useClickOutsideWithIframe } from "@/hooks/use-click-close";
-import { Rendition } from "epubjs";
+import { useEpubModalCloser } from "@/hooks/use-click-close";
+import { useBookStore } from "../store/book-store";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
@@ -22,8 +22,8 @@ type ReaderMenuProps = {
 
 export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const renditionRef = useRef<Rendition | undefined>(undefined);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { renditionRef } = useBookStore();
 
   const { close } = useBookReaderModal();
   const { open: openToolBar } = useToolBarModal();
@@ -49,10 +49,11 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
     handleCloseMenu();
   };
 
-  useClickOutsideWithIframe({
-    ref: menuRef,
+  useEpubModalCloser({
+    modalRef: menuRef,
     renditionRef: renditionRef,
-    callback: () => setIsOpen(false),
+    isOpen,
+    onClose: () => setIsOpen(false),
   });
 
   return (

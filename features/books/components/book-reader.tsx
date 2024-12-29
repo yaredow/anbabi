@@ -22,6 +22,7 @@ import {
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
+import BookReaderModal from "./book-reader-modal";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -45,10 +46,10 @@ export default function BookReader() {
   const [firstRenderDone, setFirstRenderDone] = useState(false);
   const [selectedCfiRange, setSelectedCfiRange] = useState("");
   const [page, setPage] = useState("");
-  const renditionRef = useRef<Rendition | undefined>(undefined);
   const tocRef = useRef<TocItem[] | null>(null);
   const { open } = useAssistantMenuModal();
   const {
+    renditionRef,
     theme,
     updateTheme,
     fontSize,
@@ -90,7 +91,6 @@ export default function BookReader() {
   };
 
   useEffect(() => {
-    console.log("rerender");
     if (renditionRef.current) {
       const handleTextSelection = (cfiRange: string, contents: any) => {
         const text = renditionRef?.current?.getRange(cfiRange).toString();

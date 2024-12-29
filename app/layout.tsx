@@ -41,8 +41,8 @@ export default function RootLayout({
           <QueryProviders>
             <NuqsAdapter>
               <UploadBookModal />
-              <BookReaderModal />
               <AnnotaionModal />
+              <BookReaderModal />
               <Toaster />
               {children}
             </NuqsAdapter>

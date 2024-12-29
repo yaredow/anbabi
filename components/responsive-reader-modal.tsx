@@ -18,6 +18,7 @@ import { AnnotationsView } from "@/features/annotations/components/annotations-v
 import { SAMPLE_ANNOTATIONS } from "@/features/annotations/constants";
 import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 import ReaderMenu from "@/features/books/components/reader-menu";
+import { RenditionRef } from "@/features/books/types";
 
 interface ResponsiveModalProps {
   open: boolean;
