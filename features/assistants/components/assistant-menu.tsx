@@ -16,7 +16,6 @@ import { toast } from "@/hooks/use-toast";
 import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 import { ANNOTATION_COLORS } from "@/features/annotations/constants";
 import { useBookStore } from "@/features/books/store/book-store";
-import { RenditionRef } from "@/features/books/types";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +28,6 @@ import {
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 
 type AssistantMenuProps = {
-  renditionRef?: RenditionRef;
   selectedCfiRange: string;
   onClose: () => void;
 };
@@ -42,12 +40,11 @@ type MenuItem = {
 };
 
 export default function AssistantMenu({
-  renditionRef,
   selectedCfiRange,
   onClose,
 }: AssistantMenuProps) {
   const [currentPage, setCurrentPage] = useState(0);
-  const { removeSelection, selections } = useBookStore();
+  const { renditionRef, removeSelection, selections } = useBookStore();
   const { open } = useAssistantMenuItemModal();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { selectedColor, setSelectedColor } = useAnnotationStore();

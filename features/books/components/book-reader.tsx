@@ -157,10 +157,7 @@ export default function BookReader() {
     <>
       <VisuallyHidden>
         <ToolBarModal renditionRef={renditionRef} />
-        <AssistantMenuModal
-          renditionRef={renditionRef}
-          selectedCfiRange={selectedCfiRange}
-        />
+        <AssistantMenuModal selectedCfiRange={selectedCfiRange} />
         <AssistantItemsModal selectedCfiRange={selectedCfiRange} />
       </VisuallyHidden>
 

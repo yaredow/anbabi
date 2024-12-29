@@ -8,7 +8,7 @@ interface UseEpubModalCloserProps {
   onClose: () => void;
 }
 
-export function useEpubModalCloser({
+export function useCloseModalOnClick({
   modalRef,
   renditionRef,
   isOpen,

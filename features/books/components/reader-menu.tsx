@@ -13,8 +13,8 @@ import { useAnnotationModal } from "@/features/annotations/hooks/use-annotation-
 import { useBookReaderModal } from "@/features/books/hooks/use-book-reader-modal";
 
 import { Button } from "@/components/ui/button";
-import { useEpubModalCloser } from "@/hooks/use-click-close";
 import { useBookStore } from "../store/book-store";
+import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
@@ -49,7 +49,7 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
     handleCloseMenu();
   };
 
-  useEpubModalCloser({
+  useCloseModalOnClick({
     modalRef: menuRef,
     renditionRef: renditionRef,
     isOpen,

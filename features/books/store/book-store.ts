@@ -6,7 +6,7 @@ import { fontFamilies } from "../constants";
 type BookStoreState = {
   //Rendition
   renditionRef: RenditionRef;
-  setRenditionRef: (rendition: RenditionRef) => void;
+
   // Theme related state
   theme: ITheme;
   setTheme: (newTheme: ITheme) => void;
@@ -38,7 +38,6 @@ type BookStoreState = {
 export const useBookStore = create<BookStoreState>((set) => ({
   // State related to rendition
   renditionRef: { current: undefined },
-  setRenditionRef: (renditionRef) => set({ renditionRef }),
 
   // Theme state
   theme: "light",
