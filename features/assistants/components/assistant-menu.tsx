@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaWikipediaW } from "react-icons/fa6";
 import {
   ChevronLeft,
@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/tooltip";
 
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
+import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
+import { useSearchParams } from "next/navigation";
 
 type AssistantMenuProps = {
   selectedCfiRange: string;
@@ -44,11 +46,14 @@ export default function AssistantMenu({
   onClose,
 }: AssistantMenuProps) {
   const [currentPage, setCurrentPage] = useState(0);
-  const { renditionRef, removeSelection, selections } = useBookStore();
-  const { open } = useAssistantMenuItemModal();
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const { selectedColor, setSelectedColor } = useAnnotationStore();
+  const searchParams = useSearchParams();
 
+  const { renditionRef, removeSelection, selections } = useBookStore();
+  const { selectedColor, setSelectedColor } = useAnnotationStore();
+  const { open, close } = useAssistantMenuItemModal();
+
+  const isOpen = searchParams.get("open-menu") === "true";
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const itemsPerPage = 5;
 
   const colorPickerItems = Object.entries(ANNOTATION_COLORS).map(
@@ -124,6 +129,7 @@ export default function AssistantMenu({
     const matchingSelection = selections.find(
       (selection) => selection.cfiRange === selectedCfiRange,
     );
+
     if (matchingSelection) {
       try {
         await navigator.clipboard.writeText(matchingSelection.text);
@@ -154,6 +160,13 @@ export default function AssistantMenu({
   const nextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 0));
+
+  useCloseModalOnClick({
+    modalRef: menuRef,
+    renditionRef,
+    isOpen,
+    onClose: close,
+  });
 
   return (
     <div
@@ -203,7 +216,7 @@ export default function AssistantMenu({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-              )}{" "}
+              )}
             </li>
           ))}
       </ul>

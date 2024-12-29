@@ -1,5 +1,4 @@
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { useState } from "react";
 
 export const useAssistantMenuItemModal = () => {
   const [isOpen, setIsOpen] = useQueryState(

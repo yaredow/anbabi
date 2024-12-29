@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 
 import { useBookStore } from "@/features/books/store/book-store";
 import { RenditionRef } from "@/features/books/types";
@@ -15,19 +15,21 @@ import DictionaryCard from "./dictionary-card";
 import WikipediaCard from "./wikipedia-card";
 import TranslateCard from "./translate-card";
 import { AIChatCard } from "./ai-chat-card";
+import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
 
 type AssistantMenuModalProps = {
-  renditionRef?: RenditionRef;
   selectedCfiRange: string;
 };
 
 export default function AssistantItemsModal({
-  renditionRef,
   selectedCfiRange,
 }: AssistantMenuModalProps) {
-  const { isOpen, setIsOpen } = useAssistantMenuItemModal();
-  const { close } = useAssistantMenuItemModal();
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  const { isOpen, setIsOpen, close } = useAssistantMenuItemModal();
   const activeView = useBookStore.getState().activeView;
+  const { renditionRef } = useBookStore();
+
   const selectedText = useMemo(() => {
     const selections = useBookStore.getState().selections;
     const selection = selections.find(
@@ -54,13 +56,7 @@ export default function AssistantItemsModal({
   const renderContent = () => {
     switch (activeView) {
       case "dictionary":
-        return (
-          <DictionaryCard
-            word={selectedText}
-            onClose={close}
-            renditionRef={renditionRef}
-          />
-        );
+        return <DictionaryCard word={selectedText} onClose={close} />;
 
       case "googleTranslate":
         return <TranslateCard selectedText={selectedText} onClose={close} />;
@@ -68,15 +64,23 @@ export default function AssistantItemsModal({
       case "aiChat":
         return <AIChatCard text={selectedText} />;
       case "wikipedia":
-        return <WikipediaCard selectedText={selectedText} onClose={close} />;
+        return <WikipediaCard selectedText={selectedText} />;
       default:
         return null;
     }
   };
 
+  useCloseModalOnClick({
+    modalRef: dialogRef,
+    renditionRef,
+    isOpen,
+    onClose: close,
+  });
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DialogContent
+        ref={dialogRef}
         className={`p-0 border-none overflow-hidden hide-scrollbar 
             fixed top-1/2 transform -translate-y-1/2
             flex flex-col shadow-lg rounded-lg bg-background

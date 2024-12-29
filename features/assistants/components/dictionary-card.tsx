@@ -14,7 +14,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 type DictionaryCardProps = {
   word: string;
   onClose: () => void;
-  renditionRef: RenditionRef | undefined;
 };
 
 type WordMeaningProps = {
@@ -43,11 +42,7 @@ const WordMeaning = ({ meaning }: WordMeaningProps) => {
   );
 };
 
-export default function DictionaryCard({
-  word,
-  onClose,
-  renditionRef,
-}: DictionaryCardProps) {
+export default function DictionaryCard({ word, onClose }: DictionaryCardProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const { definition, isPending } = useGetWordDefination({ word });
 
