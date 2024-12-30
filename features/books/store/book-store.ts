@@ -1,7 +1,8 @@
 import { create } from "zustand";
-import { ITheme, RenditionRef, Selection } from "../types";
 import { Rendition } from "epubjs";
+
 import { fontFamilies } from "../constants";
+import { ITheme, RenditionRef } from "../types";
 
 type BookStoreState = {
   //Rendition
@@ -24,10 +25,6 @@ type BookStoreState = {
   updateFontFamily: (rendition: Rendition, fontFamily: string) => void;
 
   // text selection related state
-  selections: Selection[];
-  addSelection: (selection: Selection) => void;
-  removeSelection: (cfiRange: string) => void;
-  clearSelections: () => void;
 
   // Assistant menu item related states
   activeView: string | null;
@@ -101,18 +98,6 @@ export const useBookStore = create<BookStoreState>((set) => ({
       rendition.themes.select("custom");
     }
   },
-
-  // Text selection state
-  selections: [],
-  addSelection: (selection) =>
-    set((state) => ({ selections: [...state.selections, selection] })),
-  removeSelection: (cfiRange) =>
-    set((state) => ({
-      selections: state.selections.filter(
-        (selection) => selection.cfiRange !== cfiRange,
-      ),
-    })),
-  clearSelections: () => set({ selections: [] }),
 
   // Assistant menu items modal state
   activeView: null,

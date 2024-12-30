@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { FaWikipediaW } from "react-icons/fa6";
 import {
   ChevronLeft,
@@ -27,7 +27,6 @@ import {
 
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
-import { useSearchParams } from "next/navigation";
 import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 
 type AssistantMenuProps = {
@@ -47,11 +46,12 @@ export default function AssistantMenu({
   onClose,
 }: AssistantMenuProps) {
   const [currentPage, setCurrentPage] = useState(0);
-  const searchParams = useSearchParams();
 
-  const { renditionRef, removeSelection, selections } = useBookStore();
+  const { renditionRef } = useBookStore();
+  const { selections, removeSelection } = useAnnotationStore();
   const { selectedColor, setSelectedColor } = useAnnotationStore();
-  const { open, close, isOpen } = useAssistantMenuModal();
+  const { close, isOpen } = useAssistantMenuModal();
+  const { open } = useAssistantMenuItemModal();
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const itemsPerPage = 5;

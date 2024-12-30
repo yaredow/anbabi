@@ -1,5 +1,6 @@
 import { RefObject } from "react";
 import { Rendition } from "epubjs";
+import { AnnoationColor } from "../annotations/constants";
 
 export type Book = {
   id: string;
@@ -46,4 +47,5 @@ export type TocItem = {
 export type Selection = {
   text: string;
   cfiRange: string;
+  color: AnnoationColor;
 };

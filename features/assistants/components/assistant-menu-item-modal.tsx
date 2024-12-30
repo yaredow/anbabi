@@ -16,6 +16,7 @@ import WikipediaCard from "./wikipedia-card";
 import TranslateCard from "./translate-card";
 import { AIChatCard } from "./ai-chat-card";
 import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
+import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 
 type AssistantMenuModalProps = {
   selectedCfiRange: string;
@@ -31,7 +32,7 @@ export default function AssistantItemsModal({
   const { renditionRef } = useBookStore();
 
   const selectedText = useMemo(() => {
-    const selections = useBookStore.getState().selections;
+    const selections = useAnnotationStore.getState().selections;
     const selection = selections.find(
       (selection) => selection.cfiRange === selectedCfiRange,
     );
@@ -80,7 +81,6 @@ export default function AssistantItemsModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DialogContent
-        ref={dialogRef}
         className={`p-0 border-none overflow-hidden hide-scrollbar 
             fixed top-1/2 transform -translate-y-1/2
             flex flex-col shadow-lg rounded-lg bg-background

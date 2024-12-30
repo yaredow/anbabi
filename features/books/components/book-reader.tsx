@@ -1,6 +1,6 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ReactReader, ReactReaderStyle } from "react-reader";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useMedia } from "react-use";
 
@@ -21,6 +21,7 @@ import {
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
+import { AnnoationColor } from "@/features/annotations/constants";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -46,18 +47,15 @@ export default function BookReader() {
   const [page, setPage] = useState("");
   const tocRef = useRef<TocItem[] | null>(null);
   const { open } = useAssistantMenuModal();
+  const { renditionRef, theme, updateTheme, fontSize, fontFamily } =
+    useBookStore();
   const {
-    renditionRef,
-    theme,
-    updateTheme,
-    fontSize,
-    fontFamily,
+    selectedColor,
     selections,
-    addSelection,
-    removeSelection,
     clearSelections,
-  } = useBookStore();
-  const { selectedColor } = useAnnotationStore();
+    addSelection,
+    setSelectedColor,
+  } = useAnnotationStore();
 
   let themeStyles;
 
@@ -76,14 +74,18 @@ export default function BookReader() {
   }
 
   // Open the assisstant menu when a highlight get clicked
-  const handleHighlightClick = (cfiRange: string) => {
+  const handleHighlightClick = (
+    cfiRange: string,
+    selectedColor: AnnoationColor,
+  ) => {
     setSelectedCfiRange(cfiRange);
-    const highlightedSelections = useBookStore.getState().selections;
+    const highlightedSelections = useAnnotationStore.getState().selections;
     const matchingSelection = highlightedSelections.find(
       (selection) => selection.cfiRange === cfiRange,
     );
 
     if (matchingSelection) {
+      setSelectedColor(matchingSelection.color);
       open();
     }
   };
@@ -94,21 +96,19 @@ export default function BookReader() {
         const text = renditionRef?.current?.getRange(cfiRange).toString();
 
         if (text) {
-          addSelection({ text, cfiRange });
+          const newSelection = { text, cfiRange, color: selectedColor };
+          addSelection(newSelection);
           setSelectedCfiRange(cfiRange);
 
           // Open the assistant menu when text is selected
           open();
-
-          // Remove existing annotation for the selected range
-          removeSelection(cfiRange);
 
           // Add highlight annotation with updated color
           renditionRef?.current?.annotations.add(
             "highlight",
             cfiRange,
             {},
-            () => handleHighlightClick(cfiRange),
+            () => handleHighlightClick(cfiRange, selectedColor),
             undefined,
             {
               fill: selectedColor.fill,
