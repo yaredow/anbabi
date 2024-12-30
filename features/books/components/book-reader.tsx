@@ -74,10 +74,7 @@ export default function BookReader() {
   }
 
   // Open the assisstant menu when a highlight get clicked
-  const handleHighlightClick = (
-    cfiRange: string,
-    selectedColor: AnnoationColor,
-  ) => {
+  const handleHighlightClick = (cfiRange: string) => {
     setSelectedCfiRange(cfiRange);
     const highlightedSelections = useAnnotationStore.getState().selections;
     const matchingSelection = highlightedSelections.find(
@@ -108,7 +105,7 @@ export default function BookReader() {
             "highlight",
             cfiRange,
             {},
-            () => handleHighlightClick(cfiRange, selectedColor),
+            () => handleHighlightClick(cfiRange),
             undefined,
             {
               fill: selectedColor.fill,

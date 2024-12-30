@@ -14,7 +14,10 @@ import {
 import { toast } from "@/hooks/use-toast";
 
 import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
-import { ANNOTATION_COLORS } from "@/features/annotations/constants";
+import {
+  AnnoationColor,
+  ANNOTATION_COLORS,
+} from "@/features/annotations/constants";
 import { useBookStore } from "@/features/books/store/book-store";
 
 import { Button } from "@/components/ui/button";
@@ -48,7 +51,12 @@ export default function AssistantMenu({
   const [currentPage, setCurrentPage] = useState(0);
 
   const { renditionRef } = useBookStore();
-  const { selections, removeSelection } = useAnnotationStore();
+  const {
+    selections,
+    removeSelection,
+    updateAnnotationColor,
+    removeAnnotation,
+  } = useAnnotationStore();
   const { selectedColor, setSelectedColor } = useAnnotationStore();
   const { close, isOpen } = useAssistantMenuModal();
   const { open } = useAssistantMenuItemModal();
@@ -68,7 +76,7 @@ export default function AssistantMenu({
               backgroundColor: colorData.fill,
               opacity: colorData.opacity,
             }}
-            onClick={() => setSelectedColor(colorData)}
+            onClick={() => handleColorChange(colorData)}
           >
             {isSelected && (
               <div
@@ -150,6 +158,17 @@ export default function AssistantMenu({
       removeSelection(selectedCfiRange);
       onClose();
     }
+  }
+
+  function handleColorChange(newColor: AnnoationColor) {
+    setSelectedColor(newColor);
+
+    if (selectedCfiRange) {
+      removeAnnotation(selectedCfiRange, renditionRef);
+
+      updateAnnotationColor(selectedCfiRange, newColor, renditionRef);
+    }
+    onClose();
   }
 
   const handleOpenModal = (view: string) => {
