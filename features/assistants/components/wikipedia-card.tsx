@@ -21,7 +21,7 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
 
   if (!wiki || error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[#f8f9fa]">
+      <div className="w-full h-full flex items-center justify-center bg-background">
         <h2 className="text-2xl font-serif text-[#202122]">
           No Wikipedia page found
         </h2>
@@ -33,7 +33,7 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
 
   if (!page) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-[#f8f9fa]">
+      <div className="w-full h-full flex items-center justify-center bg-background">
         <h2 className="text-2xl font-serif text-[#202122]">
           No Wikipedia page found
         </h2>
@@ -52,7 +52,7 @@ export default function WikipediaCard({ selectedText }: WikipediaCardProps) {
   const url = `https://en.wikipedia.org/?curid=${pageid}`;
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#f8f9fa] overflow-hidden">
+    <div className="w-full h-full flex flex-col bg-background overflow-hidden">
       <div className="p-2 border-b border-gray-300">
         <h2 className="text-2xl font-serif text-[#202122] truncate">{title}</h2>
         <p className="text-sm text-[#202122] italic mt-2">{summary}</p>
