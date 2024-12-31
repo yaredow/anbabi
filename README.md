@@ -1,4 +1,3 @@
-````markdown
 # Anbabi - Modern eBook Reader with AI and Utilities
 
 Anbabi is a responsive eBook reader built using **React.js** and **EPUB.js**, offering state-of-the-art features like annotations, AI assistance, translation, dictionary, and Wikipedia integration. This project elevates the reading experience with modern tools and a user-friendly interface.
@@ -57,10 +56,10 @@ Anbabi is a responsive eBook reader built using **React.js** and **EPUB.js**, of
 ### Steps
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/anbabi.git
    ```
-````
 
 2. Navigate to the project directory:
    ```bash
