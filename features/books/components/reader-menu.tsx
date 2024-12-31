@@ -64,7 +64,7 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
       {isOpen && (
         <div
           ref={menuRef}
-          className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+          className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5"
         >
           <div
             className="py-1"

@@ -70,7 +70,7 @@ export default function AssistantMenu({
       return {
         icon: (
           <div
-            className="w-6 h-6 relative flex items-center justify-center rounded-full"
+            className="w-6 h-6 relative flex items-center ring-2 ring-neutral-200 justify-center rounded-full"
             style={{
               backgroundColor: colorData.fill,
               opacity: colorData.opacity,
@@ -198,7 +198,7 @@ export default function AssistantMenu({
   return (
     <div
       ref={menuRef}
-      className="z-10 w-full bg-white rounded-lg shadow-lg p-2 flex items-center"
+      className="z-10 w-full bg-background rounded-lg shadow-lg p-2 flex items-center"
     >
       <Button
         variant="ghost"
