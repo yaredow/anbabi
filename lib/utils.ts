@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { franc } from "franc-min";
+import { AnnoationColor } from "@/features/annotations/constants";
+import { RenditionRef } from "@/features/books/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -27,4 +29,34 @@ export function detectLanguage(text: string) {
     return "en";
   }
   return lang.slice(0, 2);
+}
+
+export function updateAnnotationColor(
+  cfiRange: string,
+  newColor: AnnoationColor,
+  renditionRef: RenditionRef,
+  onClickCallback?: (cfiRange: string) => void,
+) {
+  if (renditionRef.current) {
+    // Remove the existing annotation
+    renditionRef.current.annotations.remove("highlight", cfiRange);
+
+    // Add a new annotation with the updated color
+    renditionRef.current.annotations.add(
+      "highlight",
+      cfiRange,
+      {},
+      () => {
+        if (onClickCallback) {
+          onClickCallback(cfiRange);
+        }
+      },
+      undefined,
+      {
+        fill: newColor.fill,
+        "fill-opacity": newColor.opacity,
+        "mix-blend-mode": "multiply",
+      },
+    );
+  }
 }

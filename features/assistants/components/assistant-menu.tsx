@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useActionState } from "react";
 import { FaWikipediaW } from "react-icons/fa6";
 import {
   ChevronLeft,
@@ -31,6 +31,7 @@ import {
 import { useAssistantMenuItemModal } from "../hooks/use-assitant-menu-item-modal";
 import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
 import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
+import { updateAnnotationColor } from "@/lib/utils";
 
 type AssistantMenuProps = {
   selectedCfiRange: string;
@@ -53,12 +54,8 @@ export default function AssistantMenu({
   const [currentPage, setCurrentPage] = useState(0);
 
   const { renditionRef } = useBookStore();
-  const {
-    selections,
-    removeSelection,
-    updateAnnotationColor,
-    removeAnnotation,
-  } = useAnnotationStore();
+  const { selections, removeSelection, removeAnnotation } =
+    useAnnotationStore();
   const { selectedColor, setSelectedColor } = useAnnotationStore();
   const { close, isOpen } = useAssistantMenuModal();
   const { open } = useAssistantMenuItemModal();
@@ -174,6 +171,10 @@ export default function AssistantMenu({
         renditionRef,
         handleHighlightClick,
       );
+
+      useAnnotationStore
+        .getState()
+        .updateAnnotationColor(selectedCfiRange, newColor);
     }
     onClose();
   }

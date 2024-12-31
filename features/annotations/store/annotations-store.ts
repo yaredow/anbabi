@@ -15,12 +15,7 @@ type AnnotationStoreState = {
   // Annotation tracking
   annotations: Map<string, Annotation>;
   addAnnotation: (cfiRange: string, annotation: Annotation) => void;
-  updateAnnotationColor: (
-    cfiRange: string,
-    color: AnnoationColor,
-    renditionRef: RenditionRef,
-    onClickCallback?: (cfiRange: string) => void,
-  ) => void;
+  updateAnnotationColor: (cfiRange: string, color: AnnoationColor) => void;
   removeAnnotation: (cfiRange: string, renditionRef: RenditionRef) => void;
 
   // Annotation related states
@@ -54,44 +49,13 @@ export const useAnnotationStore = create<AnnotationStoreState>((set, get) => ({
     set({ annotations });
   },
 
-  updateAnnotationColor: (
-    cfiRange,
-    newColor,
-    renditionRef,
-    onClickCallback?: (cfiRange: string) => void,
-  ) => {
+  updateAnnotationColor: (cfiRange, newColor) => {
     const state = get();
-    const selection = state.selections.find((sel) => sel.cfiRange === cfiRange);
-
-    if (selection && renditionRef.current) {
-      // Remove the existing annotation
-      renditionRef.current.annotations.remove("highlight", cfiRange);
-
-      // Add a new annotation with the updated color
-      renditionRef.current.annotations.add(
-        "highlight",
-        cfiRange,
-        {},
-        () => {
-          if (onClickCallback) {
-            onClickCallback(cfiRange);
-          }
-        },
-        undefined,
-        {
-          fill: newColor.fill,
-          "fill-opacity": newColor.opacity,
-          "mix-blend-mode": "multiply",
-        },
-      );
-
-      // Update the state with the new color
-      set({
-        selections: state.selections.map((sel) =>
-          sel.cfiRange === cfiRange ? { ...sel, color: newColor } : sel,
-        ),
-      });
-    }
+    set({
+      selections: state.selections.map((sel) =>
+        sel.cfiRange === cfiRange ? { ...sel, color: newColor } : sel,
+      ),
+    });
   },
   removeAnnotation: (cfiRange: string, renditionRef) => {
     const state = get();

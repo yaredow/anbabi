@@ -21,6 +21,7 @@ import {
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
+import { updateAnnotationColor } from "@/lib/utils";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -54,7 +55,6 @@ export default function BookReader() {
     clearSelections,
     addSelection,
     setSelectedColor,
-    updateAnnotationColor,
   } = useAnnotationStore();
 
   let themeStyles;
@@ -107,6 +107,10 @@ export default function BookReader() {
             renditionRef,
             handleHighlightClick,
           );
+
+          useAnnotationStore
+            .getState()
+            .updateAnnotationColor(cfiRange, selectedColor);
 
           // Clear the browser's selection
           contents.window.getSelection().removeAllRanges();
