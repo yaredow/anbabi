@@ -93,6 +93,17 @@ export default function BookReader() {
         const text = renditionRef?.current?.getRange(cfiRange).toString();
 
         if (text) {
+          const existingSelection = selections.find(
+            (sel) => sel.cfiRange === cfiRange,
+          );
+
+          if (
+            existingSelection &&
+            existingSelection.color.fill === selectedColor.fill
+          ) {
+            return;
+          }
+
           const newSelection = { text, cfiRange, color: selectedColor };
           addSelection(newSelection);
           setSelectedCfiRange(cfiRange);
