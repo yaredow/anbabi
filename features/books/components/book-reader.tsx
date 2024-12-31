@@ -1,6 +1,6 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ReactReader, ReactReaderStyle } from "react-reader";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useMedia } from "react-use";
 
@@ -21,7 +21,6 @@ import {
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
-import { AnnoationColor } from "@/features/annotations/constants";
 
 const ownStyle = {
   ...ReactReaderStyle,
@@ -55,6 +54,7 @@ export default function BookReader() {
     clearSelections,
     addSelection,
     setSelectedColor,
+    updateAnnotationColor,
   } = useAnnotationStore();
 
   let themeStyles;
@@ -101,17 +101,11 @@ export default function BookReader() {
           open();
 
           // Add highlight annotation with updated color
-          renditionRef?.current?.annotations.add(
-            "highlight",
+          updateAnnotationColor(
             cfiRange,
-            {},
-            () => handleHighlightClick(cfiRange),
-            undefined,
-            {
-              fill: selectedColor.fill,
-              "fill-opacity": selectedColor.opacity,
-              "mix-blend-mode": "multiply",
-            },
+            selectedColor,
+            renditionRef,
+            handleHighlightClick,
           );
 
           // Clear the browser's selection
@@ -152,7 +146,10 @@ export default function BookReader() {
     <>
       <VisuallyHidden>
         <ToolBarModal renditionRef={renditionRef} />
-        <AssistantMenuModal selectedCfiRange={selectedCfiRange} />
+        <AssistantMenuModal
+          selectedCfiRange={selectedCfiRange}
+          handleHighlightClick={handleHighlightClick}
+        />
         <AssistantItemsModal selectedCfiRange={selectedCfiRange} />
       </VisuallyHidden>
 

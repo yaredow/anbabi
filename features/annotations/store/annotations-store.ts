@@ -19,6 +19,7 @@ type AnnotationStoreState = {
     cfiRange: string,
     color: AnnoationColor,
     renditionRef: RenditionRef,
+    onClickCallback?: (cfiRange: string) => void,
   ) => void;
   removeAnnotation: (cfiRange: string, renditionRef: RenditionRef) => void;
 
@@ -52,21 +53,30 @@ export const useAnnotationStore = create<AnnotationStoreState>((set, get) => ({
     annotations.set(cfiRange, annotation);
     set({ annotations });
   },
+
   updateAnnotationColor: (
-    cfiRange: string,
-    newColor: AnnoationColor,
+    cfiRange,
+    newColor,
     renditionRef,
+    onClickCallback?: (cfiRange: string) => void,
   ) => {
     const state = get();
     const selection = state.selections.find((sel) => sel.cfiRange === cfiRange);
 
     if (selection && renditionRef.current) {
+      // Remove the existing annotation
+      renditionRef.current.annotations.remove("highlight", cfiRange);
+
       // Add a new annotation with the updated color
       renditionRef.current.annotations.add(
         "highlight",
         cfiRange,
         {},
-        () => console.log(`Updated highlight clicked for ${cfiRange}`),
+        () => {
+          if (onClickCallback) {
+            onClickCallback(cfiRange);
+          }
+        },
         undefined,
         {
           fill: newColor.fill,
@@ -75,7 +85,7 @@ export const useAnnotationStore = create<AnnotationStoreState>((set, get) => ({
         },
       );
 
-      // Update the store with the new color
+      // Update the state with the new color
       set({
         selections: state.selections.map((sel) =>
           sel.cfiRange === cfiRange ? { ...sel, color: newColor } : sel,

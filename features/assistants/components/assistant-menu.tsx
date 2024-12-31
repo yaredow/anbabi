@@ -34,6 +34,7 @@ import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 
 type AssistantMenuProps = {
   selectedCfiRange: string;
+  handleHighlightClick: (cfiRange: string) => void;
   onClose: () => void;
 };
 
@@ -46,6 +47,7 @@ type MenuItem = {
 
 export default function AssistantMenu({
   selectedCfiRange,
+  handleHighlightClick,
   onClose,
 }: AssistantMenuProps) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -166,7 +168,12 @@ export default function AssistantMenu({
     if (selectedCfiRange) {
       removeAnnotation(selectedCfiRange, renditionRef);
 
-      updateAnnotationColor(selectedCfiRange, newColor, renditionRef);
+      updateAnnotationColor(
+        selectedCfiRange,
+        newColor,
+        renditionRef,
+        handleHighlightClick,
+      );
     }
     onClose();
   }
