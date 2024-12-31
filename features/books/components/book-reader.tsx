@@ -93,6 +93,7 @@ export default function BookReader() {
         const text = renditionRef?.current?.getRange(cfiRange).toString();
 
         if (text) {
+          // prevent re-highlighting and layering of colors
           const existingSelection = selections.find(
             (sel) => sel.cfiRange === cfiRange,
           );
@@ -104,6 +105,7 @@ export default function BookReader() {
             return;
           }
 
+          // add a new selection
           const newSelection = { text, cfiRange, color: selectedColor };
           addSelection(newSelection);
           setSelectedCfiRange(cfiRange);
@@ -119,6 +121,7 @@ export default function BookReader() {
             handleHighlightClick,
           );
 
+          // Update the annotation color in the store
           useAnnotationStore
             .getState()
             .updateAnnotationColor(cfiRange, selectedColor);

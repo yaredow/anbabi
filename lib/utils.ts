@@ -1,8 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { franc } from "franc-min";
 import { AnnoationColor } from "@/features/annotations/constants";
 import { RenditionRef } from "@/features/books/types";
+import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
+import { EpubCFI } from "epubjs";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -22,15 +23,6 @@ export function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return btoa(binaryString);
 }
 
-export function detectLanguage(text: string) {
-  const lang = franc(text);
-
-  if (lang === "und") {
-    return "en";
-  }
-  return lang.slice(0, 2);
-}
-
 export function updateAnnotationColor(
   cfiRange: string,
   newColor: AnnoationColor,
@@ -38,9 +30,6 @@ export function updateAnnotationColor(
   onClickCallback?: (cfiRange: string) => void,
 ) {
   if (renditionRef.current) {
-    // Remove the existing annotation
-    renditionRef.current.annotations.remove("highlight", cfiRange);
-
     // Add a new annotation with the updated color
     renditionRef.current.annotations.add(
       "highlight",

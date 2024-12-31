@@ -26,7 +26,7 @@ export const lightReaderTheme: IReactReaderStyle = {
     ...ReactReaderStyle.readerArea,
     transition: undefined,
     background: "#fff",
-    color: "#000",
+    color: "#333333",
   },
 };
 

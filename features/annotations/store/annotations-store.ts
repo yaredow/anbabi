@@ -48,7 +48,6 @@ export const useAnnotationStore = create<AnnotationStoreState>((set, get) => ({
     annotations.set(cfiRange, annotation);
     set({ annotations });
   },
-
   updateAnnotationColor: (cfiRange, newColor) => {
     const state = get();
     set({
