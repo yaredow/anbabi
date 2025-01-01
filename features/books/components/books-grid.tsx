@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
 import { useGetBooks } from "../api/use-get-books";
-import { Book } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import BookCard from "./book-card";
 
@@ -15,29 +14,22 @@ export function BooksGrid() {
     );
   }
 
+  if (!books) {
+    return <div>There are no books available</div>;
+  }
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      {!books?.length ? (
-        <p className="col-span-full text-center text-muted-foreground">
-          No book available on your shelf. Upload and read
-        </p>
-      ) : (
-        books.map((book, index) => (
-          <BookLink key={book.id} priority={index < 10} book={book} />
-        ))
-      )}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+      {books.map((book) => (
+        <BookCard
+          key={book.id}
+          id={book.id!}
+          progress={10}
+          author={book.author!}
+          coverUrl={book.coverImage}
+          title={book.title || ""}
+        />
+      ))}
     </div>
-  );
-}
-
-type BookLinkProps = {
-  book: Book;
-};
-
-function BookLink({ book }: BookLinkProps) {
-  return (
-    <Link href={`/${book.id}`} className="block">
-      <BookCard src={book.coverImage || ""} title={book.title} />
-    </Link>
   );
 }

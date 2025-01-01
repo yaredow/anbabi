@@ -1,12 +1,18 @@
-import Image from "next/image";
+import { Plus, Search } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function Header() {
   return (
-    <header className="text-foreground py-2 bg-zinc-800 border-b">
-      <div className="container mx-auto px-4 flex items-center gap-x-4">
-        <Image src="/images/logo.svg" height={50} width={50} alt="logo" />
-        <h1 className="text-2xl font-bold text-white">Anbabi</h1>
+    <header className="flex w-full sticky top-0 items-center justify-between p-2">
+      <Button variant="ghost">
+        <Plus className="size-6" />
+      </Button>
+      <div className="flex items-center gap-4">
+        <h1 className="text-sm">Library</h1>
       </div>
+      <Button variant="ghost">
+        <Search className="size-6" />
+      </Button>
     </header>
   );
 }

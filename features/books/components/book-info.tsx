@@ -28,13 +28,13 @@ export default function BookInfo({ bookId }: BookInfoProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-2">
       <div className="mx-auto max-w-6xl">
         <Link
           href="/"
           className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-primary"
         >
-          ← Back to Books
+          ← Back to Library
         </Link>
 
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
