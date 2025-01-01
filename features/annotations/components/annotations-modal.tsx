@@ -1,6 +1,5 @@
 "use client";
 
-import ResponsiveModal from "@/components/responsive-modal";
 import { useAnnotationModal } from "../hooks/use-annotation-modal";
 import { AnnotationsView } from "./annotations-view";
 import { SAMPLE_ANNOTATIONS } from "../constants";
