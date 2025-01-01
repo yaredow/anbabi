@@ -36,6 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Image from "next/image";
+import { NavUser } from "./nav-user";
 
 const categories = [
   { name: "Fiction", count: 120 },
@@ -130,34 +131,14 @@ function ReaderSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-                    <AvatarFallback>U</AvatarFallback>
-                  </Avatar>
-                  <span className="ml-2">John Doe</span>
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <NavUser
+              user={{
+                name: "Yarred Yilma",
+                email: "yaredyilma11@gmail.com",
+                avatar:
+                  "https://pbs.twimg.com/profile_images/1854956005391532033/aLu4S0pU_400x400.jpg",
+              }}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
