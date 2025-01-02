@@ -1,7 +1,8 @@
+import { InferRequestType, InferResponseType } from "hono";
+import { useMutation } from "@tanstack/react-query";
+
 import { toast } from "@/hooks/use-toast";
 import { client } from "@/lib/hono";
-import { useMutation } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
 
 type ResponseType = InferResponseType<
   (typeof client.api.books.upload)["$post"],
@@ -20,9 +21,7 @@ export const useUploadBook = () => {
     error,
   } = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json, onProgress }) => {
-      const response = await client.api.books.upload.$post({
-        json,
-      });
+      const response = await client.api.books.upload.$post(json);
 
       if (!response.ok) {
         throw new Error("Something happened while uploading");

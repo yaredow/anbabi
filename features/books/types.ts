@@ -27,6 +27,7 @@ export type BookType = {
   categories?: string[];
   isbn?: string;
   arrayBuffer: ArrayBuffer;
+  progress?: number;
 };
 
 export interface UploadState {

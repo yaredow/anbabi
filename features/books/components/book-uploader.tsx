@@ -89,34 +89,22 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
         try {
           upload({
             json: {
-              ...parsedFile,
-              base64Data,
-              language: parsedFile.language || "en",
+              json: {
+                ...parsedFile,
+                base64Data,
+                language: (parsedFile.language && parsedFile.language) ?? "en",
+              },
             },
             onProgress: (progress: number) => {
               setParsedFiles((prev) =>
                 prev.map((f) =>
-                  f.file.name === parsedFile.file.name
+                  f. === parsedFile.file.name
                     ? { ...f, progress } // Update progress for the specific file
                     : f,
                 ),
               );
             },
           });
-
-          // Simulate progress
-          let progress = 0;
-          const interval = setInterval(() => {
-            progress += 10;
-            setParsedFiles((prev) =>
-              prev.map((f) =>
-                f.file === file
-                  ? { ...f, progress: Math.min(progress, 100) } // Update progress
-                  : f,
-              ),
-            );
-            if (progress >= 100) clearInterval(interval);
-          }, 500);
         } catch (error) {
           console.error("Error during upload:", error);
           setParsedFiles((prev) =>
