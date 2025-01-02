@@ -13,9 +13,6 @@ import QueryProviders from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/app-sidebar";
-import Header from "@/components/header";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,18 +40,9 @@ export default function RootLayout({
         >
           <QueryProviders>
             <NuqsAdapter>
-              <Toaster />
-              <SidebarProvider>
-                <AppSidebar />
-                <div className="mx-auto max-w-screen-2xl w-full h-full">
-                  <Header />
-                  <main className="h-full py-8 px-6 flex flex-col">
-                    <UploadBookModal />
-                    {children}
-                  </main>
-                </div>
-              </SidebarProvider>
+              <main>{children}</main>
             </NuqsAdapter>
+            <Toaster />
           </QueryProviders>
         </ThemeProvider>
       </body>
