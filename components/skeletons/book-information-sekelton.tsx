@@ -1,21 +1,11 @@
-import Link from "next/link";
-import { Card } from "@/components/ui/card";
-
-export default function BookInfoSkeleton() {
+export default function BookInformationSkeleton() {
   return (
     <div className="min-h-screen w-full bg-background p-2">
       <div className="mx-auto max-w-6xl">
-        <Link
-          href="/"
-          className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-primary"
-        >
-          ← Back to Library
-        </Link>
+        <div className="h-6 w-32 bg-muted animate-pulse rounded mb-6" />
 
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
-          <Card className="overflow-hidden h-[450px]">
-            <div className="w-full h-full bg-muted animate-pulse" />
-          </Card>
+          <div className="h-[450px] w-full bg-muted animate-pulse rounded" />
 
           <div className="space-y-6">
             <div>

@@ -1,25 +1,25 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
+import BookInformationSkeleton from "@/components/skeletons/book-information-sekelton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-import { useGetBook } from "../api/use-get-book";
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
-import BookInfoSkeleton from "@/components/skeletons/book-information-sekelton";
+import { useGetBook } from "../api/use-get-book";
+import { ArrowLeft } from "lucide-react";
 
 type BookInfoProps = {
   bookId: string;
 };
 
-export default function BookInfo({ bookId }: BookInfoProps) {
+export default function BookInformation({ bookId }: BookInfoProps) {
   const { book, isPending } = useGetBook({ bookId });
   const { open } = useBookReaderModal();
 
   if (isPending) {
-    return <BookInfoSkeleton />;
+    return <BookInformationSkeleton />;
   }
 
   if (!book) {
@@ -31,9 +31,10 @@ export default function BookInfo({ bookId }: BookInfoProps) {
       <div className="mx-auto max-w-6xl">
         <Link
           href="/"
-          className="mb-6 inline-flex items-center text-sm text-muted-foreground hover:text-primary"
+          className="mb-6 inline-flex gap-2 items-center text-sm text-muted-foreground hover:text-primary"
         >
-          ← Back to Library
+          <ArrowLeft className="size-4" />
+          <span>Back to Library</span>
         </Link>
 
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">

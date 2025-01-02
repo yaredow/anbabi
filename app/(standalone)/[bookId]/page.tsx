@@ -1,4 +1,4 @@
-import BookInfo from "@/features/books/components/book-info";
+import BookInformation from "@/features/books/components/book-information";
 
 export default async function BookDetailPage({
   params,
@@ -6,5 +6,5 @@ export default async function BookDetailPage({
   params: Promise<{ bookId: string }>;
 }) {
   const bookId = (await params).bookId;
-  return <BookInfo bookId={bookId} />;
+  return <BookInformation bookId={bookId} />;
 }
