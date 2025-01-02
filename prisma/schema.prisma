@@ -13,6 +13,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?   @db.VarChar(255)
+  email         String?   @unique @db.VarChar(255)
+  emailVerified DateTime?
+  image         String?   @db.VarChar(255)
+  accounts      Account[]
+  sessions      Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Book          Book[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String? @db.VarChar(50)
+  scope             String? @db.VarChar(255)
+  id_token          String? @db.Text
+  session_state     String? @db.VarChar(255)
+
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @db.VarChar(255) // Token for session validation
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique @db.VarChar(255) // Unique token
+  expires    DateTime
+
+  @@map("verification_tokens")
+}
+
 model Book {
   id              String   @id @default(cuid())
   title           String
@@ -26,4 +78,8 @@ model Book {
   coverPublicId   String
   bookUrl         String
   coverImage      String?
+  uploaderId      String // Foreign key to User
+  uploader        User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  @@map("books")
 }
