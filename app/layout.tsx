@@ -49,6 +49,7 @@ export default function RootLayout({
                 <div className="mx-auto max-w-screen-2xl w-full h-full">
                   <Header />
                   <main className="h-full py-8 px-6 flex flex-col">
+                    <UploadBookModal />
                     {children}
                   </main>
                 </div>

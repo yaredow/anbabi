@@ -1,142 +1,168 @@
 "use client";
 
-import {
-  AlertCircle,
-  Check,
-  CheckCircle2,
-  Loader,
-  Upload,
-  X,
-} from "lucide-react";
-import { useState, useRef } from "react";
-
+import * as React from "react";
+import { Upload, X, FileText, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { parseEpub } from "@/lib/epub-parser";
-
-import { useUploadBook } from "../api/use-upload-book";
-import { BookType } from "../types";
-import { arrayBufferToBase64 } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import { Progress } from "@/components/ui/progress";
 
-type EpubUploaderProps = {
-  onCancel: () => void;
-};
+interface UploadedFile {
+  id: string;
+  name: string;
+  progress: number;
+  error?: string;
+}
 
-export default function BookUploader({ onCancel }: EpubUploaderProps) {
-  const [file, setFile] = useState<File | null>(null);
-  const [epubInfo, setEpubInfo] = useState<BookType | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { upload, status } = useUploadBook();
-  const queryClient = useQueryClient();
+export default function EpubUploader() {
+  const [dragActive, setDragActive] = React.useState(false);
+  const [files, setFiles] = React.useState<UploadedFile[]>([]);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const selectedFile = event.target.files?.[0];
-
-    if (selectedFile?.type === "application/epub+zip") {
-      setFile(selectedFile);
-      setError(null);
-
-      try {
-        const bookData = await parseEpub(selectedFile);
-        setEpubInfo(bookData);
-      } catch (err) {
-        console.error("Error parsing EPUB:", err);
-        setError("Failed to parse EPUB file.");
-      }
-    } else {
-      setError("Please select a valid EPUB file.");
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
     }
   };
 
-  const handleUpload = () => {
-    if (!epubInfo) {
-      setError("Missing file or metadata to upload.");
-      return;
+  const validateFile = (file: File) => {
+    if (!file.type.includes("epub")) {
+      return "Only EPUB files are allowed";
     }
+    if (file.size > 5 * 1024 * 1024) {
+      return "File size must be less than 5MB";
+    }
+    return null;
+  };
 
-    upload(
-      {
-        json: {
-          ...epubInfo,
-          language: epubInfo.language || "Unknown language",
-          base64Data: arrayBufferToBase64(epubInfo.arrayBuffer),
-        },
-      },
-      {
-        onSuccess: () => {
-          toast({
-            description: "Book uploaded successfully",
-          });
-          queryClient.invalidateQueries({ queryKey: ["books"] });
-          onCancel();
-        },
-      },
-    );
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    handleFiles(droppedFiles);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      handleFiles(filesArray);
+    }
+  };
+
+  const handleFiles = (newFiles: File[]) => {
+    newFiles.forEach((file) => {
+      const error = validateFile(file);
+      const fileObj: UploadedFile = {
+        id: Math.random().toString(36).slice(2),
+        name: file.name,
+        progress: error ? 100 : 0,
+        error,
+      };
+
+      setFiles((prev) => [...prev, fileObj]);
+
+      if (!error) {
+        // Simulate upload progress
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 10;
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === fileObj.id
+                ? { ...f, progress: Math.min(progress, 100) }
+                : f,
+            ),
+          );
+          if (progress >= 100) clearInterval(interval);
+        }, 500);
+      }
+    });
+  };
+
+  const removeFile = (id: string) => {
+    setFiles((prev) => prev.filter((file) => file.id !== id));
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 space-y-4">
-      <div className="flex items-center justify-center w-full">
-        <label
-          htmlFor="epub-upload"
-          className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+    <div className="w-full max-w-3xl p-6 mx-auto">
+      <div className="grid gap-8 md:grid-cols-2">
+        <div
+          className={`relative rounded-lg border-dashed p-8 text-center ${
+            dragActive ? "border-primary bg-primary/5" : "border-blue-400"
+          }`}
+          style={{
+            borderWidth: "2px",
+            borderStyle: "dashed",
+            borderRadius: "8px",
+            borderColor: dragActive ? "var(--primary)" : "#60a5fa",
+          }}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <Upload className="w-10 h-10 mb-3 text-gray-400" />
-            <p className="mb-2 text-sm text-gray-500">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
-            </p>
-            <p className="text-xs text-gray-500">EPUB files only (max 5MB)</p>
-          </div>
           <input
-            id="epub-upload"
-            type="file"
+            ref={inputRef}
             className="hidden"
+            type="file"
             accept=".epub"
-            onChange={handleFileChange}
+            onChange={handleChange}
           />
-        </label>
-      </div>
-
-      {epubInfo && (
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold text-lg mb-2">Book Details</h3>
-          <p>
-            <span className="font-medium">Title:</span> {epubInfo.title}
-          </p>
-          <p>
-            <span className="font-medium">Author:</span> {epubInfo.author}
-          </p>
+          <div className="flex flex-col items-center gap-4">
+            <Upload className="h-12 w-12 text-muted-foreground" />
+            <h3 className="text-lg font-semibold">
+              Drag and Drop files to upload
+            </h3>
+            <p className="text-sm text-muted-foreground">or</p>
+            <Button
+              variant="secondary"
+              onClick={() => inputRef.current?.click()}
+            >
+              Browse
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Supported files: EPUB (max 5MB)
+            </p>
+          </div>
         </div>
-      )}
 
-      {epubInfo && (
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={onCancel}>
-            <X className="w-4 h-4 mr-2" />
-            Cancel
-          </Button>
-          <Button disabled={status === "pending"} onClick={handleUpload}>
-            <Check className="w-4 h-4 mr-2" />
-            {status === "pending" ? (
-              <div className="flex gap-2">
-                <Loader className="size-2 animate-spin" />
-                <span>Uploading...</span>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Uploaded files</h3>
+          {files.map((file) => (
+            <div
+              key={file.id}
+              className="flex items-center gap-4 rounded-lg border p-4"
+            >
+              <FileText className="h-8 w-8 flex-shrink-0 text-blue-500" />
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center justify-between">
+                  <p className="font-medium">{file.name}</p>
+                  <button
+                    onClick={() => removeFile(file.id)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                {file.error ? (
+                  <p className="text-sm text-destructive">{file.error}</p>
+                ) : (
+                  <Progress value={file.progress} className="h-2" />
+                )}
               </div>
-            ) : (
-              "Upload"
-            )}
-          </Button>
+            </div>
+          ))}
+          {files.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              No files uploaded yet
+            </p>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -66,7 +66,7 @@ function ReaderSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="/books">
-                    <Book className="mr-2 h-4 w-4" />
+                    <FaBook className="mr-2 h-4 w-4" />
                     <span>All Books</span>
                   </a>
                 </SidebarMenuButton>
