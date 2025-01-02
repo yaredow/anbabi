@@ -9,17 +9,15 @@ type ReaderLayoutProps = {
 export default function ReaderLayout({ children }: ReaderLayoutProps) {
   return (
     <div className="flex w-full h-full">
-      <div className="w-full">
-        <div className="mx-auto max-w-screen-2xl h-full">
-          <Header />
-          <main className="h-full py-6 px-6 flex flex-col">
-            <SidebarProvider>
-              <AppSidebar />
-              {children}
-            </SidebarProvider>
-          </main>
+      <SidebarProvider>
+        <AppSidebar />
+        <div className="flex-1">
+          <div className="mx-auto max-w-screen-2xl h-full">
+            <Header />
+            <main className="h-full py-6 px-6 flex flex-col">{children}</main>
+          </div>
         </div>
-      </div>
+      </SidebarProvider>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 
 import { useGetBook } from "../api/use-get-book";
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
+import BookInfoSkeleton from "@/components/skeletons/book-information-sekelton";
 
 type BookInfoProps = {
   bookId: string;
@@ -18,9 +19,7 @@ export default function BookInfo({ bookId }: BookInfoProps) {
   const { open } = useBookReaderModal();
 
   if (isPending) {
-    return (
-      <Loader2 className="flex items-center justify-center h-screen mx-auto animate-spin" />
-    );
+    return <BookInfoSkeleton />;
   }
 
   if (!book) {
