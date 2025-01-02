@@ -14,8 +14,8 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   const isSignin = pathName === "/sign-in";
   return (
     <main className="min-h-screen">
-      <div className=" mx-auto max-w-screen-2xl p-4">
-        <nav className="flex items-center justify-between">
+      <div className=" mx-auto max-w-screen-2xl">
+        <nav className="flex items-center justify-between p-3">
           <Link href="/">
             <Image src="/images/logo.svg" alt="logo" width={150} height={56} />
           </Link>
@@ -25,9 +25,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             </Link>
           </Button>
         </nav>
-        <div className=" flex flex-col pt-4 items-center justify-center md:pt-14">
-          {children}
-        </div>
+        <main className="bg-muted">{children}</main>
       </div>
     </main>
   );
