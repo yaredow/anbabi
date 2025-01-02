@@ -1,17 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useGetBooks } from "../api/use-get-books";
-import { Loader2 } from "lucide-react";
 import BookCard from "./book-card";
+import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 
 export function BooksGrid() {
   const { books, isPending } = useGetBooks();
 
   if (isPending) {
-    return (
-      <Loader2 className="animate-spin flex items-center justify-center mx-auto" />
-    );
+    return <BooksGridSkeleton />;
   }
 
   if (!books) {

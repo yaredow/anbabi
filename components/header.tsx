@@ -8,7 +8,7 @@ export default function Header() {
   const { open } = useUploadBookModal();
 
   return (
-    <header className="flex w-full sticky top-0 items-center justify-between p-2">
+    <header className="flex w-full sticky top-0 items-center justify-between px-4 py-2">
       <Button onClick={open} variant="ghost">
         <Plus className="size-6" />
       </Button>
