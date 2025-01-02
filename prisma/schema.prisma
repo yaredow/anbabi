@@ -14,35 +14,33 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String
-  email         String   @unique
+  email         String    @unique
   emailVerified Boolean
   image         String?
-  createdAt     DateTime @default(now()) // Timestamp of when the user account was created
-  updatedAt     DateTime @updatedAt // Timestamp of the last update to the user's information
+  bio           String?
+  birthDate     DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  Book          Book[]
 
-  sessions Session[] // One-to-many relationship with sessions
-  Account  Account[]
-  Book     Book[]
-
-  @@map("users") // Map to the "users" table in the database
+  @@map("users")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String? @db.VarChar(50)
-  scope             String? @db.VarChar(255)
-  id_token          String? @db.Text
-  session_state     String? @db.VarChar(255)
+  id           String   @id @default(cuid())
+  userId       String
+  accountId    String
+  providerId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime
+  password     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("accounts")
 }
@@ -50,14 +48,11 @@ model Account {
 model Session {
   id        String   @id @default(cuid())
   userId    String
-  token     String
   expiresAt DateTime
   ipAddress String?
   userAgent String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
 }
@@ -65,10 +60,10 @@ model Session {
 model Verification {
   id         String   @id @default(cuid())
   identifier String
-  token      String   @unique @db.VarChar(255) // Unique token
-  expires    DateTime
+  value      String
+  expiresAt  DateTime
 
-  @@map("verifications")
+  @@map("verification")
 }
 
 model Book {
@@ -84,7 +79,7 @@ model Book {
   coverPublicId   String
   bookUrl         String
   coverImage      String?
-  uploaderId      String // Foreign key to User
+  uploaderId      String
   uploader        User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
   @@map("books")

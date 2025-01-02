@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,25 +18,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { SignInData, SignInSchema } from "../schemas";
+import { SignInData, SignInSchema, SignUpData, SignUpSchema } from "../schemas";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-export default function SignInForm() {
+export default function SignUpForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const form = useForm<SignInData>({
-    resolver: zodResolver(SignInSchema),
+  const form = useForm<SignUpData>({
+    resolver: zodResolver(SignUpSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = async (values: SignInData) => {
-    await signIn.email(values, {
+  const onSubmit = async (values: SignUpData) => {
+    await signUp.email(values, {
       onRequest: () => {
         setIsLoading(true);
       },
@@ -44,17 +45,20 @@ export default function SignInForm() {
         setIsLoading(false);
       },
       onError: (ctx) => {
+        setIsLoading(false);
         toast({
           variant: "destructive",
           description: ctx.error.message,
         });
       },
       onSuccess: () => {
-        router.push("/");
+        toast({
+          description: "Account created successfully.",
+        });
+        router.push("/post-signup");
       },
     });
   };
-
   return (
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden">
@@ -63,10 +67,29 @@ export default function SignInForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 md:p-8">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Welcome back</h1>
+                  <h1 className="text-2xl font-bold">Sign Up</h1>
                   <p className="text-balance text-muted-foreground">
-                    Login to your Acme Inc account
+                    Fill out the form to create an account{" "}
                   </p>
+                </div>
+
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Name" type="text" {...field} />
+                        </FormControl>
+                        <FormDescription>
+                          This is your public display name.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <div className="grid gap-2">
@@ -77,11 +100,8 @@ export default function SignInForm() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="John Doe" {...field} />
+                          <Input placeholder="Email" type="email" {...field} />
                         </FormControl>
-                        <FormDescription>
-                          This is your public display name.
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -97,14 +117,11 @@ export default function SignInForm() {
                         <FormLabel>Password</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="********"
+                            placeholder="Password"
                             type="password"
                             {...field}
                           />
                         </FormControl>
-                        <FormDescription>
-                          This is your public display name.
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -117,7 +134,7 @@ export default function SignInForm() {
                   </a>
                 </div>
                 <Button disabled={isLoading} type="submit" className="w-full">
-                  Login
+                  Sign Up
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -143,9 +160,12 @@ export default function SignInForm() {
                   <span className="sr-only">Login with Google</span>
                 </Button>
                 <div className="text-center text-sm">
-                  Don&apos;t have an account?{" "}
-                  <a href="/sign-up" className="underline underline-offset-4">
-                    Sign up
+                  Already have an account?
+                  <a
+                    href="/sign-in"
+                    className="underline ml-2 underline-offset-4"
+                  >
+                    Sign In
                   </a>
                 </div>
               </div>
