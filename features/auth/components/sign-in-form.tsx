@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "@/lib/auth-client";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,9 +19,14 @@ import {
 } from "@/components/ui/form";
 
 import { SignInData, SignInSchema } from "../schemas";
-import { signIn } from "@/lib/auth-client";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+
   const form = useForm<SignInData>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -29,15 +35,23 @@ export default function SignInForm() {
     },
   });
 
-  const onSubmit = (values: SignInData) => {
-    console.log(values);
-  };
-
-  const handleGoogleSignIn = async (event: React.MouseEvent) => {
-    event.stopPropagation();
-    await signIn.social({
-      provider: "google",
-      callbackURL: "/",
+  const onSubmit = async (values: SignInData) => {
+    await signIn.email(values, {
+      onRequest: () => {
+        setIsLoading(true);
+      },
+      onResponse: () => {
+        setIsLoading(false);
+      },
+      onError: (ctx) => {
+        toast({
+          variant: "default",
+          description: ctx.error.message,
+        });
+      },
+      onSuccess: () => {
+        router.push("/");
+      },
     });
   };
 
@@ -107,7 +121,11 @@ export default function SignInForm() {
                   </span>
                 </div>
                 <Button
-                  onClick={handleGoogleSignIn}
+                  onClick={() => {
+                    signIn.social({
+                      provider: "google",
+                    });
+                  }}
                   variant="outline"
                   className="w-full"
                   type="button"
