@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
+import { useDeleteBook } from "../api/use-delete-book";
+import { useBookId } from "../hooks/use-book-id";
 
 interface BookCardProps {
   id: string;
@@ -28,6 +30,13 @@ export default function BookCard({
   onRemove,
 }: BookCardProps) {
   const { open } = useBookReaderModal();
+
+  const bookId = useBookId();
+  const { deleteBook, isPending } = useDeleteBook();
+
+  const handleBookDelete = () => {
+    deleteBook({ param: { bookId } });
+  };
 
   return (
     <Link href={`/${id}`}>
@@ -55,7 +64,12 @@ export default function BookCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={open}>Open</DropdownMenuItem>
-                <DropdownMenuItem onClick={onRemove}>Remove</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleBookDelete}
+                  disabled={isPending}
+                >
+                  Remove
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

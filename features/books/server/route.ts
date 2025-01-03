@@ -189,5 +189,31 @@ const app = new Hono()
 
       return c.json({ data: book }, 201);
     },
-  );
+  )
+  .delete("/:bookId", SessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const { bookId } = c.req.param();
+
+    if (!user) {
+      return c.json({ error: "Unautherized" }, 401);
+    }
+
+    const existingBook = await prisma.book.findUnique({
+      where: {
+        id: bookId,
+      },
+    });
+
+    if (!existingBook) {
+      return c.json({ error: "No book exists with that id" }, 400);
+    }
+
+    await prisma.book.delete({
+      where: {
+        id: bookId,
+      },
+    });
+
+    return c.json({ message: "book deleted successfully" });
+  });
 export default app;
