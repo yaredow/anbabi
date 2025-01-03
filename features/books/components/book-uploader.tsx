@@ -1,12 +1,15 @@
 "use client";
 
 import { Upload, X, FileText, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
+
+import { arrayBufferToBase64 } from "@/lib/utils";
+import { parseEpub } from "@/lib/epub-parser";
+
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { parseEpub } from "@/lib/epub-parser";
+
 import { useUploadBook } from "../api/use-upload-book";
-import { useRef, useState } from "react";
-import { arrayBufferToBase64 } from "@/lib/utils";
 import { BookType } from "../types";
 
 type EpubUploaderProps = {

@@ -1,4 +1,4 @@
-/* import { auth } from "./auth";
+import { auth } from "./auth";
 import { createMiddleware } from "hono/factory";
 
 type AdditionalContext = {
@@ -23,4 +23,4 @@ export const SessionMiddleware = createMiddleware<AdditionalContext>(
 
     return next();
   },
-); */
+);
