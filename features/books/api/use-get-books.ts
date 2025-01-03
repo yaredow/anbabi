@@ -17,7 +17,7 @@ export const useGetBooks = () => {
     select: (data) =>
       data.map((book) => ({
         ...book,
-        uploadedAt: new Date(book.uploadedAt),
+        uploadedAt: new Date(book?.uploadedAt),
       })),
   });
 

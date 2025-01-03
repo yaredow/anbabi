@@ -112,6 +112,7 @@ export default function SignInForm({
                       </div>
                       <FormControl>
                         <Input
+                          className="text-sm"
                           placeholder="Enter your password"
                           type="password"
                           {...field}
