@@ -7,10 +7,11 @@ import { arrayBufferToBase64 } from "@/lib/utils";
 import { parseEpub } from "@/lib/epub-parser";
 
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 
 import { useUploadBook } from "../api/use-upload-book";
 import { BookType } from "../types";
+import { toast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 type EpubUploaderProps = {
   onCancel: () => void;
@@ -21,7 +22,9 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [parsedFiles, setParsedFiles] = useState<BookType[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { upload, status, error: uploadingError } = useUploadBook();
+
+  const { upload, status } = useUploadBook();
+  const queryClinet = useQueryClient();
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -65,63 +68,53 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
     const updatedParsedFiles = await Promise.all(
       newFiles.map(async (file) => {
         const error = validateFile(file);
-        if (!error) {
-          try {
-            const parsedData = await parseEpub(file);
-            return { ...parsedData, fileName: file.name, progress: 0 };
-          } catch (error) {
-            console.error("Error parsing EPUB:", error);
-            return null;
-          }
-        } else {
-          return null;
+        if (error) {
+          return { fileName: file.name, error };
+        }
+
+        try {
+          const parsedData = await parseEpub(file);
+          return { ...parsedData, fileName: file.name, progress: 0 };
+        } catch (error) {
+          console.error("Error parsing EPUB:", error);
+          return { fileName: file.name, error: "Failed to parse epub" };
         }
       }),
     );
 
-    setParsedFiles((prev) => [
-      ...prev,
-      ...updatedParsedFiles.filter((data) => data !== null),
-    ]);
+    setParsedFiles((prev) => [...prev, ...updatedParsedFiles]);
   };
 
   const handleUpload = async () => {
     for (const parsedFile of parsedFiles) {
       if (parsedFile) {
         const base64Data = arrayBufferToBase64(parsedFile.arrayBuffer);
-        try {
-          upload({
+        upload(
+          {
             json: {
-              json: {
-                ...parsedFile,
-                base64Data,
-                language: (parsedFile.language && parsedFile.language) ?? "en",
-              },
+              ...parsedFile,
+              base64Data,
+              language: parsedFile.language || "en",
             },
-            onProgress: (progress: number) => {
-              setParsedFiles((prev) =>
-                prev.map((f) =>
-                  f.fileName === parsedFile.fileName ? { ...f, progress } : f,
-                ),
-              );
+          },
+          {
+            onSuccess: () => {
+              queryClinet.invalidateQueries({ queryKey: ["books"] });
+              toast({
+                description: "Book uploaded successfully",
+              });
+              onCancel();
             },
-          });
-        } catch (error) {
-          console.error("Error during upload:", error);
-          setParsedFiles((prev) =>
-            prev.map((f) =>
-              f.fileName === parsedFile.fileName
-                ? { ...f, error: "Failed to upload." }
-                : f,
-            ),
-          );
-        }
+          },
+        );
       }
     }
   };
 
-  const removeFile = (name: string) => {
-    setFiles((prev) => prev.filter((file) => file.name !== name));
+  const removeFile = (fileName: string) => {
+    setParsedFiles((prevFiles) =>
+      prevFiles.filter((file) => file.fileName !== fileName),
+    );
   };
 
   return (
@@ -168,38 +161,31 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
           <h3 className="text-lg font-semibold">Uploaded files</h3>
-          {files.map((file) => (
+          {parsedFiles.map((file) => (
             <div
-              key={file.name}
+              key={file.fileName}
               className="flex items-center gap-4 rounded-lg border p-4"
             >
-              <FileText className="h-8 w-8 flex-shrink-0 text-blue-500" />
+              <FileText
+                className={`h-8 w-8 flex-shrink-0 ${
+                  file.error ? "text-red-500" : "text-blue-500"
+                }`}
+              />
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium">{file.name}</p>
+                  <p className="font-medium">{file.fileName}</p>
                   <button
-                    onClick={() => removeFile(file.name)}
+                    onClick={() => removeFile(file.fileName)}
                     className="text-muted-foreground hover:text-foreground"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                {parsedFiles.map((file) => {
-                  return (
-                    <div key={file.fileName} className="file-item">
-                      <p>{file.title || file.fileName}</p>
-                      {status === "error" ? (
-                        <p className="text-sm text-destructive">
-                          {uploadingError?.message}
-                        </p>
-                      ) : (
-                        <Progress value={file.progress} className="h-2" />
-                      )}
-                    </div>
-                  );
-                })}
+                {file.error && (
+                  <p className="text-sm text-red-500">{file.error}</p>
+                )}
               </div>
             </div>
           ))}

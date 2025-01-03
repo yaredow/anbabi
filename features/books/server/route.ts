@@ -187,7 +187,7 @@ const app = new Hono()
         },
       });
 
-      if (!book) return c.json({ data: book });
+      return c.json({ data: book }, 201);
     },
   );
 export default app;

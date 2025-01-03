@@ -27,7 +27,7 @@ export type BookType = {
   categories?: string[];
   isbn?: string;
   arrayBuffer: ArrayBuffer;
-  progress?: number;
+  error?: number;
   fileName?: string;
 };
 
