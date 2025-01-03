@@ -1,21 +1,24 @@
 "use client";
 
-import * as React from "react";
 import { Upload, X, FileText, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { parseEpub } from "@/lib/epub-parser";
+import { useUploadBook } from "../api/use-upload-book";
+import { useRef, useState } from "react";
+import { arrayBufferToBase64 } from "@/lib/utils";
+import { BookType } from "../types";
 
-interface UploadedFile {
-  id: string;
-  name: string;
-  progress: number;
-  error?: string;
-}
+type EpubUploaderProps = {
+  onCancel: () => void;
+};
 
-export default function EpubUploader() {
-  const [dragActive, setDragActive] = React.useState(false);
-  const [files, setFiles] = React.useState<UploadedFile[]>([]);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+export default function EpubUploader({ onCancel }: EpubUploaderProps) {
+  const [dragActive, setDragActive] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [parsedFiles, setParsedFiles] = useState<BookType[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { upload, status, error: uploadingError } = useUploadBook();
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -53,38 +56,83 @@ export default function EpubUploader() {
     }
   };
 
-  const handleFiles = (newFiles: File[]) => {
-    newFiles.forEach((file) => {
-      const error = validateFile(file);
-      const fileObj: UploadedFile = {
-        id: Math.random().toString(36).slice(2),
-        name: file.name,
-        progress: error ? 100 : 0,
-        error,
-      };
+  const handleFiles = async (newFiles: File[]) => {
+    setFiles((prev) => [...prev, ...newFiles]);
 
-      setFiles((prev) => [...prev, fileObj]);
+    const updatedParsedFiles = await Promise.all(
+      newFiles.map(async (file) => {
+        const error = validateFile(file);
+        if (!error) {
+          try {
+            const parsedData = await parseEpub(file);
+            return parsedData;
+          } catch (error) {
+            console.error("Error parsing EPUB:", error);
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }),
+    );
 
-      if (!error) {
-        // Simulate upload progress
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 10;
-          setFiles((prev) =>
+    setParsedFiles((prev) => [
+      ...prev,
+      ...updatedParsedFiles.filter((data) => data !== null),
+    ]);
+  };
+
+  const handleUpload = async () => {
+    for (const parsedFile of parsedFiles) {
+      if (parsedFile) {
+        const base64Data = arrayBufferToBase64(parsedFile.arrayBuffer);
+        try {
+          upload({
+            json: {
+              ...parsedFile,
+              base64Data,
+              language: parsedFile.language || "en",
+            },
+            onProgress: (progress: number) => {
+              setParsedFiles((prev) =>
+                prev.map((f) =>
+                  f.file.name === parsedFile.file.name
+                    ? { ...f, progress } // Update progress for the specific file
+                    : f,
+                ),
+              );
+            },
+          });
+
+          // Simulate progress
+          let progress = 0;
+          const interval = setInterval(() => {
+            progress += 10;
+            setParsedFiles((prev) =>
+              prev.map((f) =>
+                f.file === file
+                  ? { ...f, progress: Math.min(progress, 100) } // Update progress
+                  : f,
+              ),
+            );
+            if (progress >= 100) clearInterval(interval);
+          }, 500);
+        } catch (error) {
+          console.error("Error during upload:", error);
+          setParsedFiles((prev) =>
             prev.map((f) =>
-              f.id === fileObj.id
-                ? { ...f, progress: Math.min(progress, 100) }
+              f.file === file
+                ? { ...f, error: "Failed to upload." } // Set error if upload fails
                 : f,
             ),
           );
-          if (progress >= 100) clearInterval(interval);
-        }, 500);
+        }
       }
-    });
+    }
   };
 
-  const removeFile = (id: string) => {
-    setFiles((prev) => prev.filter((file) => file.id !== id));
+  const removeFile = (name: string) => {
+    setFiles((prev) => prev.filter((file) => file.name !== name));
   };
 
   return (
@@ -109,6 +157,7 @@ export default function EpubUploader() {
             ref={inputRef}
             className="hidden"
             type="file"
+            multiple
             accept=".epub"
             onChange={handleChange}
           />
@@ -134,7 +183,7 @@ export default function EpubUploader() {
           <h3 className="text-lg font-semibold">Uploaded files</h3>
           {files.map((file) => (
             <div
-              key={file.id}
+              key={file.name}
               className="flex items-center gap-4 rounded-lg border p-4"
             >
               <FileText className="h-8 w-8 flex-shrink-0 text-blue-500" />
@@ -142,14 +191,16 @@ export default function EpubUploader() {
                 <div className="flex items-center justify-between">
                   <p className="font-medium">{file.name}</p>
                   <button
-                    onClick={() => removeFile(file.id)}
+                    onClick={() => removeFile(file.name)}
                     className="text-muted-foreground hover:text-foreground"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                {file.error ? (
-                  <p className="text-sm text-destructive">{file.error}</p>
+                {status === "error" ? (
+                  <p className="text-sm text-destructive">
+                    {uploadingError?.message}
+                  </p>
                 ) : (
                   <Progress value={file.progress} className="h-2" />
                 )}
@@ -162,6 +213,21 @@ export default function EpubUploader() {
             </p>
           )}
         </div>
+      </div>
+      <div className="mt-4 flex justify-end space-x-4">
+        <Button
+          variant="outline"
+          onClick={onCancel}
+          disabled={status === "pending"}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={handleUpload}
+          disabled={status === "pending" || files.length === 0}
+        >
+          Upload
+        </Button>
       </div>
     </div>
   );

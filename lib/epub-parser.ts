@@ -35,7 +35,6 @@ export async function parseEpub(file: File): Promise<{
           ? parseInt(metadata.pubdate.split("-")[0], 10)
           : undefined;
 
-        const coverFile = book.coverUrl();
         resolve({
           arrayBuffer,
           title: metadata.title || "Unknown Title",
@@ -59,9 +58,4 @@ export async function parseEpub(file: File): Promise<{
 
     reader.readAsArrayBuffer(file);
   });
-}
-
-function validateISBN(isbn: string): boolean {
-  const isbnRegex = /^(97(8|9))?\d{9}(\d|X)$/;
-  return isbnRegex.test(isbn);
 }

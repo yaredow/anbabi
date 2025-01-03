@@ -20,4 +20,5 @@ export const BookSchema = z.object({
       "Invalid base64 data",
     ),
 });
+
 export type Book = z.infer<typeof BookSchema>;

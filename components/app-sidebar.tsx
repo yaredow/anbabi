@@ -1,6 +1,6 @@
 "use client";
 
-import { Book, ChevronDown, FolderOpen, Library } from "lucide-react";
+import { Book, ChevronDown, FolderOpen, Library, LogIn } from "lucide-react";
 import { FaBook } from "react-icons/fa";
 
 import {
@@ -20,12 +20,15 @@ import {
 } from "@/components/ui/sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import Image from "next/image";
-import { NavUser } from "./nav-user";
+import { UserButton } from "../features/auth/components/user-button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
+import { useSession } from "@/lib/auth-client";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const categories = [
   { name: "Fiction", count: 120 },
@@ -43,6 +46,8 @@ const libraries = [
 ];
 
 function ReaderSidebar() {
+  const { data: session } = useSession();
+
   return (
     <>
       <SidebarHeader>
@@ -138,14 +143,21 @@ function ReaderSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <NavUser
-              user={{
-                name: "Yared Yilma",
-                email: "yaredyilma11@gmail.com",
-                avatar:
-                  "https://pbs.twimg.com/profile_images/1854956005391532033/aLu4S0pU_400x400.jpg",
-              }}
-            />
+            <div className="flex items-center justify-center w-full px-4 py-2">
+              {session ? (
+                <UserButton />
+              ) : (
+                <Link href="/sign-in" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-neutral-200 transition-colors duration-200"
+                  >
+                    <LogIn className="mr-2 h-4 w-4" />
+                    Sign in
+                  </Button>
+                </Link>
+              )}
+            </div>{" "}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>{" "}

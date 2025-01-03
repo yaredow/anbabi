@@ -8,22 +8,62 @@ type ResponseType = InferResponseType<
   200
 >;
 
-type RequestType = InferRequestType<(typeof client.api.books.upload)["$post"]>;
+type RequestType = {
+  json: InferRequestType<(typeof client.api.books.upload)["$post"]>;
+  onProgress?: (progress: number) => void;
+};
 
 export const useUploadBook = () => {
-  const { mutate: upload, status } = useMutation<
-    ResponseType,
-    Error,
-    RequestType
-  >({
-    mutationFn: async ({ json }) => {
-      const response = await client.api.books.upload.$post({ json });
+  const {
+    mutate: upload,
+    status,
+    error,
+  } = useMutation<ResponseType, Error, RequestType>({
+    mutationFn: async ({ json, onProgress }) => {
+      const response = await client.api.books.upload.$post({
+        json,
+      });
 
       if (!response.ok) {
         throw new Error("Something happened while uploading");
       }
 
-      return await response.json();
+      const reader = response.body?.getReader();
+      const contentLength = response.headers.get("Content-Length");
+      let loaded = 0;
+
+      if (reader && contentLength) {
+        const total = parseInt(contentLength, 10);
+
+        // create a stream reader to track progress
+        const progressStream = new ReadableStream({
+          start(controller) {
+            reader.read().then(function push({ done, value }) {
+              if (done) {
+                controller.close();
+                return;
+              }
+
+              loaded += value.length;
+              const progress = Math.round((loaded / total) * 100);
+
+              // Call the onProgress callback if provided
+              if (onProgress) {
+                onProgress(progress);
+              }
+
+              controller.enqueue(value);
+              reader.read().then(push);
+            });
+          },
+        });
+
+        const responseClone = new Response(progressStream);
+        await responseClone.text();
+      }
+
+      const data = await response.json();
+      return data;
     },
     onError: (error) => {
       toast({
@@ -33,5 +73,5 @@ export const useUploadBook = () => {
     },
   });
 
-  return { upload, status };
+  return { upload, status, error };
 };

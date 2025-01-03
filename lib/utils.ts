@@ -2,8 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { AnnoationColor } from "@/features/annotations/constants";
 import { RenditionRef } from "@/features/books/types";
-import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
-import { EpubCFI } from "epubjs";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
