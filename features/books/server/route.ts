@@ -193,6 +193,7 @@ const app = new Hono()
   .delete("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { bookId } = c.req.param();
+    console.log({ bookId });
 
     if (!user) {
       return c.json({ error: "Unautherized" }, 401);
@@ -213,6 +214,8 @@ const app = new Hono()
         id: bookId,
       },
     });
+
+    await cloudinary.api.delete_resources([existingBook.coverPublicId]);
 
     return c.json({ message: "book deleted successfully" });
   });
