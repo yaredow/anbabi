@@ -82,7 +82,7 @@ export default function SignInForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-neutral-600">Email</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Enter your email address"
@@ -100,10 +100,12 @@ export default function SignInForm({
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex justify-between items-center">
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel className="text-neutral-600">
+                          Password
+                        </FormLabel>
                         <a
                           href="#"
-                          className="text-sm underline-offset-2 hover:underline"
+                          className="text-sm text-neutral-600 underline-offset-2 hover:underline"
                         >
                           Forgot your password?
                         </a>

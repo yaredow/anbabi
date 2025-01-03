@@ -9,8 +9,20 @@ import prisma from "@/lib/prisma";
 import { BookSchema } from "../schemas";
 
 const app = new Hono()
-  .get("/", async (c) => {
-    const books = await prisma.book.findMany();
+  .get("/", SessionMiddleware, async (c) => {
+    const user = c.get("user");
+
+    if (!user) {
+      return c.json({ error: "Unautherized" }, 401);
+    }
+
+    const books = await prisma.book.findMany({
+      where: {
+        uploader: {
+          id: user.id,
+        },
+      },
+    });
 
     if (!books) {
       return c.json({ error: "There are no books" }, 400);
@@ -43,11 +55,16 @@ const app = new Hono()
 
     return c.json({ data: booksWithDetail });
   })
-  .get("/:bookId", async (c) => {
+  .get("/:bookId", SessionMiddleware, async (c) => {
+    const user = c.get("user");
     const { bookId } = c.req.param();
 
+    if (!user) {
+      return c.json({ error: "Unautherized" }, 401);
+    }
+
     const book = await prisma.book.findUnique({
-      where: { id: bookId },
+      where: { id: bookId, uploader: { id: user.id } },
     });
 
     if (!book) {
