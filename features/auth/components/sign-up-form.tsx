@@ -73,7 +73,7 @@ export default function SignUpForm({
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col items-center text-center">
                   <h1 className="text-2xl font-bold">Sign Up</h1>
-                  <p className="text-balance text-muted-foreground">
+                  <p className="text-balance text-sm text-muted-foreground">
                     Create an account to enjoy personalized features and explore
                     content tailored for you.
                   </p>

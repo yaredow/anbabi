@@ -60,7 +60,10 @@ export default function SignInForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-4", className)} {...props}>
+    <div
+      className={cn("flex flex-col gap-4 font-roboto", className)}
+      {...props}
+    >
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <Form {...form}>
@@ -68,7 +71,7 @@ export default function SignInForm({
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col items-center text-center">
                   <h1 className="text-2xl font-bold">Welcome back</h1>
-                  <p className="text-balance text-muted-foreground">
+                  <p className="text-balance text-sm text-muted-foreground">
                     Access your account to explore personalized features and
                     content.
                   </p>

@@ -1,9 +1,12 @@
-import prisma from "@/lib/prisma";
-import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { BookSchema } from "../schemas";
 import { UploadApiResponse } from "cloudinary";
+import { Hono } from "hono";
+
+import { SessionMiddleware } from "@/lib/session-middleware";
 import cloudinary from "@/lib/cloudinary";
+import prisma from "@/lib/prisma";
+
+import { BookSchema } from "../schemas";
 
 const app = new Hono()
   .get("/", async (c) => {
@@ -70,88 +73,104 @@ const app = new Hono()
       },
     });
   })
-  .post("/upload", zValidator("json", BookSchema), async (c) => {
-    const {
-      title,
-      isbn,
-      author,
-      language,
-      base64Data,
-      publisher,
-      description,
-      publicationYear,
-    } = c.req.valid("json");
+  .post(
+    "/upload",
+    SessionMiddleware,
+    zValidator("json", BookSchema),
+    async (c) => {
+      const user = c.get("user");
 
-    let uploadResult;
-
-    try {
-      const fileBuffer = Buffer.from(base64Data, "base64");
-      uploadResult = await new Promise<UploadApiResponse | undefined>(
-        (resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream(
-              {
-                resource_type: "raw",
-                tags: ["ai-book"],
-                upload_preset: "ai-books",
-              },
-              (err, result) => {
-                if (err) {
-                  reject(new Error("Cloudinary upload failed: " + err.message));
-                } else {
-                  resolve(result);
-                }
-              },
-            )
-            .end(fileBuffer);
-        },
-      );
-    } catch (err) {
-      console.error("Cloudinary Upload Error: ", err);
-      return c.json({ error: "Failed to upload book cover image." }, 500);
-    }
-
-    if (!uploadResult || !uploadResult.secure_url || !uploadResult.public_id) {
-      console.error("Cloudinary upload result is incomplete", uploadResult);
-      return c.json(
-        { error: "Cloudinary upload failed to return valid result." },
-        500,
-      );
-    }
-
-    const existingBook = await prisma.book.findFirst({
-      where: {
+      const {
         title,
-      },
-    });
-
-    if (existingBook) {
-      return c.json(
-        {
-          error: `book with title ${existingBook.title} already exists`,
-        },
-        400,
-      );
-    }
-
-    const book = await prisma.book.create({
-      data: {
-        title,
+        isbn,
         author,
         language,
-        description,
-        bookUrl: uploadResult.url as string,
-        coverPublicId: uploadResult.public_id as string,
-        publicationYear,
-        isbn,
+        base64Data,
         publisher,
-      },
-    });
+        description,
+        publicationYear,
+      } = c.req.valid("json");
 
-    if (!book) {
-      return c.json({ error: "Uploading book failed." }, 400);
-    }
+      if (!user) {
+        return c.json({ error: "Unautherized" }, 401);
+      }
 
-    return c.json({ data: book });
-  });
+      let uploadResult;
+
+      try {
+        const fileBuffer = Buffer.from(base64Data, "base64");
+        uploadResult = await new Promise<UploadApiResponse | undefined>(
+          (resolve, reject) => {
+            cloudinary.uploader
+              .upload_stream(
+                {
+                  resource_type: "raw",
+                  tags: ["ai-book"],
+                  upload_preset: "ai-books",
+                },
+                (err, result) => {
+                  if (err) {
+                    reject(
+                      new Error("Cloudinary upload failed: " + err.message),
+                    );
+                  } else {
+                    resolve(result);
+                  }
+                },
+              )
+              .end(fileBuffer);
+          },
+        );
+      } catch (err) {
+        console.error("Cloudinary Upload Error: ", err);
+        return c.json({ error: "Failed to upload book cover image." }, 500);
+      }
+
+      if (
+        !uploadResult ||
+        !uploadResult.secure_url ||
+        !uploadResult.public_id
+      ) {
+        console.error("Cloudinary upload result is incomplete", uploadResult);
+        return c.json(
+          { error: "Cloudinary upload failed to return valid result." },
+          500,
+        );
+      }
+
+      const existingBook = await prisma.book.findFirst({
+        where: {
+          title,
+        },
+      });
+
+      if (existingBook) {
+        return c.json(
+          {
+            error: `book with title ${existingBook.title} already exists`,
+          },
+          400,
+        );
+      }
+
+      const book = await prisma.book.create({
+        data: {
+          uploader: {
+            connect: { id: user.id },
+          },
+          title,
+          author,
+          language,
+          description,
+          bookUrl: uploadResult.url as string,
+          coverPublicId: uploadResult.public_id as string,
+          publicationYear,
+          isbn,
+          publisher,
+        },
+      });
+
+      if (!book) return c.json({ data: book });
+    },
+  );
 export default app;

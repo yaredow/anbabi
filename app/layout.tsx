@@ -1,12 +1,8 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Inter } from "next/font/google";
+import { Inter, Roboto } from "next/font/google";
 import { Metadata } from "next";
 
 import { cn } from "@/lib/utils";
-
-import AnnotaionModal from "@/features/annotations/components/annotations-modal";
-import UploadBookModal from "@/features/books/components/upload-book-modal";
-import BookReaderModal from "@/features/books/components/book-reader-modal";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import QueryProviders from "@/components/providers/query-provider";
@@ -14,9 +10,11 @@ import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
 
-const inter = Inter({
+const roboto = Roboto({
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "700"],
+  variable: "--font-roboto",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn(`${inter.className} antialiased`)}>
+      <body className={cn(`${roboto.className} antialiased`)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

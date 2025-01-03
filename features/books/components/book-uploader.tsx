@@ -68,7 +68,7 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
         if (!error) {
           try {
             const parsedData = await parseEpub(file);
-            return parsedData;
+            return { ...parsedData, fileName: file.name, progress: 0 };
           } catch (error) {
             console.error("Error parsing EPUB:", error);
             return null;
@@ -101,9 +101,7 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
             onProgress: (progress: number) => {
               setParsedFiles((prev) =>
                 prev.map((f) =>
-                  f. === parsedFile.file.name
-                    ? { ...f, progress } // Update progress for the specific file
-                    : f,
+                  f.fileName === parsedFile.fileName ? { ...f, progress } : f,
                 ),
               );
             },
@@ -112,8 +110,8 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
           console.error("Error during upload:", error);
           setParsedFiles((prev) =>
             prev.map((f) =>
-              f.file === file
-                ? { ...f, error: "Failed to upload." } // Set error if upload fails
+              f.fileName === parsedFile.fileName
+                ? { ...f, error: "Failed to upload." }
                 : f,
             ),
           );
@@ -188,13 +186,20 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-                {status === "error" ? (
-                  <p className="text-sm text-destructive">
-                    {uploadingError?.message}
-                  </p>
-                ) : (
-                  <Progress value={file.progress} className="h-2" />
-                )}
+                {parsedFiles.map((file) => {
+                  return (
+                    <div key={file.fileName} className="file-item">
+                      <p>{file.title || file.fileName}</p>
+                      {status === "error" ? (
+                        <p className="text-sm text-destructive">
+                          {uploadingError?.message}
+                        </p>
+                      ) : (
+                        <Progress value={file.progress} className="h-2" />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
