@@ -29,14 +29,6 @@ export default function BookInformation({ bookId }: BookInfoProps) {
   return (
     <div className="min-h-screen bg-background p-2">
       <div className="mx-auto max-w-6xl">
-        <Link
-          href="/"
-          className="mb-6 inline-flex gap-2 items-center text-sm text-muted-foreground hover:text-primary"
-        >
-          <ArrowLeft className="size-4" />
-          <span>Back to Library</span>
-        </Link>
-
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           <Card className="overflow-hidden h-fit">
             <img

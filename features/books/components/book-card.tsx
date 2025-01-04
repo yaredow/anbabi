@@ -14,6 +14,7 @@ import { useDeleteBook } from "../api/use-delete-book";
 import { useBookId } from "../hooks/use-book-id";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import BookActionsDropdownMenu from "./book-actions-dropdown-menu";
 
 interface BookCardProps {
   id: string;
@@ -32,24 +33,6 @@ export default function BookCard({
 }: BookCardProps) {
   const { open } = useBookReaderModal();
   const bookId = useBookId();
-  console.log({ bookId });
-  const { deleteBook, isPending } = useDeleteBook();
-  const queryClient = useQueryClient();
-
-  const handleBookDelete = () => {
-    deleteBook(
-      { param: { bookId } },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["books"] });
-          toast({
-            variant: "destructive",
-            description: "Book removed successfully",
-          });
-        },
-      },
-    );
-  };
 
   return (
     <div className="group relative w-[180px] bg-background px-4 py-2 cursor-pointer transition-shadow rounded-lg">
@@ -69,18 +52,7 @@ export default function BookCard({
         <h3 className="font-semibold leading-none text-sm truncate">{title}</h3>
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">{progress}%</p>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-full">
-              <MoreHorizontal className="size-4 font-semibold" />
-              <span className="sr-only">Open menu</span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={open}>Open</DropdownMenuItem>
-              <DropdownMenuItem onClick={handleBookDelete} disabled={isPending}>
-                Remove
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <BookActionsDropdownMenu />
         </div>
       </div>
     </div>

@@ -89,6 +89,7 @@ model Book {
   coverImage      String?
   uploaderId      String
   uploader        User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  status          String   @default("To Read")
 
   @@map("books")
 }

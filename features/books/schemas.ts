@@ -22,3 +22,12 @@ export const BookSchema = z.object({
 });
 
 export type Book = z.infer<typeof BookSchema>;
+
+export const StatusType = z.enum([
+  "Favorite",
+  "To Read",
+  "Currently Reading",
+  "Completed",
+]);
+
+export type StatusType = z.infer<typeof StatusType>;

@@ -6,7 +6,8 @@ import { SessionMiddleware } from "@/lib/session-middleware";
 import cloudinary from "@/lib/cloudinary";
 import prisma from "@/lib/prisma";
 
-import { BookSchema } from "../schemas";
+import { BookSchema, StatusType } from "../schemas";
+import { z } from "zod";
 
 const app = new Hono()
   .get("/", SessionMiddleware, async (c) => {
@@ -218,5 +219,38 @@ const app = new Hono()
     await cloudinary.api.delete_resources([existingBook.coverPublicId]);
 
     return c.json({ message: "book deleted successfully" });
-  });
+  })
+  .put(
+    "/status/:bookId",
+    SessionMiddleware,
+    zValidator("query", StatusType),
+    async (c) => {
+      const user = c.get("user");
+      const { bookId } = c.req.param();
+      const status = c.req.valid("query");
+
+      if (!user) {
+        return c.json({ error: "Unautherized" }, 401);
+      }
+
+      const book = await prisma.book.findUnique({
+        where: {
+          id: bookId,
+        },
+      });
+
+      if (!book) {
+        return c.json({ error: "No book exists with that id" }, 400);
+      }
+
+      await prisma.book.update({
+        where: {
+          id: bookId,
+        },
+        data: {
+          status: status,
+        },
+      });
+    },
+  );
 export default app;
