@@ -12,9 +12,15 @@ import { statuses } from "../constants";
 import { useDeleteBook } from "../api/use-delete-book";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { useChangeBookStatus } from "../api/use-change-book-status";
+import { useBookId } from "../hooks/use-book-id";
+import { StatusType } from "../schemas";
 
 export default function BookActionsDropdownMenu() {
-  const { deleteBook, isPending } = useDeleteBook();
+  const bookId = useBookId();
+  const { deleteBook, isPending: isDeleteBookPending } = useDeleteBook();
+  const { changeStatus, isPending: isChangeBookStatusPending } =
+    useChangeBookStatus();
 
   const queryClient = useQueryClient();
 
@@ -33,7 +39,9 @@ export default function BookActionsDropdownMenu() {
     );
   };
 
-  const handleChangeStatus = () => {};
+  const handleChangeStatus = (status: StatusType) => {
+    changeStatus({ param: { bookId }, query: { status } });
+  };
 
   return (
     <DropdownMenu>
@@ -43,14 +51,20 @@ export default function BookActionsDropdownMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>Open</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleBookDelete} disabled={isPending}>
+        <DropdownMenuItem
+          onClick={handleBookDelete}
+          disabled={isDeleteBookPending}
+        >
           Remove
         </DropdownMenuItem>
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Change Status</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {statuses.map((status) => (
-              <DropdownMenuItem key={status} onClick={handleChangeStatus}>
+              <DropdownMenuItem
+                key={status}
+                onClick={() => handleChangeStatus(status)}
+              >
                 {status}
               </DropdownMenuItem>
             ))}

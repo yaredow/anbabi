@@ -13,6 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum StatusType {
+  FAVORITE
+  TO_READ
+  CURRENTLY_READING
+  COMPLETED
+}
+
 model User {
   id            String    @id
   name          String
@@ -75,7 +82,7 @@ model Verification {
 }
 
 model Book {
-  id              String   @id @default(cuid())
+  id              String     @id @default(cuid())
   title           String
   author          String
   description     String?
@@ -83,13 +90,13 @@ model Book {
   publicationYear Int?
   isbn            String?
   publisher       String?
-  uploadedAt      DateTime @default(now())
+  uploadedAt      DateTime   @default(now())
   coverPublicId   String
   bookUrl         String
   coverImage      String?
   uploaderId      String
-  uploader        User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
-  status          String   @default("To Read")
+  uploader        User       @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  status          StatusType @default(TO_READ)
 
   @@map("books")
 }

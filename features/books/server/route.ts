@@ -194,7 +194,6 @@ const app = new Hono()
   .delete("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { bookId } = c.req.param();
-    console.log({ bookId });
 
     if (!user) {
       return c.json({ error: "Unautherized" }, 401);
@@ -223,11 +222,11 @@ const app = new Hono()
   .put(
     "/status/:bookId",
     SessionMiddleware,
-    zValidator("query", StatusType),
+    zValidator("query", z.object({ status: StatusType })),
     async (c) => {
       const user = c.get("user");
       const { bookId } = c.req.param();
-      const status = c.req.valid("query");
+      const { status } = c.req.valid("query");
 
       if (!user) {
         return c.json({ error: "Unautherized" }, 401);
@@ -248,9 +247,11 @@ const app = new Hono()
           id: bookId,
         },
         data: {
-          status: status,
+          status,
         },
       });
+
+      return c.json({ message: "book status updated successfully" });
     },
   );
 export default app;

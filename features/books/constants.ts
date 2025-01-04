@@ -1,4 +1,5 @@
 import { IReactReaderStyle, ReactReaderStyle } from "react-reader";
+import { StatusType } from "./schemas";
 
 export const themes = [
   { name: "light", backgroundColor: "#ffffff", textColor: "#000000" },
@@ -16,7 +17,7 @@ export const fontFamilies = [
   { name: "Comic Sans" },
 ];
 
-export const statuses = [
+export const statuses: StatusType = [
   "Favorite",
   "To Read",
   "Currently Reading",
