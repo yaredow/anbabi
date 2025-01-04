@@ -20,6 +20,7 @@ import { formatStatus } from "@/lib/utils";
 import { statuses } from "../constants";
 import { StatusType } from "../schemas";
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
+import { useGetBook } from "../api/use-get-book";
 
 export default function BookActionsDropdownMenu() {
   const { deleteBook, isPending: isDeleteBookPending } = useDeleteBook();
@@ -28,6 +29,7 @@ export default function BookActionsDropdownMenu() {
 
   const queryClient = useQueryClient();
   const { bookId } = useBookStore();
+  const { book } = useGetBook({ bookId });
   const { open } = useBookReaderModal();
 
   const handleBookDelete = () => {
@@ -80,7 +82,9 @@ export default function BookActionsDropdownMenu() {
                 key={status}
                 onClick={() => handleChangeStatus(status)}
                 disabled={isChangeBookStatusPending}
+                className={`${book?.status === status && "bg-muted"}`}
               >
+                {book?.status === status && "✓  "}
                 {formatStatus(status)}
               </DropdownMenuItem>
             ))}

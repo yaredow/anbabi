@@ -94,9 +94,9 @@ model Book {
   coverPublicId   String
   bookUrl         String
   coverImage      String?
+  categories      String[]
+  pageCount       Int?
+  status          StatusType @default(TO_READ)
   uploaderId      String
   uploader        User       @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
-  status          StatusType @default(TO_READ)
-
-  @@map("books")
 }

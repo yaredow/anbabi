@@ -29,32 +29,7 @@ const app = new Hono()
       return c.json({ error: "There are no books" }, 400);
     }
 
-    const booksWithDetail = await Promise.all(
-      books.map(async (book) => {
-        try {
-          const response = await fetch(
-            `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(
-              book.title,
-            )}+inauthor:${encodeURIComponent(book.author)}&key=${process.env.GOOGLE_BOOK_API_KEY}`,
-          );
-
-          const googleData = await response.json();
-          const googleBook = googleData.items?.[0].volumeInfo;
-
-          return {
-            ...book,
-            coverImage: googleBook?.imageLinks?.thumbnail || null,
-            description: googleBook?.description || null,
-            pageCount: googleBook?.pageCount || null,
-            genre: googleBook?.categories?.[0] || null,
-          };
-        } catch (error) {
-          console.error(error);
-        }
-      }),
-    );
-
-    return c.json({ data: booksWithDetail });
+    return c.json({ data: books });
   })
   .get("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
@@ -72,23 +47,8 @@ const app = new Hono()
       return c.json({ error: "No book available with that id" }, 400);
     }
 
-    const response = await fetch(
-      `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(
-        book.title,
-      )}+inauthor:${encodeURIComponent(book.author)}&key=${process.env.GOOGLE_BOOK_API_KEY}`,
-    );
-
-    const googleData = await response.json();
-    const googleBook = googleData.items?.[0].volumeInfo;
-
     return c.json({
-      data: {
-        ...book,
-        coverImage: googleBook?.imageLinks?.thumbnail || null,
-        description: googleBook?.description || null,
-        pageCount: googleBook?.pageCount || null,
-        genre: googleBook?.categories?.[0] || null,
-      },
+      data: book,
     });
   })
   .post(
@@ -105,16 +65,49 @@ const app = new Hono()
         language,
         base64Data,
         publisher,
-        description,
         publicationYear,
       } = c.req.valid("json");
 
       if (!user) {
-        return c.json({ error: "Unautherized" }, 401);
+        return c.json({ error: "Unauthorized" }, 401);
       }
 
-      let uploadResult;
+      // Fetch Google Books data
+      let googleBookDetails: {
+        coverImage: string | null;
+        categories: string[];
+        pageCount: number | null;
+        description: string | null;
+      } = {
+        coverImage: null,
+        categories: [],
+        pageCount: null,
+        description: null,
+      };
 
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(
+            title,
+          )}+inauthor:${encodeURIComponent(
+            author,
+          )}&key=${process.env.GOOGLE_BOOK_API_KEY}`,
+        );
+        const googleData = await response.json();
+        const googleBook = googleData.items?.[0]?.volumeInfo;
+
+        googleBookDetails = {
+          coverImage: googleBook?.imageLinks?.thumbnail || null,
+          categories: googleBook?.categories || [],
+          pageCount: googleBook?.pageCount || null,
+          description: googleBook?.description || null,
+        };
+      } catch (error) {
+        console.error("Google Books API Error:", error);
+      }
+
+      // Upload cover image
+      let uploadResult;
       try {
         const fileBuffer = Buffer.from(base64Data, "base64");
         uploadResult = await new Promise<UploadApiResponse | undefined>(
@@ -165,12 +158,13 @@ const app = new Hono()
       if (existingBook) {
         return c.json(
           {
-            error: `book with title ${existingBook.title} already exists`,
+            error: `Book with title ${existingBook.title} already exists`,
           },
           400,
         );
       }
 
+      // Save book in the database
       const book = await prisma.book.create({
         data: {
           uploader: {
@@ -179,12 +173,15 @@ const app = new Hono()
           title,
           author,
           language,
-          description,
           bookUrl: uploadResult.url as string,
           coverPublicId: uploadResult.public_id as string,
           publicationYear,
           isbn,
           publisher,
+          description: googleBookDetails.description,
+          categories: googleBookDetails.categories,
+          coverImage: googleBookDetails.coverImage,
+          pageCount: googleBookDetails.pageCount,
         },
       });
 
@@ -222,7 +219,7 @@ const app = new Hono()
 
     return c.json({ message: "book deleted successfully" });
   })
-  .put(
+  .patch(
     "/status/:bookId",
     SessionMiddleware,
     zValidator("query", z.object({ status: StatusType })),

@@ -157,7 +157,7 @@ function ReaderSidebar() {
                   </Button>
                 </Link>
               )}
-            </div>{" "}
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>{" "}

@@ -3,11 +3,11 @@ import { useMutation } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.books)["status"][":bookId"]["$put"]
+  (typeof client.api.books)["status"][":bookId"]["$patch"]
 >;
 
 type RequestType = InferRequestType<
-  (typeof client.api.books)["status"][":bookId"]["$put"]
+  (typeof client.api.books)["status"][":bookId"]["$patch"]
 >;
 
 export const useChangeBookStatus = () => {
@@ -17,7 +17,7 @@ export const useChangeBookStatus = () => {
     RequestType
   >({
     mutationFn: async ({ query, param }) => {
-      const response = await client.api.books.status[":bookId"].$put({
+      const response = await client.api.books.status[":bookId"].$patch({
         query,
         param,
       });
