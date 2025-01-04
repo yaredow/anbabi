@@ -2,8 +2,6 @@ export default function BookInformationSkeleton() {
   return (
     <div className="min-h-screen w-full bg-background p-2">
       <div className="mx-auto max-w-6xl">
-        <div className="h-6 w-32 bg-muted animate-pulse rounded mb-6" />
-
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           <div className="h-[450px] w-full bg-muted animate-pulse rounded" />
 

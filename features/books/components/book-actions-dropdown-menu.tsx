@@ -1,3 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { MoreHorizontal } from "lucide-react";
+
+import { toast } from "@/hooks/use-toast";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,15 +12,14 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { statuses } from "../constants";
-import { useDeleteBook } from "../api/use-delete-book";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "@/hooks/use-toast";
+
 import { useChangeBookStatus } from "../api/use-change-book-status";
-import { StatusType } from "../schemas";
-import { formatStatus } from "@/lib/utils";
+import { useDeleteBook } from "../api/use-delete-book";
 import { useBookStore } from "../store/book-store";
+import { formatStatus } from "@/lib/utils";
+import { statuses } from "../constants";
+import { StatusType } from "../schemas";
+import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 
 export default function BookActionsDropdownMenu() {
   const { deleteBook, isPending: isDeleteBookPending } = useDeleteBook();
@@ -24,7 +28,7 @@ export default function BookActionsDropdownMenu() {
 
   const queryClient = useQueryClient();
   const { bookId } = useBookStore();
-  console.log({ bookId });
+  const { open } = useBookReaderModal();
 
   const handleBookDelete = () => {
     deleteBook(
@@ -61,7 +65,7 @@ export default function BookActionsDropdownMenu() {
         <span className="sr-only">Open menu</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>Open</DropdownMenuItem>
+        <DropdownMenuItem onClick={open}>Open</DropdownMenuItem>
         <DropdownMenuItem
           onClick={handleBookDelete}
           disabled={isDeleteBookPending}

@@ -209,13 +209,16 @@ const app = new Hono()
       return c.json({ error: "No book exists with that id" }, 400);
     }
 
+    await cloudinary.api.delete_resources([`${existingBook.coverPublicId}`], {
+      type: "upload",
+      resource_type: "raw",
+    });
+
     await prisma.book.delete({
       where: {
         id: bookId,
       },
     });
-
-    await cloudinary.api.delete_resources([existingBook.coverPublicId]);
 
     return c.json({ message: "book deleted successfully" });
   })
