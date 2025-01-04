@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
-
 import BookInformationSkeleton from "@/components/skeletons/book-information-sekelton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import { useGetBook } from "../api/use-get-book";
-import { ArrowLeft } from "lucide-react";
+import { useEffect } from "react";
+import { useBookStore } from "../store/book-store";
 
 type BookInfoProps = {
   bookId: string;
@@ -17,6 +16,13 @@ type BookInfoProps = {
 export default function BookInformation({ bookId }: BookInfoProps) {
   const { book, isPending } = useGetBook({ bookId });
   const { open } = useBookReaderModal();
+  const { setBookId } = useBookStore();
+
+  useEffect(() => {
+    if (bookId) {
+      setBookId(bookId);
+    }
+  }, [bookId, setBookId]);
 
   if (isPending) {
     return <BookInformationSkeleton />;

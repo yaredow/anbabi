@@ -17,11 +17,11 @@ export const fontFamilies = [
   { name: "Comic Sans" },
 ];
 
-export const statuses: StatusType = [
-  "Favorite",
-  "To Read",
-  "Currently Reading",
-  "Completed",
+export const statuses: StatusType[] = [
+  "FAVORITE",
+  "TO_READ",
+  "CURRENTLY_READING",
+  "COMPLETED",
 ];
 
 export const lightReaderTheme: IReactReaderStyle = {

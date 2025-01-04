@@ -5,6 +5,10 @@ import { fontFamilies } from "../constants";
 import { ITheme, RenditionRef } from "../types";
 
 type BookStoreState = {
+  // State related to bookId
+  bookId: string;
+  setBookId: (bookId: string) => void;
+
   //Rendition
   renditionRef: RenditionRef;
 
@@ -33,6 +37,10 @@ type BookStoreState = {
 };
 
 export const useBookStore = create<BookStoreState>((set) => ({
+  // State related to bookId
+  bookId: "",
+  setBookId: (bookId) => set({ bookId }),
+
   // State related to rendition
   renditionRef: { current: undefined },
 

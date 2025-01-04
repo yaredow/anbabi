@@ -13,16 +13,18 @@ import { useDeleteBook } from "../api/use-delete-book";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { useChangeBookStatus } from "../api/use-change-book-status";
-import { useBookId } from "../hooks/use-book-id";
 import { StatusType } from "../schemas";
+import { formatStatus } from "@/lib/utils";
+import { useBookStore } from "../store/book-store";
 
 export default function BookActionsDropdownMenu() {
-  const bookId = useBookId();
   const { deleteBook, isPending: isDeleteBookPending } = useDeleteBook();
   const { changeStatus, isPending: isChangeBookStatusPending } =
     useChangeBookStatus();
 
   const queryClient = useQueryClient();
+  const { bookId } = useBookStore();
+  console.log({ bookId });
 
   const handleBookDelete = () => {
     deleteBook(
@@ -40,7 +42,16 @@ export default function BookActionsDropdownMenu() {
   };
 
   const handleChangeStatus = (status: StatusType) => {
-    changeStatus({ param: { bookId }, query: { status } });
+    changeStatus(
+      { param: { bookId }, query: { status } },
+      {
+        onSuccess: () => {
+          toast({
+            description: "Book status updated successfully",
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -64,8 +75,9 @@ export default function BookActionsDropdownMenu() {
               <DropdownMenuItem
                 key={status}
                 onClick={() => handleChangeStatus(status)}
+                disabled={isChangeBookStatusPending}
               >
-                {status}
+                {formatStatus(status)}
               </DropdownMenuItem>
             ))}
           </DropdownMenuSubContent>
