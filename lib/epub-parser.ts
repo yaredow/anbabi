@@ -28,7 +28,6 @@ export async function parseEpub(file: File): Promise<{
         }
 
         const metadata = book.packaging.metadata || {};
-        console.log({ metadata });
         const isbn = metadata.identifier ? metadata.identifier : undefined;
 
         const publicationYear = metadata.pubdate
