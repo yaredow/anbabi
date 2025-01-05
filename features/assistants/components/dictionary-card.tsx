@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Loader2, Play } from "lucide-react";
 
-import { RenditionRef } from "@/features/books/types";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import DottedSeparator from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 
 import { useGetWordDefination } from "../api/use-get-words-defination";

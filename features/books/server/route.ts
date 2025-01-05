@@ -10,27 +10,36 @@ import { BookSchema, StatusType } from "../schemas";
 import { z } from "zod";
 
 const app = new Hono()
-  .get("/", SessionMiddleware, async (c) => {
-    const user = c.get("user");
+  .get(
+    "/",
+    SessionMiddleware,
+    zValidator("query", z.object({ categories: z.string() })),
+    async (c) => {
+      const user = c.get("user");
+      const { categories } = c.req.valid("query");
 
-    if (!user) {
-      return c.json({ error: "Unautherized" }, 401);
-    }
+      if (!user) {
+        return c.json({ error: "Unautherized" }, 401);
+      }
 
-    const books = await prisma.book.findMany({
-      where: {
-        uploader: {
-          id: user.id,
+      const books = await prisma.book.findMany({
+        where: {
+          uploader: {
+            id: user.id,
+          },
+          categories: {
+            has: categories,
+          },
         },
-      },
-    });
+      });
 
-    if (!books) {
-      return c.json({ error: "There are no books" }, 400);
-    }
+      if (!books) {
+        return c.json({ error: "There are no books" }, 400);
+      }
 
-    return c.json({ data: books });
-  })
+      return c.json({ data: books });
+    },
+  )
   .get("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { bookId } = c.req.param();

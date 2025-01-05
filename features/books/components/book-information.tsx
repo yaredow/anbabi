@@ -38,7 +38,7 @@ export default function BookInformation({ bookId }: BookInfoProps) {
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           <Card className="overflow-hidden h-fit">
             <img
-              src={book.coverImage}
+              src={book.coverImage ?? ""}
               alt="Untold Secrets: Fire & Ice Book Cover"
               className="w-full object-cover"
               height={450}
@@ -97,7 +97,7 @@ export default function BookInformation({ bookId }: BookInfoProps) {
                 <div>
                   <h3 className="font-semibold">Genre</h3>
                   <div className="text-sm text-muted-foreground">
-                    {book.genre}
+                    {book.categories}
                   </div>
                 </div>
               </div>
