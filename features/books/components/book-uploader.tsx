@@ -14,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 
 type EpubUploaderProps = {
-  onCancel: () => void;
+  onCancel?: () => void;
 };
 
 export default function EpubUploader({ onCancel }: EpubUploaderProps) {
