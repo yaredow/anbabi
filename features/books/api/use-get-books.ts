@@ -6,7 +6,11 @@ type UseGetBooksProps = {
 };
 
 export const useGetBooks = ({ category }: UseGetBooksProps) => {
-  const { data: books, isPending } = useQuery({
+  const {
+    data: books,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: ["books"],
     queryFn: async () => {
       const response = await client.api.books.$get({ query: { category } });
@@ -23,7 +27,8 @@ export const useGetBooks = ({ category }: UseGetBooksProps) => {
         ...book,
         uploadedAt: new Date(book?.uploadedAt),
       })),
+    enabled: !!category,
   });
 
-  return { books, isPending };
+  return { books, isPending, refetch };
 };

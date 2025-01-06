@@ -1,15 +1,28 @@
 "use client";
 
+import { useCallback, useEffect } from "react";
 import { useGetBooks } from "../api/use-get-books";
 import BookCard from "./book-card";
 import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
+import { debounce } from "lodash";
 
 type BooksGridProps = {
   categoryName: string;
 };
 
 export function BooksGrid({ categoryName }: BooksGridProps) {
-  const { books, isPending } = useGetBooks({ category: categoryName });
+  const { books, isPending, refetch } = useGetBooks({ category: categoryName });
+
+  const debounceRefetch = useCallback(
+    debounce(() => refetch(), 400),
+    [refetch],
+  );
+
+  useEffect(() => {
+    debounceRefetch();
+
+    return () => debounceRefetch.cancel();
+  }, [categoryName, debounceRefetch]);
 
   if (isPending) {
     return <BooksGridSkeleton />;

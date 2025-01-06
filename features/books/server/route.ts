@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 
 import { BookSchema, StatusType } from "../schemas";
 import { z } from "zod";
+import { Book } from "@prisma/client";
 
 const app = new Hono()
   .get(
@@ -22,16 +23,22 @@ const app = new Hono()
         return c.json({ error: "Unautherized" }, 401);
       }
 
-      const books = await prisma.book.findMany({
-        where: {
-          uploader: {
-            id: user.id,
+      let books: Book[] = [];
+
+      if (category !== "all") {
+        books = await prisma.book.findMany({
+          where: {
+            uploader: {
+              id: user.id,
+            },
+            categories: {
+              has: category,
+            },
           },
-          categories: {
-            has: category,
-          },
-        },
-      });
+        });
+      } else {
+        books = await prisma.book.findMany();
+      }
 
       if (!books) {
         return c.json({ error: "There are no books" }, 400);
