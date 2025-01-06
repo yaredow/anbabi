@@ -5,20 +5,22 @@ import { ArrowLeft, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useGetBook } from "@/features/books/api/use-get-book";
 import BookActionsDropdownMenu from "@/features/books/components/book-actions-dropdown-menu";
-import { useBookId } from "@/features/books/hooks/use-book-id";
 import { useUploadBookModal } from "@/features/books/hooks/use-upload-book-modal";
+import { useCategoryName } from "@/features/books/hooks/use-category-name";
+import { useGetBook } from "@/features/books/api/use-get-book";
+import { useBookId } from "@/features/books/hooks/use-book-id";
 
 import { Button } from "./ui/button";
 
 export default function Header() {
-  const bookId = useBookId();
   const { open } = useUploadBookModal();
+  const category = useCategoryName();
   const pathName = usePathname();
-  const isHome = pathName === "/";
+  const bookId = useBookId();
 
   const { book } = useGetBook({ bookId });
+  const isHome = pathName === `/category/${category}`;
 
   return (
     <header className="flex z-20 w-full bg-muted sticky top-0 items-center justify-between h-12 px-4 py-2">

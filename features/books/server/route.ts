@@ -13,10 +13,10 @@ const app = new Hono()
   .get(
     "/",
     SessionMiddleware,
-    zValidator("query", z.object({ categories: z.string() })),
+    zValidator("query", z.object({ category: z.string() })),
     async (c) => {
       const user = c.get("user");
-      const { categories } = c.req.valid("query");
+      const { category } = c.req.valid("query");
 
       if (!user) {
         return c.json({ error: "Unautherized" }, 401);
@@ -28,7 +28,7 @@ const app = new Hono()
             id: user.id,
           },
           categories: {
-            has: categories,
+            has: category,
           },
         },
       });
@@ -107,7 +107,10 @@ const app = new Hono()
 
         googleBookDetails = {
           coverImage: googleBook?.imageLinks?.thumbnail || null,
-          categories: googleBook?.categories || [],
+          categories:
+            googleBook?.categories.map((category: string) =>
+              category.toLowerCase(),
+            ) || [],
           pageCount: googleBook?.pageCount || null,
           description: googleBook?.description || null,
         };

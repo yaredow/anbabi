@@ -70,10 +70,10 @@ function ReaderSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/books">
+                  <Link href="/category/all">
                     <FaBook className="mr-2 h-4 w-4" />
                     <span>All Books</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -93,13 +93,13 @@ function ReaderSidebar() {
                   {categories.map((category) => (
                     <SidebarMenuItem key={category.name}>
                       <SidebarMenuButton asChild>
-                        <a href={`/category/${category.name.toLowerCase()}`}>
+                        <Link href={`/category/${category.name.toLowerCase()}`}>
                           <FolderOpen className="mr-2 h-4 w-4" />
                           <span>{category.name}</span>
                           <span className="ml-auto text-xs text-muted-foreground">
                             {category.count}
                           </span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -122,7 +122,7 @@ function ReaderSidebar() {
                   {libraries.map((library) => (
                     <SidebarMenuItem key={library.name}>
                       <SidebarMenuButton asChild>
-                        <a
+                        <Link
                           href={`/library/${library.name.toLowerCase().replace(" ", "-")}`}
                         >
                           <Library className="mr-2 h-4 w-4" />
@@ -130,7 +130,7 @@ function ReaderSidebar() {
                           <span className="ml-auto text-xs text-muted-foreground">
                             {library.count}
                           </span>
-                        </a>
+                        </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}

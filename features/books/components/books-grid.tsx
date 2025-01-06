@@ -4,8 +4,12 @@ import { useGetBooks } from "../api/use-get-books";
 import BookCard from "./book-card";
 import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 
-export function BooksGrid() {
-  const { books, isPending } = useGetBooks();
+type BooksGridProps = {
+  categoryName: string;
+};
+
+export function BooksGrid({ categoryName }: BooksGridProps) {
+  const { books, isPending } = useGetBooks({ category: categoryName });
 
   if (isPending) {
     return <BooksGridSkeleton />;

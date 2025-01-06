@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useBookReaderModal } from "../hooks/use-book-reader-modal";
+
 import BookActionsDropdownMenu from "./book-actions-dropdown-menu";
+import { useCategoryName } from "../hooks/use-category-name";
 
 interface BookCardProps {
   id: string;
@@ -20,9 +21,11 @@ export default function BookCard({
   progress,
   coverUrl,
 }: BookCardProps) {
+  const categoryName = useCategoryName();
+
   return (
     <div className="group relative w-[180px] bg-background px-4 py-2 cursor-pointer transition-shadow rounded-lg">
-      <Link href={`/${id}`}>
+      <Link href={`/category/${categoryName}/book/${id}`}>
         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg hover:scale-105">
           <Image
             src={coverUrl}
