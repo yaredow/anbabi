@@ -31,6 +31,13 @@ export type BookType = {
   fileName?: string;
 };
 
+export type CategoryCount = {
+  categories: string[];
+  _count: {
+    categories: number;
+  };
+};
+
 export interface UploadState {
   progress: number;
   status: "idle" | "parsing" | "uploading" | "complete" | "error";

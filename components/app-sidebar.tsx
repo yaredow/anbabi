@@ -29,6 +29,7 @@ import {
 import { useSession } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 
 const categories = [
   { name: "Fiction", count: 120 },
@@ -47,6 +48,7 @@ const libraries = [
 
 function ReaderSidebar() {
   const { data: session } = useSession();
+  const { count, isPending } = useGetCategoriesCount();
 
   return (
     <>
@@ -90,19 +92,30 @@ function ReaderSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {categories.map((category) => (
-                    <SidebarMenuItem key={category.name}>
-                      <SidebarMenuButton asChild>
-                        <Link href={`/category/${category.name.toLowerCase()}`}>
-                          <FolderOpen className="mr-2 h-4 w-4" />
-                          <span>{category.name}</span>
-                          <span className="ml-auto text-xs text-muted-foreground">
-                            {category.count}
-                          </span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {categories.map((category) => {
+                    const categoryData = count?.find(
+                      (c) =>
+                        c.categories[0]?.toLowerCase() ===
+                        category.name.toLowerCase(),
+                    );
+                    const categoryCount = categoryData?._count.categories || 0;
+
+                    return (
+                      <SidebarMenuItem key={category.name}>
+                        <SidebarMenuButton asChild>
+                          <Link
+                            href={`/category/${category.name.toLowerCase()}`}
+                          >
+                            <FolderOpen className="mr-2 h-4 w-4" />
+                            <span>{category.name}</span>
+                            <span className="ml-auto text-xs text-muted-foreground">
+                              {categoryCount}
+                            </span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
                 </SidebarMenu>
               </SidebarGroupContent>
             </CollapsibleContent>

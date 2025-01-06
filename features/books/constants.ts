@@ -24,6 +24,13 @@ export const statuses: StatusType[] = [
   "COMPLETED",
 ];
 
+export const categoryMapping: Record<string, string[]> = {
+  biography: ["biography", "biographies", "autobiography", "autobiographies"],
+  history: ["history", "historical"],
+  science: ["science", "sciences"],
+  // Add more mappings as needed
+};
+
 export const lightReaderTheme: IReactReaderStyle = {
   ...ReactReaderStyle,
   arrow: {

@@ -67,6 +67,22 @@ const app = new Hono()
       data: book,
     });
   })
+  .get("/categories/count", SessionMiddleware, async (c) => {
+    const user = c.get("user");
+
+    if (!user) {
+      return c.json({ error: "Unautherized" }, 401);
+    }
+
+    const categoryCount = await prisma.book.groupBy({
+      by: ["categories"],
+      _count: {
+        categories: true,
+      },
+    });
+
+    return c.json({ data: categoryCount });
+  })
   .post(
     "/upload",
     SessionMiddleware,
