@@ -30,11 +30,12 @@ import { useSession } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
+import { useGetBooks } from "@/features/books/api/use-get-books";
 
 const categories = [
   { name: "Fiction", count: 120 },
   { name: "Non-Fiction", count: 85 },
-  { name: "Science Fiction", count: 45 },
+  { name: "Science-fiction", count: 45 },
   { name: "Mystery", count: 38 },
   { name: "Biography", count: 22 },
 ];
@@ -49,6 +50,7 @@ const libraries = [
 function ReaderSidebar() {
   const { data: session } = useSession();
   const { count, isPending } = useGetCategoriesCount();
+  const { books } = useGetBooks({ category: "all" });
 
   return (
     <>
@@ -74,7 +76,10 @@ function ReaderSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/category/all">
                     <FaBook className="mr-2 h-4 w-4" />
-                    <span>All Books</span>
+                    <span>All books</span>
+                    <span className="ml-auto text-xs text-muted-foreground">
+                      {books?.length || 0}
+                    </span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -32,11 +32,15 @@ export function BooksGrid({ categoryName }: BooksGridProps) {
     return (
       <div className="flex flex-col items-center justify-center text-center p-8 rounded-lg">
         <div className="text-xl font-semibold text-gray-800 mb-4">
-          No Books on Your Shelf
+          {categoryName === "all"
+            ? "No book on your shelf"
+            : `No books available in category: ${categoryName}`}
         </div>
-        <p className="text-sm text-gray-500 mb-6">
-          Start by uploading your first eBook!
-        </p>
+        {categoryName === "all" && (
+          <p className="text-sm text-gray-500 mb-6">
+            Start by uploading your first eBook!
+          </p>
+        )}
       </div>
     );
   }
