@@ -1,6 +1,21 @@
 import { IReactReaderStyle, ReactReaderStyle } from "react-reader";
 import { StatusType } from "./schemas";
 
+export const BookCategories = [
+  { name: "Fiction" },
+  { name: "Non-Fiction" },
+  { name: "Science-fiction" },
+  { name: "Mystery" },
+  { name: "Biography" },
+];
+
+export const Libraries = [
+  { name: "Favorites", count: 15 },
+  { name: "To Read", count: 28 },
+  { name: "Currently Reading", count: 3 },
+  { name: "Completed", count: 67 },
+];
+
 export const themes = [
   { name: "light", backgroundColor: "#ffffff", textColor: "#000000" },
   { name: "dark", backgroundColor: "#000000", textColor: "#ffffff" },

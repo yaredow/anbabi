@@ -10,6 +10,7 @@ import { BookSchema, StatusType } from "../schemas";
 import { z } from "zod";
 import { Book } from "@prisma/client";
 import { Record } from "@prisma/client/runtime/library";
+import { normalizeCategory } from "@/lib/utils";
 
 const app = new Hono()
   .get(
@@ -27,13 +28,16 @@ const app = new Hono()
       let books: Book[] = [];
 
       if (category !== "all") {
+        const normalizedCategory = normalizeCategory(category);
+        console.log({ normalizedCategory });
+
         books = await prisma.book.findMany({
           where: {
             uploader: {
               id: user.id,
             },
             categories: {
-              hasSome: [category],
+              hasSome: normalizedCategory,
             },
           },
         });

@@ -54,3 +54,14 @@ export const formatStatus = (status: string) => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 };
+
+export const normalizeCategory = (category: string): string[] => {
+  const categoryMapping: { [key: string]: string[] } = {
+    biography: ["biography", "biography & autobiography"],
+    autobiography: ["biography & autobiography"],
+    // Add other mappings here as needed
+  };
+
+  // Return the array of normalized categories or the input if no mapping found
+  return categoryMapping[category.toLowerCase()] || [category];
+};

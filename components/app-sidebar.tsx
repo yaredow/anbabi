@@ -30,22 +30,7 @@ import { useSession } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
-import { useGetBooks } from "@/features/books/api/use-get-books";
-
-const categories = [
-  { name: "Fiction" },
-  { name: "Non-Fiction" },
-  { name: "Science-fiction" },
-  { name: "Mystery" },
-  { name: "Biography" },
-];
-
-const libraries = [
-  { name: "Favorites", count: 15 },
-  { name: "To Read", count: 28 },
-  { name: "Currently Reading", count: 3 },
-  { name: "Completed", count: 67 },
-];
+import { BookCategories, Libraries } from "@/features/books/constants";
 
 function ReaderSidebar() {
   const { data: session } = useSession();
@@ -97,7 +82,7 @@ function ReaderSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {categories.map((category) => {
+                  {BookCategories.map((category) => {
                     const categoryCount =
                       count?.categoryCount?.[category.name.toLowerCase()] || 0;
                     return (
@@ -132,7 +117,7 @@ function ReaderSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {libraries.map((library) => (
+                  {Libraries.map((library) => (
                     <SidebarMenuItem key={library.name}>
                       <SidebarMenuButton asChild>
                         <Link
