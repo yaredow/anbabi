@@ -31,10 +31,17 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 import { BookCategories, Libraries } from "@/features/books/constants";
+import { useGetBooksByStatus } from "@/features/books/api/use-get-books-by-status";
+import { useState } from "react";
+import { StatusType } from "@/features/books/schemas";
 
 function ReaderSidebar() {
-  const { data: session } = useSession();
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const { count, isPending } = useGetCategoriesCount();
+  const { data: session } = useSession();
+  const { books, isPending: isBooksPending } = useGetBooksByStatus({
+    status: selectedStatus,
+  });
   const totalBooks = count?.totalBooks;
 
   return (
@@ -117,21 +124,22 @@ function ReaderSidebar() {
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {Libraries.map((library) => (
-                    <SidebarMenuItem key={library.name}>
-                      <SidebarMenuButton asChild>
-                        <Link
-                          href={`/library/${library.name.toLowerCase().replace(" ", "-")}`}
-                        >
-                          <Library className="mr-2 h-4 w-4" />
-                          <span>{library.name}</span>
-                          <span className="ml-auto text-xs text-muted-foreground">
-                            {library.count}
-                          </span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
+                  {!isBooksPending &&
+                    Libraries?.map((library) => (
+                      <SidebarMenuItem key={library.status}>
+                        <SidebarMenuButton asChild>
+                          <Link
+                            href={`/library/${library.status.toLowerCase().replace("_", "-")}`}
+                          >
+                            <Library className="mr-2 h-4 w-4" />
+                            <span>{library.name}</span>
+                            <span className="ml-auto text-xs text-muted-foreground">
+                              {library.count}
+                            </span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </CollapsibleContent>

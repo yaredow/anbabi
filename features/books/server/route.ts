@@ -64,6 +64,31 @@ const app = new Hono()
       return c.json({ data: books });
     },
   )
+  .get(
+    "/libraries",
+    SessionMiddleware,
+    zValidator("query", z.object({ status: StatusType })),
+    async (c) => {
+      const user = c.get("user");
+      const { status } = c.req.valid("query");
+
+      if (!user) {
+        return c.json({ error: "Unautherized" }, 401);
+      }
+
+      const books = await prisma.book.findMany({
+        where: {
+          uploader: {
+            id: user.id,
+          },
+          status,
+        },
+        orderBy: { uploadedAt: "desc" },
+      });
+
+      return c.json({ data: books });
+    },
+  )
   .get("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { bookId } = c.req.param();

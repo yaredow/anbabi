@@ -10,10 +10,11 @@ export const BookCategories = [
 ];
 
 export const Libraries = [
-  { name: "Favorites", count: 15 },
-  { name: "To Read", count: 28 },
-  { name: "Currently Reading", count: 3 },
-  { name: "Completed", count: 67 },
+  { name: "Favorites", status: "FAVORITE" },
+  { name: "Finished", status: "FINISHED" },
+  { name: "To Read", status: "TO_READ" },
+  { name: "Currently Reading", status: "CURRENTLY_READING" },
+  { name: "Completed", status: "COMPLETED" },
 ];
 
 export const themes = [
