@@ -94,7 +94,9 @@ const app = new Hono()
         return acc;
       }, {});
 
-    return c.json({ data: categoryCount });
+    const totalBooks = books.length;
+
+    return c.json({ data: { categoryCount, totalBooks } });
   })
   .post(
     "/upload",

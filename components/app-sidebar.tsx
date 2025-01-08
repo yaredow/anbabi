@@ -50,7 +50,7 @@ const libraries = [
 function ReaderSidebar() {
   const { data: session } = useSession();
   const { count, isPending } = useGetCategoriesCount();
-  const { books } = useGetBooks({ category: "all" });
+  const totalBooks = count?.totalBooks;
 
   return (
     <>
@@ -78,7 +78,7 @@ function ReaderSidebar() {
                     <FaBook className="mr-2 h-4 w-4" />
                     <span>All books</span>
                     <span className="ml-auto text-xs text-muted-foreground">
-                      {books?.length || 0}
+                      {totalBooks || 0}
                     </span>
                   </Link>
                 </SidebarMenuButton>
@@ -99,7 +99,7 @@ function ReaderSidebar() {
                 <SidebarMenu>
                   {categories.map((category) => {
                     const categoryCount =
-                      count?.[category.name.toLowerCase()] || 0;
+                      count?.categoryCount?.[category.name.toLowerCase()] || 0;
                     return (
                       <SidebarMenuItem key={category.name}>
                         <SidebarMenuButton asChild>
