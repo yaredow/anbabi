@@ -55,13 +55,11 @@ export const formatStatus = (status: string) => {
     .join(" ");
 };
 
-export const normalizeCategory = (category: string): string[] => {
-  const categoryMapping: { [key: string]: string[] } = {
-    biography: ["biography", "biography & autobiography"],
-    autobiography: ["biography & autobiography"],
-    // Add other mappings here as needed
+export const normalizeCategory = (category: string): string => {
+  const categoryMapping: { [key: string]: string } = {
+    "biography & autobiography": "biography",
+    autobiography: "biography",
   };
 
-  // Return the array of normalized categories or the input if no mapping found
-  return categoryMapping[category.toLowerCase()] || [category];
+  return categoryMapping[category.toLowerCase()] || category;
 };

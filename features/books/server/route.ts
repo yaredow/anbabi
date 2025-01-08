@@ -13,6 +13,7 @@ import { Record } from "@prisma/client/runtime/library";
 import { normalizeCategory } from "@/lib/utils";
 
 const app = new Hono()
+
   .get(
     "/",
     SessionMiddleware,
@@ -22,31 +23,42 @@ const app = new Hono()
       const { category } = c.req.valid("query");
 
       if (!user) {
-        return c.json({ error: "Unautherized" }, 401);
+        return c.json({ error: "Unauthorized" }, 401);
       }
 
       let books: Book[] = [];
 
-      if (category !== "all") {
-        const normalizedCategory = normalizeCategory(category);
-        console.log({ normalizedCategory });
-
+      if (category === "all") {
+        // Fetch all books if category is "all"
         books = await prisma.book.findMany({
           where: {
             uploader: {
               id: user.id,
             },
-            categories: {
-              hasSome: normalizedCategory,
-            },
           },
         });
       } else {
-        books = await prisma.book.findMany();
+        const normalizedCategory = normalizeCategory(category);
+
+        // Fetch all books uploaded by the user
+        const allBooks = await prisma.book.findMany({
+          where: {
+            uploader: {
+              id: user.id,
+            },
+          },
+        });
+
+        // Filter books by normalized category
+        books = allBooks.filter((book) =>
+          book.categories.some(
+            (cat) => normalizeCategory(cat) === normalizedCategory,
+          ),
+        );
       }
 
-      if (!books) {
-        return c.json({ error: "There are no books" }, 400);
+      if (!books.length) {
+        return c.json({ error: "No books found for this category" }, 404);
       }
 
       return c.json({ data: books });
@@ -93,8 +105,9 @@ const app = new Hono()
     // Flatten and count categories
     const categoryCount = books
       .flatMap((book) => book.categories || [])
-      .reduce<Record<string, number>>((acc, category) => {
-        acc[category] = (acc[category] || 0) + 1;
+      .map((category) => normalizeCategory(category))
+      .reduce<Record<string, number>>((acc, normalizedCategory) => {
+        acc[normalizedCategory] = (acc[normalizedCategory] || 0) + 1;
         return acc;
       }, {});
 
