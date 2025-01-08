@@ -9,7 +9,6 @@ import QueryProviders from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
-import BookReaderModal from "@/features/books/components/book-reader-modal";
 
 const roboto = Roboto({
   subsets: ["latin"],

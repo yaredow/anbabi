@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/hono";
-import { CategoryCount } from "../types";
+
+type CategoryCount = Record<string, number>;
 
 export const useGetCategoriesCount = () => {
-  const { data: count, isPending } = useQuery<CategoryCount[]>({
+  const { data: count, isPending } = useQuery<CategoryCount>({
     queryKey: ["category-counts"],
     queryFn: async () => {
       const response = await client.api.books.categories.count.$get();

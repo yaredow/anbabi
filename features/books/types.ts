@@ -32,10 +32,7 @@ export type BookType = {
 };
 
 export type CategoryCount = {
-  categories: string[];
-  _count: {
-    categories: number;
-  };
+  data: Record<string, number>;
 };
 
 export interface UploadState {

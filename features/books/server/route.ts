@@ -9,6 +9,7 @@ import prisma from "@/lib/prisma";
 import { BookSchema, StatusType } from "../schemas";
 import { z } from "zod";
 import { Book } from "@prisma/client";
+import { Record } from "@prisma/client/runtime/library";
 
 const app = new Hono()
   .get(
@@ -32,7 +33,7 @@ const app = new Hono()
               id: user.id,
             },
             categories: {
-              has: category,
+              hasSome: [category],
             },
           },
         });
@@ -74,12 +75,24 @@ const app = new Hono()
       return c.json({ error: "Unautherized" }, 401);
     }
 
-    const categoryCount = await prisma.book.groupBy({
-      by: ["categories"],
-      _count: {
+    const books = await prisma.book.findMany({
+      where: {
+        uploader: {
+          id: user.id,
+        },
+      },
+      select: {
         categories: true,
       },
     });
+
+    // Flatten and count categories
+    const categoryCount = books
+      .flatMap((book) => book.categories || [])
+      .reduce<Record<string, number>>((acc, category) => {
+        acc[category] = (acc[category] || 0) + 1;
+        return acc;
+      }, {});
 
     return c.json({ data: categoryCount });
   })

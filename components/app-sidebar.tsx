@@ -33,11 +33,11 @@ import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-c
 import { useGetBooks } from "@/features/books/api/use-get-books";
 
 const categories = [
-  { name: "Fiction", count: 120 },
-  { name: "Non-Fiction", count: 85 },
-  { name: "Science-fiction", count: 45 },
-  { name: "Mystery", count: 38 },
-  { name: "Biography", count: 22 },
+  { name: "Fiction" },
+  { name: "Non-Fiction" },
+  { name: "Science-fiction" },
+  { name: "Mystery" },
+  { name: "Biography" },
 ];
 
 const libraries = [
@@ -98,13 +98,8 @@ function ReaderSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {categories.map((category) => {
-                    const categoryData = count?.find(
-                      (c) =>
-                        c.categories[0]?.toLowerCase() ===
-                        category.name.toLowerCase(),
-                    );
-                    const categoryCount = categoryData?._count.categories || 0;
-
+                    const categoryCount =
+                      count?.[category.name.toLowerCase()] || 0;
                     return (
                       <SidebarMenuItem key={category.name}>
                         <SidebarMenuButton asChild>
