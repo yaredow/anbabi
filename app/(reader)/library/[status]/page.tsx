@@ -1,4 +1,4 @@
-import { type ReactElement } from "react";
+import { BooksGrid } from "@/features/books/components/books-grid";
 
 type PageWithStatusProps = {
   params: Promise<{ status: string }>;
@@ -6,5 +6,5 @@ type PageWithStatusProps = {
 
 export default async function PageWithStatus({ params }: PageWithStatusProps) {
   const status = (await params).status;
-  return <main>{status}</main>;
+  return <BooksGrid status={status} />;
 }

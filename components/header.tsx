@@ -12,15 +12,17 @@ import { useGetBook } from "@/features/books/api/use-get-book";
 import { useBookId } from "@/features/books/hooks/use-book-id";
 
 import { Button } from "./ui/button";
+import { useBookStatus } from "@/features/books/hooks/use-book-status";
 
 export default function Header() {
   const { open } = useUploadBookModal();
   const category = useCategoryName();
   const pathName = usePathname();
+  const status = useBookStatus();
   const bookId = useBookId();
 
   const { book } = useGetBook({ bookId });
-  const isHome = pathName === `/category/${category}`;
+  const isHome = pathName === `/category/${category}` || `/library/${status}`;
 
   return (
     <header className="flex z-20 w-full bg-muted sticky top-0 items-center justify-between h-12 px-4 py-2">

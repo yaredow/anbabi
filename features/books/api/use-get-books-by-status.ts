@@ -7,7 +7,11 @@ type UseGetBooksByStatusProps = {
 };
 
 export const useGetBooksByStatus = ({ status }: UseGetBooksByStatusProps) => {
-  const { data: books, isLoading } = useQuery({
+  const {
+    data: books,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: ["books", status],
     queryFn: async () => {
       const response = await client.api.books.libraries.$get({
@@ -21,7 +25,8 @@ export const useGetBooksByStatus = ({ status }: UseGetBooksByStatusProps) => {
       const data = await response.json();
       return data.data;
     },
+    enabled: !!status,
   });
 
-  return { books, isLoading };
+  return { books, isPending, refetch };
 };
