@@ -21,11 +21,9 @@ export default function BookCard({
   progress,
   coverUrl,
 }: BookCardProps) {
-  const categoryName = useCategoryName();
-
   return (
     <div className="group relative w-[180px] bg-background px-4 py-2 cursor-pointer transition-shadow rounded-lg">
-      <Link href={`/category/${categoryName}/book/${id}`}>
+      <Link href={`/book/${id}`}>
         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg hover:scale-105">
           <Image
             src={coverUrl}

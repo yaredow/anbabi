@@ -1,4 +1,5 @@
 import { BooksGrid } from "@/features/books/components/books-grid";
+import { StatusType } from "@/features/books/schemas";
 
 type PageWithStatusProps = {
   params: Promise<{ status: string }>;

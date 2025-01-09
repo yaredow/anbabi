@@ -38,6 +38,7 @@ export default function BookActionsDropdownMenu() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["books"] });
+          queryClient.invalidateQueries({ queryKey: ["category-counts"] });
           toast({
             variant: "destructive",
             description: "Book removed successfully",

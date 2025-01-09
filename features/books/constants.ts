@@ -34,10 +34,10 @@ export const fontFamilies = [
 ];
 
 export const statuses: StatusType[] = [
-  "FAVORITE",
-  "TO_READ",
-  "CURRENTLY_READING",
-  "COMPLETED",
+  StatusType.FAVORITE,
+  StatusType.TO_READ,
+  StatusType.CURRENTLY_READING,
+  StatusType.COMPLETED,
 ];
 
 export const categoryMapping: Record<string, string[]> = {

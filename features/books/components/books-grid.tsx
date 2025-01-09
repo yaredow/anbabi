@@ -6,6 +6,7 @@ import { useGetBooks } from "../api/use-get-books";
 import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 import BookCard from "./book-card";
 import { StatusType } from "../schemas";
+import { statusMapping } from "@/lib/utils";
 
 interface BooksGridProps {
   categoryName?: string;
@@ -13,8 +14,10 @@ interface BooksGridProps {
 }
 
 export function BooksGrid({ categoryName, status }: BooksGridProps) {
+  const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
+
   const { books, isPending, refetch } = useGetBooks({
-    status: status as StatusType,
+    status: mappedStatus as StatusType,
     category: categoryName!,
   });
 

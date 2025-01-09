@@ -35,6 +35,7 @@ import { BookCategories, Libraries } from "@/features/books/constants";
 import Image from "next/image";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 import { UserButton } from "@/features/auth/components/user-button";
+import { formatStatus } from "@/lib/utils";
 
 function BookReaderSidebarContent() {
   const { count } = useGetCategoriesCount();
@@ -63,7 +64,8 @@ function BookReaderSidebarContent() {
                     const categoryCount =
                       category.name === "All"
                         ? count?.totalBooks || 0
-                        : count?.categoryCount?.[category.name] || 0;
+                        : count?.categoryCount?.[category.name.toLowerCase()] ||
+                          0;
 
                     return (
                       <SidebarMenuItem key={category.name}>
@@ -104,9 +106,11 @@ function BookReaderSidebarContent() {
                     return (
                       <SidebarMenuItem key={library.name}>
                         <SidebarMenuButton asChild>
-                          <Link href={`/library/${library.name.toLowerCase()}`}>
+                          <Link
+                            href={`/library/${library.name.toLowerCase().replace(" ", "_")}`}
+                          >
                             <Book className="mr-2 h-4 w-4" />
-                            <span>{library.name}</span>
+                            <span>{formatStatus(library.name)}</span>
                             <span className="ml-auto text-xs text-muted-foreground">
                               {libarayCount}
                             </span>

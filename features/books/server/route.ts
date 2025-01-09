@@ -20,6 +20,7 @@ const app = new Hono()
   .get("/", SessionMiddleware, zValidator("query", querySchema), async (c) => {
     const user = c.get("user");
     const { category, status } = c.req.valid("query");
+    console.log({ status });
 
     if (!user) {
       return c.json({ error: "Unauthorized" }, 401);
@@ -320,7 +321,7 @@ const app = new Hono()
   .patch(
     "/status/:bookId",
     SessionMiddleware,
-    zValidator("query", z.object({ status: StatusType })),
+    zValidator("query", z.object({ status: z.nativeEnum(StatusType) })),
     async (c) => {
       const user = c.get("user");
       const { bookId } = c.req.param();

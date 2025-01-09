@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { AnnoationColor } from "@/features/annotations/constants";
 import { RenditionRef } from "@/features/books/types";
+import { StatusType } from "@/features/books/schemas";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -62,4 +63,11 @@ export const normalizeCategory = (category: string): string => {
   };
 
   return categoryMapping[category.toLowerCase()] || category;
+};
+
+export const statusMapping: Record<string, StatusType> = {
+  favorites: StatusType.FAVORITE,
+  to_read: StatusType.TO_READ,
+  currently_reading: StatusType.CURRENTLY_READING,
+  completed: StatusType.COMPLETED,
 };

@@ -13,7 +13,7 @@ export const useGetBooks = ({ category, status }: UseGetBooksProps) => {
     isPending,
     refetch,
   } = useQuery({
-    queryKey: ["books", category],
+    queryKey: ["books", category, status],
     queryFn: async () => {
       const response = await client.api.books.$get({
         query: { category, status },
@@ -31,7 +31,7 @@ export const useGetBooks = ({ category, status }: UseGetBooksProps) => {
         ...book,
         uploadedAt: new Date(book?.uploadedAt),
       })),
-    enabled: !!category,
+    enabled: !!category || !!status,
   });
 
   return { books, isPending, refetch };
