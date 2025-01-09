@@ -6,6 +6,7 @@ import { useGetBooks } from "../api/use-get-books";
 import { useGetBooksByStatus } from "../api/use-get-books-by-status";
 import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 import BookCard from "./book-card";
+import { StatusType } from "@prisma/client";
 
 interface BooksGridProps {
   categoryName?: string;
@@ -23,7 +24,7 @@ export function BooksGrid({ categoryName, status }: BooksGridProps) {
     books: booksWithStatus,
     isPending: isStatusPending,
     refetch: refetchStatus,
-  } = useGetBooksByStatus({ status });
+  } = useGetBooksByStatus({ status: status as StatusType });
 
   const debounceRefetchCategory = useCallback(
     debounce(() => refetchCategory(), 400),
@@ -51,6 +52,7 @@ export function BooksGrid({ categoryName, status }: BooksGridProps) {
 
   const isPending = isCategoryPending || isStatusPending;
   const books = categoryName ? booksWithCategory : booksWithStatus;
+  console.log({ books });
 
   if (isPending) {
     return <BooksGridSkeleton />;
@@ -80,7 +82,7 @@ export function BooksGrid({ categoryName, status }: BooksGridProps) {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-      {booksWithCategory?.map((book) => (
+      {books?.map((book) => (
         <BookCard
           key={book.id}
           id={book.id ?? ""}

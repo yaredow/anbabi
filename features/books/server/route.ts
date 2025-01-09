@@ -13,7 +13,6 @@ import prisma from "@/lib/prisma";
 import { BookSchema, StatusType } from "../schemas";
 
 const app = new Hono()
-
   .get(
     "/",
     SessionMiddleware,

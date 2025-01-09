@@ -11,7 +11,6 @@ export const BookCategories = [
 
 export const Libraries = [
   { name: "Favorites", status: "FAVORITE" },
-  { name: "Finished", status: "FINISHED" },
   { name: "To Read", status: "TO_READ" },
   { name: "Currently Reading", status: "CURRENTLY_READING" },
   { name: "Completed", status: "COMPLETED" },
