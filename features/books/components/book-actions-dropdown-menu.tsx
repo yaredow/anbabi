@@ -21,6 +21,7 @@ import { statuses } from "../constants";
 import { StatusType } from "../schemas";
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import { useGetBook } from "../api/use-get-book";
+import { useConfirm } from "@/hooks/use-confirm";
 
 export default function BookActionsDropdownMenu() {
   const { deleteBook, isPending: isDeleteBookPending } = useDeleteBook();
@@ -32,20 +33,30 @@ export default function BookActionsDropdownMenu() {
   const { book } = useGetBook({ bookId });
   const { open } = useBookReaderModal();
 
-  const handleBookDelete = () => {
-    deleteBook(
-      { param: { bookId } },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["books"] });
-          queryClient.invalidateQueries({ queryKey: ["category-counts"] });
-          toast({
-            variant: "destructive",
-            description: "Book removed successfully",
-          });
+  const [ConfirmationDialog, confirm] = useConfirm({
+    title: "Delete project",
+    message: "Are you sure you want to delete this project?",
+    variant: "destructive",
+  });
+
+  const handleBookDelete = async () => {
+    const ok = await confirm();
+
+    if (ok) {
+      deleteBook(
+        { param: { bookId } },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["books"] });
+            queryClient.invalidateQueries({ queryKey: ["category-counts"] });
+            toast({
+              variant: "destructive",
+              description: "Book removed successfully",
+            });
+          },
         },
-      },
-    );
+      );
+    }
   };
 
   const handleChangeStatus = (status: StatusType) => {
@@ -62,36 +73,39 @@ export default function BookActionsDropdownMenu() {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <MoreHorizontal className="size-4 font-semibold" />
-        <span className="sr-only">Open menu</span>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem onClick={open}>Open</DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={handleBookDelete}
-          disabled={isDeleteBookPending}
-        >
-          Remove
-        </DropdownMenuItem>
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Change Status</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {statuses.map((status) => (
-              <DropdownMenuItem
-                key={status}
-                onClick={() => handleChangeStatus(status)}
-                disabled={isChangeBookStatusPending}
-                className={`${book?.status === status && "bg-muted"}`}
-              >
-                {book?.status === status && "✓  "}
-                {formatStatus(status)}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <ConfirmationDialog />
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <MoreHorizontal className="size-4 font-semibold" />
+          <span className="sr-only">Open menu</span>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={open}>Open</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={handleBookDelete}
+            disabled={isDeleteBookPending}
+          >
+            Remove
+          </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Change Status</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              {statuses.map((status) => (
+                <DropdownMenuItem
+                  key={status}
+                  onClick={() => handleChangeStatus(status)}
+                  disabled={isChangeBookStatusPending}
+                  className={`${book?.status === status && "bg-muted"}`}
+                >
+                  {book?.status === status && "✓  "}
+                  {formatStatus(status)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

@@ -20,7 +20,6 @@ const app = new Hono()
   .get("/", SessionMiddleware, zValidator("query", querySchema), async (c) => {
     const user = c.get("user");
     const { category, status } = c.req.valid("query");
-    console.log({ status });
 
     if (!user) {
       return c.json({ error: "Unauthorized" }, 401);
