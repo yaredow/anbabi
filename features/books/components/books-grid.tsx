@@ -3,10 +3,9 @@
 import { useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { useGetBooks } from "../api/use-get-books";
-import { useGetBooksByStatus } from "../api/use-get-books-by-status";
 import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 import BookCard from "./book-card";
-import { StatusType } from "@prisma/client";
+import { StatusType } from "../schemas";
 
 interface BooksGridProps {
   categoryName?: string;
@@ -14,45 +13,20 @@ interface BooksGridProps {
 }
 
 export function BooksGrid({ categoryName, status }: BooksGridProps) {
-  const {
-    books: booksWithCategory,
-    isPending: isCategoryPending,
-    refetch: refetchCategory,
-  } = useGetBooks({ category: categoryName! });
+  const { books, isPending, refetch } = useGetBooks({
+    status: status as StatusType,
+    category: categoryName!,
+  });
 
-  const {
-    books: booksWithStatus,
-    isPending: isStatusPending,
-    refetch: refetchStatus,
-  } = useGetBooksByStatus({ status: status as StatusType });
-
-  const debounceRefetchCategory = useCallback(
-    debounce(() => refetchCategory(), 400),
-    [refetchCategory],
-  );
-
-  const debounceRefetchStatus = useCallback(
-    debounce(() => refetchStatus(), 400),
-    [refetchStatus],
+  const debounceRefetch = useCallback(
+    debounce(() => refetch(), 400),
+    [refetch],
   );
 
   useEffect(() => {
-    if (categoryName) {
-      debounceRefetchCategory();
-    }
-    if (status) {
-      debounceRefetchStatus();
-    }
-
-    return () => {
-      debounceRefetchCategory.cancel();
-      debounceRefetchStatus.cancel();
-    };
-  }, [categoryName, status, debounceRefetchCategory, debounceRefetchStatus]);
-
-  const isPending = isCategoryPending || isStatusPending;
-  const books = categoryName ? booksWithCategory : booksWithStatus;
-  console.log({ books });
+    debounceRefetch();
+    return () => debounceRefetch.cancel();
+  }, [categoryName, status, debounceRefetch]);
 
   if (isPending) {
     return <BooksGridSkeleton />;

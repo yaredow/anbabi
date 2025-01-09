@@ -23,11 +23,9 @@ export const BookSchema = z.object({
 
 export type Book = z.infer<typeof BookSchema>;
 
-export const StatusType = z.enum([
-  "FAVORITE",
-  "TO_READ",
-  "CURRENTLY_READING",
-  "COMPLETED",
-]);
-
-export type StatusType = z.infer<typeof StatusType>;
+export enum StatusType {
+  FAVORITE = "FAVORITE",
+  TO_READ = "TO_READ",
+  CURRENTLY_READING = "CURRENTLY_READING",
+  COMPLETED = "COMPLETED",
+}

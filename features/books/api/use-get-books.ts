@@ -1,11 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/hono";
+import { StatusType } from "../schemas";
 
 type UseGetBooksProps = {
   category: string;
+  status: StatusType;
 };
 
-export const useGetBooks = ({ category }: UseGetBooksProps) => {
+export const useGetBooks = ({ category, status }: UseGetBooksProps) => {
   const {
     data: books,
     isPending,
@@ -13,7 +15,9 @@ export const useGetBooks = ({ category }: UseGetBooksProps) => {
   } = useQuery({
     queryKey: ["books", category],
     queryFn: async () => {
-      const response = await client.api.books.$get({ query: { category } });
+      const response = await client.api.books.$get({
+        query: { category, status },
+      });
 
       if (!response.ok) {
         throw new Error("Something went wrong while fetching books");

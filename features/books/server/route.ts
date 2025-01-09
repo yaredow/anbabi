@@ -3,30 +3,31 @@ import { Hono } from "hono";
 import { z } from "zod";
 
 import { zValidator } from "@hono/zod-validator";
-import { Book } from "@prisma/client";
-
 import { SessionMiddleware } from "@/lib/session-middleware";
 import { normalizeCategory } from "@/lib/utils";
 import cloudinary from "@/lib/cloudinary";
 import prisma from "@/lib/prisma";
 
 import { BookSchema, StatusType } from "../schemas";
+import { Book } from "@prisma/client";
+
+const querySchema = z.object({
+  category: z.string().optional(),
+  status: z.nativeEnum(StatusType).optional(),
+});
 
 const app = new Hono()
-  .get(
-    "/",
-    SessionMiddleware,
-    zValidator("query", z.object({ category: z.string() })),
-    async (c) => {
-      const user = c.get("user");
-      const { category } = c.req.valid("query");
+  .get("/", SessionMiddleware, zValidator("query", querySchema), async (c) => {
+    const user = c.get("user");
+    const { category, status } = c.req.valid("query");
 
-      if (!user) {
-        return c.json({ error: "Unauthorized" }, 401);
-      }
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
 
-      let books: Book[] = [];
+    let books: Book[] = [];
 
+    if (category) {
       if (category === "all") {
         // Fetch all books if category is "all"
         books = await prisma.book.findMany({
@@ -35,6 +36,7 @@ const app = new Hono()
               id: user.id,
             },
           },
+          orderBy: { uploadedAt: "desc" },
         });
       } else {
         const normalizedCategory = normalizeCategory(category);
@@ -46,6 +48,7 @@ const app = new Hono()
               id: user.id,
             },
           },
+          orderBy: { uploadedAt: "desc" },
         });
 
         // Filter books by normalized category
@@ -55,27 +58,9 @@ const app = new Hono()
           ),
         );
       }
-
-      if (!books.length) {
-        return c.json({ error: "No books found for this category" }, 404);
-      }
-
-      return c.json({ data: books });
-    },
-  )
-  .get(
-    "/libraries",
-    SessionMiddleware,
-    zValidator("query", z.object({ status: StatusType })),
-    async (c) => {
-      const user = c.get("user");
-      const { status } = c.req.valid("query");
-
-      if (!user) {
-        return c.json({ error: "Unautherized" }, 401);
-      }
-
-      const books = await prisma.book.findMany({
+    } else if (status) {
+      // Fetch books by status
+      books = await prisma.book.findMany({
         where: {
           uploader: {
             id: user.id,
@@ -84,10 +69,24 @@ const app = new Hono()
         },
         orderBy: { uploadedAt: "desc" },
       });
+    } else {
+      // If neither category nor status is provided, return all books
+      books = await prisma.book.findMany({
+        where: {
+          uploader: {
+            id: user.id,
+          },
+        },
+        orderBy: { uploadedAt: "desc" },
+      });
+    }
 
-      return c.json({ data: books });
-    },
-  )
+    if (!books.length) {
+      return c.json({ error: "No books found", data: [] }, 404);
+    }
+
+    return c.json({ data: books });
+  })
   .get("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { bookId } = c.req.param();
@@ -123,6 +122,7 @@ const app = new Hono()
       },
       select: {
         categories: true,
+        status: true,
       },
     });
 
@@ -135,9 +135,16 @@ const app = new Hono()
         return acc;
       }, {});
 
+    const libraryCount = books.reduce<Record<string, number>>((acc, book) => {
+      if (book) {
+        acc[book.status] = (acc[book.status] || 0) + 1;
+      }
+      return acc;
+    }, {});
+
     const totalBooks = books.length;
 
-    return c.json({ data: { categoryCount, totalBooks } });
+    return c.json({ data: { categoryCount, totalBooks, libraryCount } });
   })
   .post(
     "/upload",
@@ -345,4 +352,5 @@ const app = new Hono()
       return c.json({ message: "book status updated successfully" });
     },
   );
+
 export default app;

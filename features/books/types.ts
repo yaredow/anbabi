@@ -31,8 +31,10 @@ export type BookType = {
   fileName?: string;
 };
 
-export type CategoryCount = {
-  data: Record<string, number>;
+export type BooksCount = {
+  categoryCount: Record<string, number>;
+  libraryCount: Record<string, number>;
+  totalBooks: number;
 };
 
 export interface UploadState {
