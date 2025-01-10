@@ -3,9 +3,9 @@ import { Loader2, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { useGetWordDefination } from "../api/use-get-words-defination";
 import { Meaning } from "../types";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGetWordDefination } from "../api/use-get-words-defination";
 
 type DictionaryCardProps = {
   word: string;

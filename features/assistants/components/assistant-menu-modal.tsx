@@ -1,7 +1,7 @@
 "use client";
 
-import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 import ResponsiveAssistantMenuModal from "./responsive-assistant-menu-modal";
+import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 import AssistantMenu from "./assistant-menu";
 
 type AssistantMenuModalProps = {

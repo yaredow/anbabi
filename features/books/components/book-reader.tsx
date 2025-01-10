@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useMedia } from "react-use";
 
+import { updateAnnotationColor } from "@/lib/utils";
+
 import { useAssistantMenuModal } from "@/features/assistants/hooks/use-assistant-menu-modal";
 import AssistantItemsModal from "@/features/assistants/components/assistant-menu-item-modal";
 import AssistantMenuModal from "@/features/assistants/components/assistant-menu-modal";
@@ -21,7 +23,6 @@ import {
   lightReaderTheme,
   sepiaReaderTheme,
 } from "../constants";
-import { updateAnnotationColor } from "@/lib/utils";
 
 const ownStyle = {
   ...ReactReaderStyle,
