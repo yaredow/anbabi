@@ -11,8 +11,9 @@ import { useCategoryName } from "@/features/books/hooks/use-category-name";
 import { useGetBook } from "@/features/books/api/use-get-book";
 import { useBookId } from "@/features/books/hooks/use-book-id";
 
-import { Button } from "./ui/button";
 import { useBookStatus } from "@/features/books/hooks/use-book-status";
+
+import { Button } from "./ui/button";
 
 export default function Header() {
   const { open } = useUploadBookModal();
@@ -20,15 +21,17 @@ export default function Header() {
   const pathName = usePathname();
   const status = useBookStatus();
   const bookId = useBookId();
-
   const { book } = useGetBook({ bookId });
-  const isHome = pathName === `/category/${category}` || `/library/${status}`;
+
+  const isHome =
+    pathName === `/category/${category}` || pathName === `/library/${status}`;
+  console.log({ isHome });
 
   return (
     <header className="flex z-20 w-full bg-muted sticky top-0 items-center justify-between h-12 px-4 py-2">
       {isHome ? (
         <Button onClick={open} variant="ghost">
-          <Plus className="size-6" />
+          <Plus className="size-5" />
         </Button>
       ) : (
         <Link
@@ -44,7 +47,7 @@ export default function Header() {
       </div>
       {isHome ? (
         <Button variant="ghost">
-          <Search className="size-6" />
+          <Search className="size-5" />
         </Button>
       ) : (
         <BookActionsDropdownMenu />

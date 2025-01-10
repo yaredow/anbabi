@@ -5,7 +5,7 @@ import { BooksCount } from "../types";
 
 export const useGetCategoriesCount = () => {
   const { data: count, isPending } = useQuery<BooksCount>({
-    queryKey: ["category-counts"],
+    queryKey: ["counts"],
     queryFn: async () => {
       const response = await client.api.books.categories.count.$get();
 

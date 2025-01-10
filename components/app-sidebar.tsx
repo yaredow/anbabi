@@ -2,14 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  Book,
-  ChevronDown,
-  FolderOpen,
-  Library,
-  Upload,
-  Menu,
-} from "lucide-react";
+import { Book, ChevronDown, FolderOpen, Library, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -109,7 +102,7 @@ function BookReaderSidebarContent() {
                           <Link
                             href={`/library/${library.name.toLowerCase().replace(" ", "_")}`}
                           >
-                            <Book className="mr-2 h-4 w-4" />
+                            <Library className="mr-2 h-4 w-4" />
                             <span>{formatStatus(library.name)}</span>
                             <span className="ml-auto text-xs text-muted-foreground">
                               {libarayCount}
