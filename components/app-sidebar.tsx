@@ -1,15 +1,28 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { Book, ChevronDown, FolderOpen, Library, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  Book,
+  ChevronDown,
+  ChevronRight,
+  FolderOpen,
+  Library,
+  Menu,
+} from "lucide-react";
+import { useMedia } from "react-use";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+
+import { formatStatus } from "@/lib/utils";
+
+import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
+import { useCategoryName } from "@/features/books/hooks/use-category-name";
+import { BookCategories, Libraries } from "@/features/books/constants";
+import { useBookStatus } from "@/features/books/hooks/use-book-status";
+import { UserButton } from "@/features/auth/components/user-button";
+
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -23,14 +36,12 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useMedia } from "react-use";
-import { BookCategories, Libraries } from "@/features/books/constants";
-import Image from "next/image";
-import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
-import { UserButton } from "@/features/auth/components/user-button";
-import { formatStatus } from "@/lib/utils";
-import { useCategoryName } from "@/features/books/hooks/use-category-name";
-import { useBookStatus } from "@/features/books/hooks/use-book-status";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 function BookReaderSidebarContent() {
   const { count } = useGetCategoriesCount();
@@ -51,9 +62,9 @@ function BookReaderSidebarContent() {
               <SidebarGroupLabel>
                 <FolderOpen className="mr-2 h-4 w-4" />
                 Categories
-                <ChevronDown className="ml-auto h-4 w-4 transition-transform duration-200" />
+                <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarGroupLabel>
-            </CollapsibleTrigger>
+            </CollapsibleTrigger>{" "}
             <CollapsibleContent>
               <SidebarGroupContent>
                 <SidebarMenu>

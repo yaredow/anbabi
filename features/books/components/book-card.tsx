@@ -3,9 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import BookActionsDropdownMenu from "./book-actions-dropdown-menu";
-import { useCategoryName } from "../hooks/use-category-name";
-
 interface BookCardProps {
   id: string;
   title: string;

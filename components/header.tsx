@@ -27,7 +27,7 @@ export default function Header() {
     pathName === `/category/${category}` || pathName === `/library/${status}`;
 
   return (
-    <header className="flex z-20 w-full bg-muted sticky top-0 items-center justify-between h-12 px-4 py-2">
+    <header className="flex z-20 w-full bg-background sticky top-0 items-center justify-between h-12 px-4 py-2">
       {isHome ? (
         <Button onClick={open} variant="ghost">
           <Plus className="size-5" />

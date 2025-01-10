@@ -68,6 +68,7 @@ export default function BookActionsDropdownMenu() {
       { param: { bookId }, query: { status } },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["counts"] });
           toast({
             description: "Book status updated successfully",
           });
