@@ -22,8 +22,11 @@ import { StatusType } from "../schemas";
 import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import { useGetBook } from "../api/use-get-book";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useRouter } from "next/navigation";
 
 export default function BookActionsDropdownMenu() {
+  const router = useRouter();
+
   const { deleteBook, isPending: isDeleteBookPending } = useDeleteBook();
   const { changeStatus, isPending: isChangeBookStatusPending } =
     useChangeBookStatus();
@@ -53,6 +56,7 @@ export default function BookActionsDropdownMenu() {
               variant: "destructive",
               description: "Book removed successfully",
             });
+            router.push("/");
           },
         },
       );
@@ -80,7 +84,7 @@ export default function BookActionsDropdownMenu() {
           <MoreHorizontal className="size-4 font-semibold" />
           <span className="sr-only">Open menu</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="mr-2">
           <DropdownMenuItem onClick={open}>Open</DropdownMenuItem>
           <DropdownMenuItem
             onClick={handleBookDelete}

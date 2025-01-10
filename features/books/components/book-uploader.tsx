@@ -100,7 +100,7 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
           {
             onSuccess: () => {
               queryClinet.invalidateQueries({ queryKey: ["books"] });
-              queryClinet.invalidateQueries({ queryKey: ["count"] });
+              queryClinet.invalidateQueries({ queryKey: ["counts"] });
               toast({
                 description: "Book uploaded successfully",
               });

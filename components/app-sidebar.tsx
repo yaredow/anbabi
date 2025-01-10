@@ -29,9 +29,13 @@ import Image from "next/image";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 import { UserButton } from "@/features/auth/components/user-button";
 import { formatStatus } from "@/lib/utils";
+import { useCategoryName } from "@/features/books/hooks/use-category-name";
+import { useBookStatus } from "@/features/books/hooks/use-book-status";
 
 function BookReaderSidebarContent() {
   const { count } = useGetCategoriesCount();
+  const categoryName = useCategoryName();
+  const status = useBookStatus();
 
   return (
     <>
@@ -54,6 +58,8 @@ function BookReaderSidebarContent() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {BookCategories.map((category) => {
+                    const isActive =
+                      category.name.toLowerCase() === categoryName;
                     const categoryCount =
                       category.name === "All"
                         ? count?.totalBooks || 0
@@ -62,7 +68,7 @@ function BookReaderSidebarContent() {
 
                     return (
                       <SidebarMenuItem key={category.name}>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton isActive={isActive} asChild>
                           <Link
                             href={`/category/${category.name.toLowerCase()}`}
                           >
@@ -94,11 +100,12 @@ function BookReaderSidebarContent() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {Libraries.map((library) => {
+                    const isActive = status === library.name.toLowerCase();
                     const libarayCount =
                       count?.libraryCount[library.status] || 0;
                     return (
                       <SidebarMenuItem key={library.name}>
-                        <SidebarMenuButton asChild>
+                        <SidebarMenuButton isActive={isActive} asChild>
                           <Link
                             href={`/library/${library.name.toLowerCase().replace(" ", "_")}`}
                           >

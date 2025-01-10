@@ -35,12 +35,9 @@ export default function BookCard({
         </div>
       </Link>
 
-      <div className="p-4 space-y-2">
+      <div className="flex justify-between items-center p-4 space-x-2">
         <h3 className="font-semibold leading-none text-sm truncate">{title}</h3>
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-muted-foreground">{progress}%</p>
-          <BookActionsDropdownMenu />
-        </div>
+        <p className="text-xs text-muted-foreground">{progress}%</p>
       </div>
     </div>
   );

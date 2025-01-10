@@ -17,7 +17,7 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
       <SidebarProvider>
         <AppSidebar />
         <div className="flex-1">
-          <div className="mx-auto max-w-screen-2xl h-full">
+          <div className="mx-auto max-w-screen-2xl h-screen">
             <Header />
             <main className="h-full p-4 flex flex-col">{children}</main>
           </div>
