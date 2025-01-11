@@ -107,12 +107,12 @@ model Book {
 }
 
 model Collection {
-  id          String  @id @default(uuid()) // Unique identifier for each collection
-  name        String
-  description String?
-  userId      String
-  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  id               String             @id @default(uuid()) // Unique identifier for each collection
+  name             String
+  description      String?
+  userId           String
+  image            String?
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   books            Book[]             @relation("BookCollections") // Relation to the Book model (many-to-many)
   BookOnCollection BookOnCollection[]
 

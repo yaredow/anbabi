@@ -2,12 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  CreateCollectionData,
-  CreateCollectionSchema,
-  CreateProjectData,
-  CreateProjectSchema,
-} from "../schemas";
+import { CreateCollectionData, CreateCollectionSchema } from "../schemas";
 import {
   Form,
   FormControl,
