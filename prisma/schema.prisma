@@ -21,7 +21,7 @@ enum StatusType {
 }
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
   email         String
   emailVerified Boolean
@@ -31,6 +31,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   Book          Book[]
+  Collection    Collection[]
 
   @@unique([email])
   @@map("user")
@@ -82,21 +83,53 @@ model Verification {
 }
 
 model Book {
-  id              String     @id @default(cuid())
-  title           String
-  author          String
-  description     String?
-  language        String
-  publicationYear Int?
-  isbn            String?
-  publisher       String?
-  uploadedAt      DateTime   @default(now())
-  coverPublicId   String
-  bookUrl         String
-  coverImage      String?
-  categories      String[]
-  pageCount       Int?
-  status          StatusType @default(TO_READ)
-  uploaderId      String
-  uploader        User       @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  id               String             @id @default(cuid())
+  title            String
+  author           String
+  description      String?
+  language         String
+  publicationYear  Int?
+  isbn             String?
+  publisher        String?
+  uploadedAt       DateTime           @default(now())
+  coverPublicId    String
+  bookUrl          String
+  coverImage       String?
+  categories       String[]
+  pageCount        Int?
+  status           StatusType         @default(TO_READ)
+  uploaderId       String
+  uploader         User               @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  collections      Collection[]       @relation("BookCollections")
+  BookOnCollection BookOnCollection[]
+
+  @@map("books")
+}
+
+model Collection {
+  id          String  @id @default(uuid()) // Unique identifier for each collection
+  name        String
+  description String?
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  books            Book[]             @relation("BookCollections") // Relation to the Book model (many-to-many)
+  BookOnCollection BookOnCollection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("collections")
+}
+
+model BookOnCollection {
+  id           String   @id @default(uuid())
+  bookId       String
+  collectionId String
+  createdAt    DateTime @default(now())
+
+  book       Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, collectionId]) // Ensures a book can only appear once per collection
 }
