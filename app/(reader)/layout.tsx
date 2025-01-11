@@ -4,6 +4,7 @@ import Header from "@/components/header";
 import UploadBookModal from "@/features/books/components/upload-book-modal";
 import BookReaderModal from "@/features/books/components/book-reader-modal";
 import { AppSidebar } from "@/components/app-sidebar";
+import CreateCollectionModal from "@/features/collections/components/create-collection-modal";
 
 type ReaderLayoutProps = {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
     <div className="flex w-full h-full">
       <UploadBookModal />
       <BookReaderModal />
+      <CreateCollectionModal />
       <SidebarProvider>
         <AppSidebar />
         <div className="flex-1">

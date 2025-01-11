@@ -15,7 +15,6 @@ import {
   SquareTerminal,
 } from "lucide-react";
 
-import { NavCategory } from "@/components/nav-category";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
@@ -30,6 +29,7 @@ import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-c
 import { useMedia } from "react-use";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
+import { NavMain } from "./nav-category";
 
 // This is sample data.
 const data = {
@@ -164,21 +164,13 @@ const data = {
 const BookReaderSidebarContent = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>) => {
-  const { count, isPending } = useGetCategoriesCount();
-  const categoryCount = count?.categoryCount || {};
-  const libraryCount = count?.libraryCount || {};
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavCategory
-          categoryCount={categoryCount}
-          totalBook={count?.totalBooks as number}
-        />
-        <NavLibrary libaryCount={libraryCount} />
+        <NavMain />
       </SidebarContent>
       <SidebarFooter>
         <UserButton />

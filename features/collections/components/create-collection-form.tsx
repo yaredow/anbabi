@@ -24,7 +24,7 @@ type CreateWorkspaceFormProps = {
   onCancel?: () => void;
 };
 
-export default function CreateProjectForm({
+export default function CreateCollectionForm({
   onCancel,
 }: CreateWorkspaceFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
