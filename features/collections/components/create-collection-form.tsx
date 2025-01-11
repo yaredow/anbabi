@@ -19,6 +19,8 @@ import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCreateCollection } from "../api/use-create-collection";
+import { toast } from "@/hooks/use-toast";
 
 type CreateWorkspaceFormProps = {
   onCancel?: () => void;
@@ -28,6 +30,7 @@ export default function CreateCollectionForm({
   onCancel,
 }: CreateWorkspaceFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { createCollection, isPending } = useCreateCollection();
 
   const form = useForm<CreateCollectionData>({
     resolver: zodResolver(CreateCollectionSchema),
@@ -41,7 +44,20 @@ export default function CreateCollectionForm({
   });
 
   const onSubmit = (values: CreateCollectionData) => {
-    console.log({ values });
+    createCollection(
+      {
+        json: {
+          ...values,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast({
+            description: "Project created successfully",
+          });
+        },
+      },
+    );
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +142,6 @@ export default function CreateCollectionForm({
                             type="button"
                             disabled={isPending}
                             variant="destructive"
-                            size="xs"
                             className="w-fit mt-2"
                             onClick={() => {
                               field.onChange(null);
@@ -142,8 +157,6 @@ export default function CreateCollectionForm({
                           <Button
                             type="button"
                             disabled={isPending}
-                            variant="teritery"
-                            size="xs"
                             className="w-fit mt-2"
                             onClick={() => inputRef.current?.click()}
                           >
@@ -153,6 +166,62 @@ export default function CreateCollectionForm({
                       </div>
                     </div>
                   </div>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter the description of the project"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter the user ID"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="bookIds"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter the book IDs (comma separated)"
+                        value={field.value.join(", ")}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value.split(",").map((id) => id.trim()),
+                          )
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
 

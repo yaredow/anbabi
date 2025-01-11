@@ -30,6 +30,8 @@ import { useMedia } from "react-use";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { NavMain } from "./nav-category";
+import DottedSeparator from "./dotted-separator";
+import { NavCollections } from "./nav-collections";
 
 // This is sample data.
 const data = {
@@ -171,6 +173,10 @@ const BookReaderSidebarContent = ({
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
+      </SidebarContent>
+      <DottedSeparator />
+      <SidebarContent>
+        <NavCollections />
       </SidebarContent>
       <SidebarFooter>
         <UserButton />

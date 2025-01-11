@@ -31,12 +31,13 @@ import { useRouter } from "next/navigation";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useCreateCollectionModal } from "@/features/collections/hooks/use-create-collection-modal";
 import { CollectionAvatar } from "@/features/collections/components/collection-avatar";
+import { useGetCollections } from "@/features/collections/api/use-get-collections";
 
 export function NavCollections() {
   const { open } = useCreateCollectionModal();
   const { isMobile } = useSidebar();
   const router = useRouter();
-  const isPending = false;
+  const { collections, isPending } = useGetCollections();
 
   const [ConfirmationDialog, confirm] = useConfirm({
     title: "Delete project",
@@ -55,7 +56,7 @@ export function NavCollections() {
       </SidebarGroupAction>
 
       <SidebarMenu>
-        {projects?.map((project) => (
+        {collections?.map((project) => (
           <SidebarMenuItem key={project.name}>
             <SidebarMenuButton asChild>
               <CollectionAvatar name={project.name} collectionId={"11"} />
