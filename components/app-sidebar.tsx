@@ -173,9 +173,6 @@ const BookReaderSidebarContent = ({
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-      </SidebarContent>
-      <DottedSeparator />
-      <SidebarContent>
         <NavCollections />
       </SidebarContent>
       <SidebarFooter>
