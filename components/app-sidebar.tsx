@@ -2,21 +2,6 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  Menu,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
-
-import { TeamSwitcher } from "@/components/team-switcher";
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -24,144 +9,13 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { UserButton } from "@/features/auth/components/user-button";
-import { NavLibrary } from "./nav-library";
-import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 import { useMedia } from "react-use";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
 import { NavMain } from "./nav-category";
-import DottedSeparator from "./dotted-separator";
 import { NavCollections } from "./nav-collections";
-
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-};
+import Image from "next/image";
+import { Menu } from "lucide-react";
 
 const BookReaderSidebarContent = ({
   ...props
@@ -169,7 +23,7 @@ const BookReaderSidebarContent = ({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <Image src="/images/logo.svg" alt="logo" height={45} width={145} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
@@ -184,9 +38,9 @@ const BookReaderSidebarContent = ({
 };
 
 export function AppSidebar() {
-  const isMobile = useMedia("(max-width: 768px)", true);
+  const isDesktop = useMedia("(min-width: 1024px)", true);
 
-  if (isMobile) {
+  if (!isDesktop) {
     return (
       <Sheet>
         <SheetTrigger asChild>
