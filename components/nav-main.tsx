@@ -71,6 +71,7 @@ export function NavMain() {
             </CollapsibleContent>
           </SidebarMenuItem>
         </Collapsible>
+
         <Collapsible asChild className="group/collapsible">
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
@@ -83,6 +84,7 @@ export function NavMain() {
               <SidebarMenuSub>
                 {Libraries.map((library) => {
                   const libraryCount = count?.libraryCount;
+                  console.log({ libraryCount });
 
                   return (
                     <SidebarMenuSubItem key={library.name}>

@@ -1,6 +1,12 @@
 "use client";
 
+import { useMedia } from "react-use";
+import { Menu } from "lucide-react";
 import * as React from "react";
+import Image from "next/image";
+
+import { UserButton } from "@/features/auth/components/user-button";
+
 import {
   Sidebar,
   SidebarContent,
@@ -8,14 +14,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { UserButton } from "@/features/auth/components/user-button";
-import { useMedia } from "react-use";
+
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { Button } from "./ui/button";
-import { NavMain } from "./nav-category";
 import { NavCollections } from "./nav-collections";
-import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Button } from "./ui/button";
+import { NavMain } from "./nav-main";
 
 const BookReaderSidebarContent = ({
   ...props
