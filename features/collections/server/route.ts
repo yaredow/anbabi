@@ -62,9 +62,6 @@ const app = new Hono()
 
           if (typeof image === "string") {
             imageBuffer = Buffer.from(image, "base64"); // This is for base64 strings
-          } else if (image instanceof File) {
-            const imageArrayBuffer = await image.arrayBuffer();
-            imageBuffer = Buffer.from(imageArrayBuffer);
           } else {
             throw new Error("Invalid image format");
           }
@@ -111,6 +108,28 @@ const app = new Hono()
 
       return c.json({ data: collection });
     },
-  );
+  )
+  .delete("/:collectionId", SessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const { collectionId } = c.req.param();
+
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    const existingCollection = await prisma.collection.findUnique({
+      where: {
+        id: collectionId,
+      },
+    });
+
+    if (!existingCollection) {
+      return c.json({ error: "Collection not found" }, 404);
+    }
+
+    await prisma.collection.delete({ where: { id: collectionId } });
+
+    return c.json({ message: "Collection deleted successfully" });
+  });
 
 export default app;

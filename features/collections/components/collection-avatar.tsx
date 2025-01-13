@@ -1,46 +1,49 @@
-import React from "react";
+import { cn, generatePastelColor, getInitials } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 
-interface ProjectAvatarProps {
+interface CollectionAvatarProps {
   name: string;
-  imageUrl?: string;
-  collectionId?: string;
+  image?: string;
+  className?: string;
+  description?: string;
 }
 
 export function CollectionAvatar({
   name,
-  imageUrl,
-  collectionId,
-}: ProjectAvatarProps) {
-  const firstLetter = name ? name.charAt(0).toUpperCase() : "";
+  description,
+  image,
+  className,
+}: CollectionAvatarProps) {
+  const pastelColor = generatePastelColor(name);
 
   return (
-    <Link
-      href={`/projects/${collectionId}`}
-      className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition"
-      title={`View project: ${name}`}
-    >
+    <div className={cn("flex items-center space-x-2 w-full", className)}>
       <div
-        className={`rounded-md overflow-hidden bg-gradient-to-br from-blue-500 to-green-500 flex items-center justify-center text-white font-semibold`}
-        aria-hidden="true"
+        className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0"
+        style={{ background: image ? "transparent" : pastelColor }}
       >
-        {imageUrl ? (
+        {image ? (
           <Image
-            src={imageUrl}
+            src={image}
             alt={name}
-            width={64}
-            height={64}
-            className="w-full h-full object-cover"
+            width={32}
+            height={32}
+            className="rounded-full"
           />
         ) : (
-          firstLetter
+          <span className="text-xs font-semibold text-primary-foreground">
+            {getInitials(name)}
+          </span>
         )}
       </div>
-
-      <div className="flex flex-col">
-        <span className="font-medium text-gray-800 text-sm ">{name}</span>
+      <div className="flex-grow min-w-0">
+        <p className="text-sm font-medium text-foreground truncate">{name}</p>
+        {description && (
+          <p className="text-xs text-muted-foreground truncate">
+            {description}
+          </p>
+        )}
       </div>
-    </Link>
+    </div>
   );
 }

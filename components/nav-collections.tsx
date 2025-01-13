@@ -1,14 +1,19 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
-  Folder,
   Forward,
   MoreHorizontal,
   PencilIcon,
   Plus,
   Trash2,
-  type LucideIcon,
 } from "lucide-react";
+
+import { useConfirm } from "@/hooks/use-confirm";
+
+import { useCreateCollectionModal } from "@/features/collections/hooks/use-create-collection-modal";
+import { CollectionAvatar } from "@/features/collections/components/collection-avatar";
+import { useGetCollections } from "@/features/collections/api/use-get-collections";
 
 import {
   DropdownMenu,
@@ -27,25 +32,28 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useRouter } from "next/navigation";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useCreateCollectionModal } from "@/features/collections/hooks/use-create-collection-modal";
-import { CollectionAvatar } from "@/features/collections/components/collection-avatar";
-import { useGetCollections } from "@/features/collections/api/use-get-collections";
+import { useDeleteCollection } from "@/features/collections/api/use-delete-collection";
 
 export function NavCollections() {
   const { open } = useCreateCollectionModal();
   const { isMobile } = useSidebar();
   const router = useRouter();
   const { collections, isPending } = useGetCollections();
+  const { deleteCollection } = useDeleteCollection();
 
   const [ConfirmationDialog, confirm] = useConfirm({
-    title: "Delete project",
-    message: "Are you sure you want to delete this project?",
+    title: "Delete collection",
+    message: "Are you sure you want to delete this collection?",
     variant: "destructive",
   });
 
-  const handleConfirm = async () => {};
+  const handleDeleteCollection = async (collectionId: string) => {
+    const ok = await confirm();
+
+    if (ok) {
+      deleteCollection(collectionId);
+    }
+  };
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -56,10 +64,14 @@ export function NavCollections() {
       </SidebarGroupAction>
 
       <SidebarMenu>
-        {collections?.map((project) => (
-          <SidebarMenuItem key={project.name}>
+        {collections?.map((collection) => (
+          <SidebarMenuItem key={collection.name}>
             <SidebarMenuButton asChild>
-              <CollectionAvatar name={project.name} collectionId={"11"} />
+              <CollectionAvatar
+                name={collection.name}
+                image={collection.image || ""}
+                description={collection.description || ""}
+              />
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -76,26 +88,26 @@ export function NavCollections() {
                 <DropdownMenuItem
                   onClick={(Event: React.MouseEvent) => {
                     Event.stopPropagation();
-                    router.push(`/projects/${project.id}/settings`);
+                    router.push(`/projects/${collection.id}/settings`);
                   }}
                 >
                   <PencilIcon className="text-muted-foreground" />
-                  <span>Edit Project</span>
+                  <span>Edit collection</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Forward className="text-muted-foreground" />
-                  <span>Share Project</span>
+                  <span>Share collection</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   disabled={isPending}
                   onClick={async (Event: React.MouseEvent) => {
                     Event.stopPropagation();
-                    handleConfirm();
+                    handleDeleteCollection(collection.id);
                   }}
                 >
                   <Trash2 className="text-muted-foreground" />
-                  <span>Delete Project</span>
+                  <span>Delete collection</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
