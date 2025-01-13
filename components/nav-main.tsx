@@ -93,12 +93,12 @@ export function NavMain() {
                         asChild
                       >
                         <Link
-                          href={`/category/${library.name.toLowerCase()}`}
+                          href={`/category/${library.status.toLowerCase()}`}
                           className="flex items-center justify-between"
                         >
                           <span>{library.name}</span>
                           <span className="ml-auto">
-                            {libraryCount?.[library.name.toLowerCase()] || 0}
+                            {libraryCount?.[library.status] || 0}
                           </span>
                         </Link>
                       </SidebarMenuSubButton>
