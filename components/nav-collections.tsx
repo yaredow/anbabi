@@ -68,6 +68,7 @@ export function NavCollections() {
           <SidebarMenuItem key={collection.name}>
             <SidebarMenuButton className="mt-2" asChild>
               <CollectionAvatar
+                collectionId={collection.id}
                 name={collection.name}
                 image={collection.image || ""}
                 description={collection.description || ""}

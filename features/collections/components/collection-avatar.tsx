@@ -1,7 +1,9 @@
 import { cn, generatePastelColor, getInitials } from "@/lib/utils";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface CollectionAvatarProps {
+  collectionId: string;
   name: string;
   image?: string;
   className?: string;
@@ -13,14 +15,17 @@ export function CollectionAvatar({
   description,
   image,
   className,
+  collectionId,
 }: CollectionAvatarProps) {
   const pastelColor = generatePastelColor(name);
+  const router = useRouter();
 
   return (
     <div className={cn("flex items-center space-x-2 w-full", className)}>
       <div
-        className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0"
+        className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
         style={{ background: image ? "transparent" : pastelColor }}
+        onClick={() => router.push(`/collections/${collectionId}`)}
       >
         {image ? (
           <Image
