@@ -10,7 +10,6 @@ const app = new Hono().post(
   zValidator("json", AiChatSchema),
   async (c) => {
     const { messages, author, title } = c.req.valid("json");
-    console.log({ messages });
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 

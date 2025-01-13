@@ -9,14 +9,8 @@ export const CreateCollectionSchema = z.object({
     .string()
     .max(255, { message: "Description cannot exceed 255 characters" })
     .optional(),
-  userId: z.string().uuid({ message: "Invalid user ID" }),
-  image: z
-    .union([
-      z.instanceof(File),
-      z.string().transform((value) => (value === "" ? undefined : value)),
-    ])
-    .optional(),
-  bookIds: z.array(z.string().uuid({ message: "Invalid book ID" })).optional(),
+  image: z.union([z.string(), z.undefined()]).optional(),
+  books: z.array(z.string().cuid()).optional(),
 });
 
 export type CreateCollectionData = z.infer<typeof CreateCollectionSchema>;

@@ -5,7 +5,6 @@ import { Hono } from "hono";
 import { CreateCollectionSchema } from "../schemas";
 import { UploadApiResponse } from "cloudinary";
 import cloudinary from "@/lib/cloudinary";
-import { arrayBuffer } from "stream/consumers";
 
 const app = new Hono()
   .get("/", SessionMiddleware, async (c) => {
@@ -49,7 +48,8 @@ const app = new Hono()
     zValidator("json", CreateCollectionSchema),
     async (c) => {
       const user = c.get("user");
-      const { name, description, userId, image, bookIds } = c.req.valid("json");
+      const { name, description, image, books } = c.req.valid("json");
+      console.log({ image });
 
       if (!user) {
         return c.json({ error: "Unauthorized" }, 401);
@@ -61,10 +61,8 @@ const app = new Hono()
           let imageBuffer;
 
           if (typeof image === "string") {
-            // If the image is a URL or base64 string, you can use it directly
             imageBuffer = Buffer.from(image, "base64"); // This is for base64 strings
           } else if (image instanceof File) {
-            // If the image is a File object, convert it to a Buffer
             const imageArrayBuffer = await image.arrayBuffer();
             imageBuffer = Buffer.from(imageArrayBuffer);
           } else {
@@ -101,12 +99,12 @@ const app = new Hono()
 
       const collection = await prisma.collection.create({
         data: {
+          userId: user.id,
           name,
           description,
-          userId,
           image: uploadResult?.secure_url,
           books: {
-            connect: bookIds?.map((bookId: string) => ({ id: bookId })),
+            connect: books?.map((bookId: string) => ({ id: bookId })),
           },
         },
       });

@@ -84,7 +84,6 @@ export function NavMain() {
               <SidebarMenuSub>
                 {Libraries.map((library) => {
                   const libraryCount = count?.libraryCount;
-                  console.log({ libraryCount });
 
                   return (
                     <SidebarMenuSubItem key={library.name}>

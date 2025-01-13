@@ -6,9 +6,9 @@ import { CreateCollectionData, CreateCollectionSchema } from "../schemas";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,14 +23,17 @@ import { cn } from "@/lib/utils";
 import { useCreateCollection } from "../api/use-create-collection";
 import { toast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { Book } from "@prisma/client";
+import { MultiSelect } from "@/components/ui/multi-select";
 
 type CreateCollectionFormProps = {
   onCancel?: () => void;
+  books: Book[];
 };
 
 export default function CreateCollectionForm({
   onCancel,
-  userId,
+  books,
 }: CreateCollectionFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { createCollection, isPending } = useCreateCollection();
@@ -40,9 +43,8 @@ export default function CreateCollectionForm({
     defaultValues: {
       name: "",
       description: "",
-      userId: userId,
       image: undefined,
-      bookIds: [],
+      books: [],
     },
   });
 
@@ -51,7 +53,7 @@ export default function CreateCollectionForm({
       {
         json: {
           ...values,
-          bookIds: values.bookIds || [],
+          image: values.image || undefined,
         },
       },
       {
@@ -60,6 +62,9 @@ export default function CreateCollectionForm({
             description: "Collection created successfully",
           });
           form.reset();
+          if (onCancel) {
+            onCancel();
+          }
         },
         onError: (error) => {
           toast({
@@ -71,19 +76,23 @@ export default function CreateCollectionForm({
     );
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 1024 * 1024) {
-        // 1MB limit
-        toast({
-          variant: "destructive",
-          description: "Image size should not exceed 1MB",
-        });
-        return;
-      }
-      form.setValue("image", file);
+    if (!file) return;
+
+    if (file.size > 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        description: "Image size should not exceed 1MB",
+      });
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      form.setValue("image", reader.result as string); // Set the base64 string
+    };
+    reader.readAsDataURL(file); // Convert to base64
   };
 
   return (
@@ -115,7 +124,6 @@ export default function CreateCollectionForm({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="image"
@@ -178,7 +186,6 @@ export default function CreateCollectionForm({
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="description"
@@ -198,24 +205,21 @@ export default function CreateCollectionForm({
 
             <FormField
               control={form.control}
-              name="bookIds"
+              name="books"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <Input
-                      type="text"
-                      placeholder="Enter book IDs (comma separated)"
-                      value={field.value?.join(", ") || ""}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value
-                            .split(",")
-                            .map((id) => id.trim())
-                            .filter(Boolean),
-                        )
-                      }
-                    />
-                  </FormControl>
+                  <FormLabel>Books</FormLabel>
+                  <MultiSelect
+                    placeholder="Select books"
+                    options={books.map((book) => ({
+                      label: book.title,
+                      value: book.id,
+                    }))}
+                    value={field.value || []}
+                    onValueChange={(selected) => field.onChange(selected)}
+                    animation={2}
+                    maxCount={3}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
