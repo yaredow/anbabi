@@ -49,7 +49,6 @@ const app = new Hono()
     async (c) => {
       const user = c.get("user");
       const { name, description, image, books } = c.req.valid("json");
-      console.log({ image });
 
       if (!user) {
         return c.json({ error: "Unauthorized" }, 401);

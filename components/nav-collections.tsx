@@ -58,9 +58,9 @@ export function NavCollections() {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <ConfirmationDialog />
-      <SidebarGroupLabel>Projects</SidebarGroupLabel>
-      <SidebarGroupAction title="Add Project" onClick={open}>
-        <Plus /> <span className="sr-only">Add Project</span>
+      <SidebarGroupLabel>Collections</SidebarGroupLabel>
+      <SidebarGroupAction title="Add collections" onClick={open}>
+        <Plus /> <span className="sr-only">Add collections</span>
       </SidebarGroupAction>
 
       <SidebarMenu>
