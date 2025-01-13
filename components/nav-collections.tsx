@@ -13,7 +13,9 @@ import { useConfirm } from "@/hooks/use-confirm";
 
 import { useCreateCollectionModal } from "@/features/collections/hooks/use-create-collection-modal";
 import { CollectionAvatar } from "@/features/collections/components/collection-avatar";
+import { useDeleteCollection } from "@/features/collections/api/use-delete-collection";
 import { useGetCollections } from "@/features/collections/api/use-get-collections";
+import { useCollectionId } from "@/features/collections/hooks/useCollectionId";
 
 import {
   DropdownMenu,
@@ -32,7 +34,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useDeleteCollection } from "@/features/collections/api/use-delete-collection";
+import Link from "next/link";
 
 export function NavCollections() {
   const { open } = useCreateCollectionModal();
@@ -40,6 +42,8 @@ export function NavCollections() {
   const router = useRouter();
   const { collections, isPending } = useGetCollections();
   const { deleteCollection } = useDeleteCollection();
+  const collectionId = useCollectionId();
+  console.log("collectionId", collectionId);
 
   const [ConfirmationDialog, confirm] = useConfirm({
     title: "Delete collection",
@@ -65,54 +69,60 @@ export function NavCollections() {
 
       <SidebarMenu>
         {collections?.map((collection) => (
-          <SidebarMenuItem key={collection.name}>
-            <SidebarMenuButton className="mt-2" asChild>
-              <CollectionAvatar
-                collectionId={collection.id}
-                name={collection.name}
-                image={collection.image || ""}
-                description={collection.description || ""}
-              />
-            </SidebarMenuButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction showOnHover>
-                  <MoreHorizontal />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-48 rounded-lg"
-                side={isMobile ? "bottom" : "right"}
-                align={isMobile ? "end" : "start"}
+          <Link href={`/collections/${collection.id}`} key={collection.id}>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                isActive={collectionId === collection.id}
+                className="mt-2"
+                asChild
               >
-                <DropdownMenuItem
-                  onClick={(Event: React.MouseEvent) => {
-                    Event.stopPropagation();
-                    router.push(`/projects/${collection.id}/settings`);
-                  }}
+                <CollectionAvatar
+                  collectionId={collection.id}
+                  name={collection.name}
+                  image={collection.image || ""}
+                  description={collection.description || ""}
+                />
+              </SidebarMenuButton>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuAction showOnHover>
+                    <MoreHorizontal />
+                    <span className="sr-only">More</span>
+                  </SidebarMenuAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-48 rounded-lg"
+                  side={isMobile ? "bottom" : "right"}
+                  align={isMobile ? "end" : "start"}
                 >
-                  <PencilIcon className="text-muted-foreground" />
-                  <span>Edit collection</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Forward className="text-muted-foreground" />
-                  <span>Share collection</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  disabled={isPending}
-                  onClick={async (Event: React.MouseEvent) => {
-                    Event.stopPropagation();
-                    handleDeleteCollection(collection.id);
-                  }}
-                >
-                  <Trash2 className="text-muted-foreground" />
-                  <span>Delete collection</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
+                  <DropdownMenuItem
+                    onClick={(Event: React.MouseEvent) => {
+                      Event.stopPropagation();
+                      router.push(`/projects/${collection.id}/settings`);
+                    }}
+                  >
+                    <PencilIcon className="text-muted-foreground" />
+                    <span>Edit collection</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Forward className="text-muted-foreground" />
+                    <span>Share collection</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    disabled={isPending}
+                    onClick={async (Event: React.MouseEvent) => {
+                      Event.stopPropagation();
+                      handleDeleteCollection(collection.id);
+                    }}
+                  >
+                    <Trash2 className="text-muted-foreground" />
+                    <span>Delete collection</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </Link>
         ))}
         {/* <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">

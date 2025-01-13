@@ -2,30 +2,32 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateCollectionData, CreateCollectionSchema } from "../schemas";
+import { ChangeEvent, useRef } from "react";
+import Image from "next/image";
+import { ImageIcon } from "lucide-react";
+
+import { toast } from "@/hooks/use-toast";
+import { Book } from "@prisma/client";
+import { cn } from "@/lib/utils";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import DottedSeparator from "@/components/dotted-separator";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { useQueryClient } from "@tanstack/react-query";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import DottedSeparator from "@/components/dotted-separator";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ChangeEvent, useRef } from "react";
-import Image from "next/image";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ImageIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+import { CreateCollectionData, CreateCollectionSchema } from "../schemas";
 import { useCreateCollection } from "../api/use-create-collection";
-import { toast } from "@/hooks/use-toast";
-import { Textarea } from "@/components/ui/textarea";
-import { Book } from "@prisma/client";
-import { MultiSelect } from "@/components/ui/multi-select";
-import { useQueryClient } from "@tanstack/react-query";
 
 type CreateCollectionFormProps = {
   onCancel?: () => void;
@@ -212,7 +214,6 @@ export default function CreateCollectionForm({
               name="books"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Books</FormLabel>
                   <MultiSelect
                     placeholder="Select books"
                     options={books.map((book) => ({
