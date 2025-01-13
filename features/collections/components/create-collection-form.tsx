@@ -25,6 +25,7 @@ import { toast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Book } from "@prisma/client";
 import { MultiSelect } from "@/components/ui/multi-select";
+import { useQueryClient } from "@tanstack/react-query";
 
 type CreateCollectionFormProps = {
   onCancel?: () => void;
@@ -37,6 +38,7 @@ export default function CreateCollectionForm({
 }: CreateCollectionFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { createCollection, isPending } = useCreateCollection();
+  const queryClient = useQueryClient();
 
   const form = useForm<CreateCollectionData>({
     resolver: zodResolver(CreateCollectionSchema),
@@ -58,6 +60,8 @@ export default function CreateCollectionForm({
       },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["collections"] });
+          queryClient.invalidateQueries({ queryKey: ["collection"] });
           toast({
             description: "Collection created successfully",
           });

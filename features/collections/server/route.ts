@@ -60,7 +60,8 @@ const app = new Hono()
           let imageBuffer;
 
           if (typeof image === "string") {
-            imageBuffer = Buffer.from(image, "base64"); // This is for base64 strings
+            const base64Data = image.split(",")[1];
+            imageBuffer = Buffer.from(base64Data, "base64"); // This is for base64 strings
           } else {
             throw new Error("Invalid image format");
           }
@@ -70,7 +71,6 @@ const app = new Hono()
               cloudinary.uploader
                 .upload_stream(
                   {
-                    resource_type: "raw",
                     tags: ["ai-book"],
                     upload_preset: "ai-books",
                   },
