@@ -1,4 +1,4 @@
-import UpdateWorkspaceForm from "@/features/collections/components/update-collection-form";
+import UpdatedCollectionForm from "@/features/collections/components/updated-collection-form";
 import {
   getBooksWithCollectionId,
   getCollection,
@@ -28,8 +28,8 @@ export default async function CollectionSettingsPage({
 
   return (
     <div className="w-full lg:max-w-xl">
-      <UpdateWorkspaceForm
-        initialValues={initialValues as Collection}
+      <UpdatedCollectionForm
+        initialValue={initialValues as Collection}
         books={books || []}
       />
     </div>

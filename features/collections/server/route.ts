@@ -2,9 +2,10 @@ import prisma from "@/lib/prisma";
 import { SessionMiddleware } from "@/lib/session-middleware";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { CreateCollectionSchema } from "../schemas";
+import { CreateCollectionSchema, UpdateProjectSchema } from "../schemas";
 import { UploadApiResponse } from "cloudinary";
 import cloudinary from "@/lib/cloudinary";
+import { json } from "stream/consumers";
 
 const app = new Hono()
   .get("/", SessionMiddleware, async (c) => {
@@ -129,6 +130,46 @@ const app = new Hono()
     await prisma.collection.delete({ where: { id: collectionId } });
 
     return c.json({ message: "Collection deleted successfully" });
-  });
+  })
+  .patch(
+    "/:collectionId",
+    SessionMiddleware,
+    zValidator("json", UpdateProjectSchema),
+    async (c) => {
+      const user = c.get("user");
+      const { collectionId } = c.req.param();
+      const { name, description, image, books } = c.req.valid("json");
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const existingCollection = await prisma.collection.findUnique({
+        where: {
+          id: collectionId,
+        },
+      });
+
+      if (!existingCollection) {
+        return c.json({ error: "Collection not found" }, 404);
+      }
+
+      await prisma.collection.update({
+        where: {
+          id: collectionId,
+        },
+        data: {
+          name,
+          description,
+          image,
+          books: {
+            set: books?.map((bookId: string) => ({ id: bookId })),
+          },
+        },
+      });
+
+      return c.json({ message: "Collection updated successfully" });
+    },
+  );
 
 export default app;

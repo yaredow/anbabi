@@ -1,12 +1,22 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { ChangeEvent, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { ImageIcon } from "lucide-react";
+import Image from "next/image";
+
 import { useConfirm } from "@/hooks/use-confirm";
 import { Book, Collection } from "@prisma/client";
-import { useForm } from "react-hook-form";
-import { UpdateCollectionData } from "../schemas";
+import { cn } from "@/lib/utils";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { ArrowLeftIcon, ImageIcon } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import DottedSeparator from "@/components/dotted-separator";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -14,11 +24,10 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import Image from "next/image";
-import { ChangeEvent, useRef } from "react";
+
 import { useDeleteCollection } from "../api/use-delete-collection";
+import { useUpdateCollection } from "../api/use-update-collection";
+import { UpdateCollectionData } from "../schemas";
 
 type UpdatedCollectionFormProps = {
   initialValue: Collection;
@@ -34,7 +43,11 @@ export default function UpdatedCollectionForm({
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { deleteCollection, isPending } = useDeleteCollection();
+  const { deleteCollection, isPending: isDeleteCollectionPending } =
+    useDeleteCollection();
+  const { updateCollection, isPending: isUpdateCollectionPending } =
+    useUpdateCollection();
+  const isLoadiing = isDeleteCollectionPending || isUpdateCollectionPending;
 
   const form = useForm<UpdateCollectionData>({
     defaultValues: {
@@ -73,130 +86,148 @@ export default function UpdatedCollectionForm({
     <div className="flex flex-col gap-y-4">
       <ConfirmationDialog />
       <Card className="w-full h-full border-none shadow-none">
-        <CardHeader className="flex flex-row items-center space-x-4 space-y-0  p-7">
-          <Button
-            className="flex gap-2 items-center justify-center"
-            size="sm"
-            variant="secondary"
-            onClick={
-              onCancel
-                ? onCancel
-                : () => router.push(`/collections/${initialValue.id}`)
-            }
-          >
-            <ArrowLeftIcon className="size-4" />
-            Back
-          </Button>
-          <CardTitle className="text-xl font-bold">Update a project</CardTitle>
+        <CardHeader className="flex p-7">
+          <CardTitle className="text-xl font-bold">
+            Create a new collection
+          </CardTitle>
         </CardHeader>
         <div className="px-7">
           <DottedSeparator />
         </div>
         <CardContent className="p-7">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="flex flex-col gap-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="Enter name of the workspace"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="image"
-                  render={({ field }) => (
-                    <div className="flex flex-col space-y-2">
-                      <div className="flex items-center space-x-5">
-                        {field.value ? (
-                          <div className="size-[72px] relative rounded-md overflow-hidden">
-                            <Image
-                              src={
-                                field.value instanceof File
-                                  ? URL.createObjectURL(field.value)
-                                  : field.value
-                              }
-                              alt="Logo"
-                              className="object-cover"
-                              fill
-                            />
-                          </div>
-                        ) : (
-                          <Avatar className="size-[72px]">
-                            <AvatarFallback>
-                              <ImageIcon className="size-[36px] text-neutral-400" />
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
-                        <div className="flex flex-col">
-                          <p className="text-sm">Project Icon</p>
-                          <p className="text-sm text-muted-foreground">
-                            JPG, PNG, SVG or JPEG up to 1MB
-                          </p>
-                          <input
-                            type="file"
-                            ref={inputRef}
-                            className="hidden"
-                            accept=".jpg, .png, .jpeg, .svg"
-                            disabled={isProjectUpdatePending}
-                            onChange={handleImageChange}
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="Enter the name of the collection"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center space-x-5">
+                      {field.value ? (
+                        <div className="size-[72px] relative rounded-md overflow-hidden">
+                          <Image
+                            src={
+                              field.value instanceof File
+                                ? URL.createObjectURL(field.value)
+                                : field.value
+                            }
+                            alt="Collection Icon"
+                            className="object-cover"
+                            fill
                           />
-                          {field.value ? (
-                            <Button
-                              type="button"
-                              disabled={isProjectUpdatePending}
-                              variant="destructive"
-                              className="w-fit mt-2"
-                              onClick={() => {
-                                inputRef.current?.click();
-                              }}
-                            >
-                              Upload Image
-                            </Button>
-                          ) : (
-                            <Button
-                              type="button"
-                              disabled={isProjectUpdatePending}
-                              className="w-fit mt-2"
-                              onClick={() => inputRef.current?.click()}
-                            >
-                              Upload Image
-                            </Button>
-                          )}
                         </div>
+                      ) : (
+                        <Avatar className="size-[72px]">
+                          <AvatarFallback>
+                            <ImageIcon className="size-[36px] text-neutral-400" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div className="flex flex-col">
+                        <p className="text-sm font-medium">Collection Icon</p>
+                        <p className="text-sm text-muted-foreground">
+                          JPG, PNG, SVG or JPEG up to 1MB
+                        </p>
+                        <input
+                          type="file"
+                          ref={inputRef}
+                          className="hidden"
+                          accept=".jpg, .png, .jpeg, .svg"
+                          disabled={isLoadiing}
+                          onChange={handleImageChange}
+                        />
+                        <Button
+                          type="button"
+                          variant={field.value ? "destructive" : "secondary"}
+                          className="w-fit mt-2"
+                          onClick={() => {
+                            if (field.value) {
+                              field.onChange(undefined);
+                              if (inputRef.current) {
+                                inputRef.current.value = "";
+                              }
+                            } else {
+                              inputRef.current?.click();
+                            }
+                          }}
+                        >
+                          {field.value ? "Remove Image" : "Upload Image"}
+                        </Button>
                       </div>
                     </div>
-                  )}
-                />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Enter the description of the collection"
+                        {...field}
+                        rows={3}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <div className="py-7">
-                  <DottedSeparator />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Button
-                    type="reset"
-                    variant="secondary"
-                    disabled={false}
-                    onClick={onCancel}
-                    className={cn(!onCancel && "invisible")}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={isProjectUpdatePending}>
-                    Save changes
-                  </Button>
-                </div>
+              <FormField
+                control={form.control}
+                name="books"
+                render={({ field }) => (
+                  <FormItem>
+                    <MultiSelect
+                      placeholder="Select books"
+                      options={books.map((book) => ({
+                        label: book.title,
+                        value: book.id,
+                      }))}
+                      value={field.value || []}
+                      onValueChange={(selected) => field.onChange(selected)}
+                      animation={2}
+                      maxCount={3}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="py-7">
+                <DottedSeparator />
+              </div>
+              <div className="flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={onCancel}
+                  className={cn(!onCancel && "invisible")}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isLoadiing}>
+                  Create Collection
+                </Button>
               </div>
             </form>
           </Form>
@@ -216,7 +247,7 @@ export default function UpdatedCollectionForm({
               variant="destructive"
               size="sm"
               className="mt-6 w-fit ml-auto"
-              disabled={isProjectUpdatePending || isProjectDeletePending}
+              disabled={isLoadiing}
               onClick={handleConfirm}
             >
               Delete workspace
