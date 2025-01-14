@@ -20,7 +20,7 @@ export default function BookCard({
 }: BookCardProps) {
   return (
     <div className="group relative w-[180px] bg-background px-4 py-2 cursor-pointer transition-shadow rounded-lg">
-      <Link href={`/book/${id}`}>
+      <Link href={`/books/${id}`}>
         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg hover:scale-105">
           <Image
             src={coverUrl}

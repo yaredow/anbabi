@@ -9,6 +9,7 @@ type UseGetBooksProps = {
 };
 
 export const useGetBooks = ({ category, status }: UseGetBooksProps) => {
+  console.log({ status });
   const {
     data: books,
     isPending,

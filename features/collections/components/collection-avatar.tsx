@@ -1,3 +1,5 @@
+"use client";
+
 import { cn, generatePastelColor, getInitials } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -21,7 +23,7 @@ export function CollectionAvatar({
   const router = useRouter();
 
   return (
-    <div className={cn("flex items-center space-x-2 w-full", className)}>
+    <div className={cn("flex items-center space-x-2", className)}>
       <div
         className="h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
         style={{ background: image ? "transparent" : pastelColor }}

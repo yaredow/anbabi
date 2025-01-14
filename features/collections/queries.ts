@@ -1,13 +1,9 @@
 import prisma from "@/lib/prisma";
-import { Collection } from "@prisma/client";
+import { Book, Collection } from "@prisma/client";
 
-type GetCollectionsProps = {
-  collectionId: string;
-};
-
-export const getCollection = async ({
-  collectionId,
-}: GetCollectionsProps): Promise<Collection | null> => {
+export const getCollection = async (
+  collectionId: string,
+): Promise<Collection | null> => {
   const collections = await prisma.collection.findUnique({
     where: {
       id: collectionId,
@@ -17,4 +13,22 @@ export const getCollection = async ({
   if (!collections) return null;
 
   return collections;
+};
+
+export const getBooksWithCollectionId = async (
+  collectionId: string,
+): Promise<Book[] | null> => {
+  const books = await prisma.book.findMany({
+    where: {
+      collections: {
+        some: {
+          id: collectionId,
+        },
+      },
+    },
+  });
+
+  if (!books) return [];
+
+  return books;
 };

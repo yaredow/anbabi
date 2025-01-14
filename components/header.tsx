@@ -26,6 +26,12 @@ export default function Header() {
   const isHome =
     pathName === `/category/${category}` || pathName === `/library/${status}`;
 
+  const isCollection = pathName.includes("/collections");
+
+  if (isCollection) {
+    return null;
+  }
+
   return (
     <header className="flex z-20 w-full bg-background sticky top-0 items-center justify-between h-12 px-4 py-2">
       {isHome ? (
