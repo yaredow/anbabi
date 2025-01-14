@@ -42,7 +42,7 @@ export default async function PageWithCollectionId({ params }: IParams) {
         <CollectionSwitcher />
 
         <Button variant="secondary" size="sm" asChild>
-          <Link href={`/collections/${collection?.id}/edit-collection`}>
+          <Link href={`/collections/${collection?.id}/settings`}>
             <PencilIcon strokeWidth={1.5} size={20} className="siz-4 mr-2" />
             <span className="font-semibold text-sm">Edit collection</span>
           </Link>
