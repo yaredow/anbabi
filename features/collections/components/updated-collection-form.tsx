@@ -28,6 +28,7 @@ import {
 import { useDeleteCollection } from "../api/use-delete-collection";
 import { useUpdateCollection } from "../api/use-update-collection";
 import { UpdateCollectionData } from "../schemas";
+import { toast } from "@/hooks/use-toast";
 
 type UpdatedCollectionFormProps = {
   initialValue: Collection;
@@ -71,10 +72,42 @@ export default function UpdatedCollectionForm({
     }
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      form.setValue("image", file);
+    if (!file) return;
+
+    // Validate file size (1MB max)
+    if (file.size > 1024 * 1024) {
+      toast({
+        variant: "destructive",
+        description: "Image size should not exceed 1MB.",
+      });
+      return;
+    }
+
+    try {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          // Set the image field to the base64 string of the new image
+          form.setValue("image", reader.result as string);
+        }
+      };
+
+      reader.onerror = () => {
+        toast({
+          variant: "destructive",
+          description: "Failed to read the image file. Please try again.",
+        });
+      };
+
+      reader.readAsDataURL(file); // Convert file to base64
+    } catch (error) {
+      console.error("Error during image handling:", error);
+      toast({
+        variant: "destructive",
+        description: "An unexpected error occurred during image upload.",
+      });
     }
   };
 
@@ -113,6 +146,7 @@ export default function UpdatedCollectionForm({
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="image"
