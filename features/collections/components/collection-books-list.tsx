@@ -1,7 +1,12 @@
 "use client";
 
+import { RiAddCircleFill } from "react-icons/ri";
+import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import Link from "next/link";
+
+import { Book } from "@prisma/client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,9 +14,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Book } from "@prisma/client";
-import Link from "next/link";
-import { RiAddCircleFill } from "react-icons/ri";
 
 type CollectionBooksListProps = {
   books: Book[];

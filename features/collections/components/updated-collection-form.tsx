@@ -120,9 +120,7 @@ export default function UpdatedCollectionForm({
       <ConfirmationDialog />
       <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex p-7">
-          <CardTitle className="text-xl font-bold">
-            Create a new collection
-          </CardTitle>
+          <CardTitle className="text-xl font-bold">Update collection</CardTitle>
         </CardHeader>
         <div className="px-7">
           <DottedSeparator />
@@ -273,7 +271,7 @@ export default function UpdatedCollectionForm({
           <div className="flex flex-col">
             <h3 className="text-destructive font-bold">Danger Zone</h3>
             <p className="text-sm text-muted-foreground">
-              Deleting a workspace is an irreversable proccess and will remove
+              Deleting a collection is an irreversable proccess and will remove
               associated data
             </p>
             <DottedSeparator className="py-7" />
@@ -284,7 +282,7 @@ export default function UpdatedCollectionForm({
               disabled={isLoadiing}
               onClick={handleConfirm}
             >
-              Delete workspace
+              Delete collection
             </Button>
           </div>
         </CardContent>

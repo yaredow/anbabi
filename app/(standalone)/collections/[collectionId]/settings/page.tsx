@@ -27,7 +27,7 @@ export default async function CollectionSettingsPage({
   const books = await getBooksWithCollectionId(collectionId);
 
   return (
-    <div className="w-full lg:max-w-xl">
+    <div className="w-full lg:max-w-xl mx-auto">
       <UpdatedCollectionForm
         initialValue={initialValues as Collection}
         books={books || []}
