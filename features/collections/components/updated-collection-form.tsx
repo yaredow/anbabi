@@ -112,7 +112,21 @@ export default function UpdatedCollectionForm({
   };
 
   const onSubmit = (values: UpdateCollectionData) => {
-    console.log(values);
+    updateCollection(
+      {
+        json: {
+          ...values,
+        },
+        param: { collectionId: initialValue.id },
+      },
+      {
+        onSuccess: () => {
+          toast({
+            description: "Collection updated successfully",
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -155,7 +169,7 @@ export default function UpdatedCollectionForm({
                         <div className="size-[72px] relative rounded-md overflow-hidden">
                           <Image
                             src={
-                              field.value
+                              field.value instanceof File
                                 ? URL.createObjectURL(field.value)
                                 : field.value
                             }
@@ -258,7 +272,7 @@ export default function UpdatedCollectionForm({
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isLoadiing}>
-                  Create Collection
+                  Update Collection
                 </Button>
               </div>
             </form>

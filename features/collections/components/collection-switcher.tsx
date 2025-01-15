@@ -16,7 +16,6 @@ import { useCollectionId } from "../hooks/useCollectionId";
 import { CollectionAvatar } from "./collection-avatar";
 
 export default function CollectionSwitcher() {
-  const { open } = useCreateCollectionModal();
   const { collections, isPending } = useGetCollections();
   const collectionId = useCollectionId();
   const router = useRouter();
@@ -38,6 +37,7 @@ export default function CollectionSwitcher() {
                 <CollectionAvatar
                   name={collection.name}
                   collectionId={collection.id}
+                  image={collection.image || ""}
                 />
               </div>
             </SelectItem>
