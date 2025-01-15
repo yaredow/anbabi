@@ -155,7 +155,7 @@ export default function UpdatedCollectionForm({
                         <div className="size-[72px] relative rounded-md overflow-hidden">
                           <Image
                             src={
-                              field.value instanceof File
+                              field.value
                                 ? URL.createObjectURL(field.value)
                                 : field.value
                             }
