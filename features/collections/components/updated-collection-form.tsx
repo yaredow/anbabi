@@ -29,6 +29,7 @@ import { useDeleteCollection } from "../api/use-delete-collection";
 import { useUpdateCollection } from "../api/use-update-collection";
 import { UpdateCollectionData } from "../schemas";
 import { toast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UpdatedCollectionFormProps = {
   initialValue: Collection;
@@ -43,6 +44,7 @@ export default function UpdatedCollectionForm({
 }: UpdatedCollectionFormProps) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const queryClinet = useQueryClient();
 
   const { deleteCollection, isPending: isDeleteCollectionPending } =
     useDeleteCollection();
@@ -63,14 +65,6 @@ export default function UpdatedCollectionForm({
     message: "Are you sure you want to delete this workspace?",
     variant: "destructive",
   });
-
-  const handleConfirm = async () => {
-    const ok = await confirm();
-
-    if (ok) {
-      deleteCollection(initialValue.id);
-    }
-  };
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -107,6 +101,23 @@ export default function UpdatedCollectionForm({
       toast({
         variant: "destructive",
         description: "An unexpected error occurred during image upload.",
+      });
+    }
+  };
+
+  const handleConfirm = async () => {
+    const ok = await confirm();
+
+    if (ok) {
+      deleteCollection(initialValue.id, {
+        onSuccess: () => {
+          queryClinet.invalidateQueries({ queryKey: ["collections"] });
+          toast({
+            variant: "destructive",
+            description: "Collection deleted successfully",
+          });
+          router.push("/");
+        },
       });
     }
   };
