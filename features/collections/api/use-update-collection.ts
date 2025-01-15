@@ -16,9 +16,10 @@ export const useUpdateCollection = () => {
     Error,
     RequestType
   >({
-    mutationFn: async ({ json }) => {
+    mutationFn: async ({ json, param }) => {
       const response = await client.api.collections[":collectionId"].$patch({
         json,
+        param,
       });
 
       if (!response.ok) {

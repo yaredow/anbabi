@@ -2,10 +2,9 @@ import prisma from "@/lib/prisma";
 import { SessionMiddleware } from "@/lib/session-middleware";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { CreateCollectionSchema, UpdateProjectSchema } from "../schemas";
+import { CreateCollectionSchema, UpdateCollectionSchema } from "../schemas";
 import { UploadApiResponse } from "cloudinary";
 import cloudinary from "@/lib/cloudinary";
-import { json } from "stream/consumers";
 
 const app = new Hono()
   .get("/", SessionMiddleware, async (c) => {
@@ -134,7 +133,7 @@ const app = new Hono()
   .patch(
     "/:collectionId",
     SessionMiddleware,
-    zValidator("json", UpdateProjectSchema),
+    zValidator("json", UpdateCollectionSchema),
     async (c) => {
       const user = c.get("user");
       const { collectionId } = c.req.param();
