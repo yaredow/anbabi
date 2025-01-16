@@ -10,7 +10,6 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 
-import { useCreateCollectionModal } from "../hooks/use-create-collection-modal";
 import { useGetCollections } from "../api/use-get-collections";
 import { useCollectionId } from "../hooks/useCollectionId";
 import { CollectionAvatar } from "./collection-avatar";

@@ -20,11 +20,19 @@ import { useAddBooksToCollectionModal } from "../hooks/use-add-books-to-collecti
 import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collection";
 import { useGetCollection } from "../api/use-get-collection";
 import { useCollectionId } from "../hooks/useCollectionId";
+import { useConfirm } from "@/hooks/use-confirm";
 
 export default function CollectionBooksList() {
   const queryClient = useQueryClient();
   const collectionId = useCollectionId();
   const router = useRouter();
+
+  const [ConfirmationDialog, confirm] = useConfirm({
+    title: "Remove Book and Collection",
+    message:
+      "Are you sure you want to remove this book from the collection? This will also remove the collection.",
+    variant: "destructive",
+  });
 
   const { open } = useAddBooksToCollectionModal();
   const { collection } = useGetCollection({ collectionId });
@@ -33,24 +41,40 @@ export default function CollectionBooksList() {
   const handleRemoveBook = (bookId: string) => {
     const lastBook = collection?.books.length === 1;
 
-    removeBookFromCollection(
-      { collectionId, bookId },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["collection", collectionId],
-          });
-          if (lastBook) {
-            queryClient.invalidateQueries({ queryKey: ["collections"] });
-            router.push("/");
-          }
+    if (lastBook) {
+      confirm().then((confirmed) => {
+        if (confirmed) {
+          removeBookFromCollection(
+            { collectionId, bookId },
+            {
+              onSuccess: () => {
+                queryClient.invalidateQueries({
+                  queryKey: ["collection", collectionId],
+                });
+                queryClient.invalidateQueries({ queryKey: ["collections"] });
+                router.push("/");
+              },
+            },
+          );
+        }
+      });
+    } else {
+      removeBookFromCollection(
+        { collectionId, bookId },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["collection", collectionId],
+            });
+          },
         },
-      },
-    );
+      );
+    }
   };
 
   return (
     <>
+      <ConfirmationDialog />
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">{collection?.name}</h2>
         <Button variant="ghost" onClick={open}>
