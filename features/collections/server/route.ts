@@ -34,6 +34,9 @@ const app = new Hono()
       where: {
         id: collectionId,
       },
+      include: {
+        books: true,
+      },
     });
 
     if (!collection) {

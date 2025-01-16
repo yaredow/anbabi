@@ -7,7 +7,7 @@ type UseGetCollectionProps = {
 
 export const useGetCollection = ({ collectionId }: UseGetCollectionProps) => {
   const { data: collection, isPending } = useQuery({
-    queryKey: ["collection"],
+    queryKey: ["collection", collectionId],
     queryFn: async () => {
       const response = await client.api.collections[":collectionId"].$get({
         param: { collectionId },
@@ -25,6 +25,7 @@ export const useGetCollection = ({ collectionId }: UseGetCollectionProps) => {
       const data = await response.json();
       return data.data;
     },
+    enabled: !!collectionId,
   });
 
   return { collection, isPending };

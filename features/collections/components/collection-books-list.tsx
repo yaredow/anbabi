@@ -1,6 +1,5 @@
 "use client";
 
-import { RiAddCircleFill } from "react-icons/ri";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,18 +16,13 @@ import {
 import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collection";
 import { useCollectionId } from "../hooks/useCollectionId";
 import { useQueryClient } from "@tanstack/react-query";
+import { useGetCollection } from "../api/use-get-collection";
 
-type CollectionBooksListProps = {
-  books: Book[];
-  collectionName: string;
-};
-
-export default function CollectionBooksList({
-  books,
-  collectionName,
-}: CollectionBooksListProps) {
+export default function CollectionBooksList() {
   const queryClient = useQueryClient();
   const collectionId = useCollectionId();
+
+  const { collection } = useGetCollection({ collectionId });
   const { removeBookFromCollection, isPending } = useRemoveBookFromCollection();
 
   const handleRemoveBook = (bookId: string) => {
@@ -36,7 +30,9 @@ export default function CollectionBooksList({
       { collectionId, bookId },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["books", collectionId] });
+          queryClient.invalidateQueries({
+            queryKey: ["collection", collectionId],
+          });
         },
       },
     );
@@ -45,11 +41,11 @@ export default function CollectionBooksList({
   return (
     <>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">{collectionName}</h2>
+        <h2 className="text-xl font-semibold">{collection?.name}</h2>
       </div>
 
       <ul className="space-y-4">
-        {books.map((book) => (
+        {collection?.books.map((book) => (
           <li
             key={book.id}
             className="flex items-center justify-between p-4 bg-white rounded-lg shadow"
@@ -79,7 +75,10 @@ export default function CollectionBooksList({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleRemoveBook(book.id)}>
+                <DropdownMenuItem
+                  disabled={isPending}
+                  onClick={() => handleRemoveBook(book.id)}
+                >
                   Remove from collection
                 </DropdownMenuItem>
               </DropdownMenuContent>

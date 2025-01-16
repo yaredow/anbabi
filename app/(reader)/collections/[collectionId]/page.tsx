@@ -25,8 +25,6 @@ export async function generateMetadata({ params }: IParams) {
 
 export default async function PageWithCollectionId({ params }: IParams) {
   const { collectionId } = await params;
-  const collection = await getCollection(collectionId);
-  const books = await getBooksWithCollectionId(collectionId);
 
   return (
     <div className="flex flex-col space-y-4 w-full">
@@ -42,17 +40,14 @@ export default async function PageWithCollectionId({ params }: IParams) {
         <CollectionSwitcher />
 
         <Button variant="secondary" size="sm" asChild>
-          <Link href={`/collections/${collection?.id}/settings`}>
+          <Link href={`/collections/${collectionId}/settings`}>
             <PencilIcon strokeWidth={1.5} size={20} className="siz-4 mr-2" />
             <span className="font-semibold text-sm">Edit collection</span>
           </Link>
         </Button>
       </div>
 
-      <CollectionBooksList
-        books={books || []}
-        collectionName={collection?.name || ""}
-      />
+      <CollectionBooksList />
     </div>
   );
 }
