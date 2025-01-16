@@ -131,11 +131,11 @@ const app = new Hono()
     return c.json({ message: "Collection deleted successfully" });
   })
   .delete(
-    "/collections/:collectionId/books/:booksId",
+    "/collections/:collectionId/books/:bookId",
     SessionMiddleware,
     async (c) => {
       const user = c.get("user");
-      const { collectionId, booksId } = c.req.param();
+      const { collectionId, bookId } = c.req.param();
 
       if (!user) {
         return c.json({ error: "Unauthorized" }, 401);
@@ -155,7 +155,7 @@ const app = new Hono()
       }
 
       const bookExistsInCollection = existingCollection.books.some(
-        (book) => book.id === booksId,
+        (book) => book.id === bookId,
       );
 
       if (!bookExistsInCollection) {
@@ -168,7 +168,7 @@ const app = new Hono()
         },
         data: {
           books: {
-            disconnect: { id: booksId },
+            disconnect: { id: bookId },
           },
         },
       });
