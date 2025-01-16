@@ -177,52 +177,48 @@ const app = new Hono()
 
     return c.json({ message: "Collection deleted successfully" });
   })
-  .delete(
-    "/collections/:collectionId/books/:bookId",
-    SessionMiddleware,
-    async (c) => {
-      const user = c.get("user");
-      const { collectionId, bookId } = c.req.param();
+  .delete("/:collectionId/books/:bookId", SessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const { collectionId, bookId } = c.req.param();
 
-      if (!user) {
-        return c.json({ error: "Unauthorized" }, 401);
-      }
+    if (!user) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
 
-      const existingCollection = await prisma.collection.findUnique({
-        where: {
-          id: collectionId,
+    const existingCollection = await prisma.collection.findUnique({
+      where: {
+        id: collectionId,
+      },
+      include: {
+        books: true,
+      },
+    });
+
+    if (!existingCollection) {
+      return c.json({ error: "Collection not found" }, 404);
+    }
+
+    const bookExistsInCollection = existingCollection.books.some(
+      (book) => book.id === bookId,
+    );
+
+    if (!bookExistsInCollection) {
+      return c.json({ error: "Book not found in the collection" }, 404);
+    }
+
+    await prisma.collection.update({
+      where: {
+        id: collectionId,
+      },
+      data: {
+        books: {
+          disconnect: { id: bookId },
         },
-        include: {
-          books: true,
-        },
-      });
+      },
+    });
 
-      if (!existingCollection) {
-        return c.json({ error: "Collection not found" }, 404);
-      }
-
-      const bookExistsInCollection = existingCollection.books.some(
-        (book) => book.id === bookId,
-      );
-
-      if (!bookExistsInCollection) {
-        return c.json({ error: "Book not found in the collection" }, 404);
-      }
-
-      await prisma.collection.update({
-        where: {
-          id: collectionId,
-        },
-        data: {
-          books: {
-            disconnect: { id: bookId },
-          },
-        },
-      });
-
-      return c.json({ message: "Book removed from collection successfully" });
-    },
-  )
+    return c.json({ message: "Book removed from collection successfully" });
+  })
   .patch(
     "/:collectionId",
     SessionMiddleware,

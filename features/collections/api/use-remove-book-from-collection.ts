@@ -9,9 +9,9 @@ type RequestType = {
 export const useRemoveBookFromCollection = () => {
   const { mutate: removeBookFromCollection, isPending } = useMutation({
     mutationFn: async ({ collectionId, bookId }: RequestType) => {
-      const response = await client.api.collections["collections"][
-        ":collectionId"
-      ]["books"][":bookId"].$delete({ param: { collectionId, bookId } });
+      const response = await client.api.collections[":collectionId"]["books"][
+        ":bookId"
+      ].$delete({ param: { collectionId, bookId } });
 
       if (!response.ok) {
         const errorData = await response.json();
