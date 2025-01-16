@@ -1,12 +1,11 @@
 "use client";
 
+import { Plus, Check, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
-
-import { Plus, Check, Loader2, X } from "lucide-react";
 import { Book } from "@prisma/client";
 
 import { useGetBooks } from "@/features/books/api/use-get-books";
@@ -151,10 +150,6 @@ export default function AddBooksToCollection({
       </div>
     );
   }
-
-  const filteredBooks = books?.filter(
-    (book) => !collection?.books.some((b) => b.id === book.id),
-  );
 
   return (
     <div className="sm:max-w-[500px] p-4">

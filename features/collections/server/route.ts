@@ -224,7 +224,7 @@ const app = new Hono()
     },
   )
   .patch(
-    "/collections/:collectionId",
+    "/:collectionId",
     SessionMiddleware,
     zValidator("json", UpdateCollectionSchema),
     async (c) => {
