@@ -2,54 +2,85 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, Check } from "lucide-react";
-import { Book } from "@prisma/client";
-import { useGetBooks } from "@/features/books/api/use-get-books";
-import { useAddBooksToCollection } from "../api/use-add-books-to-collection";
-import { useCollectionId } from "../hooks/useCollectionId";
+
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+
+import { Plus, Check, Loader2, X } from "lucide-react";
+import { Book } from "@prisma/client";
+
+import { useGetBooks } from "@/features/books/api/use-get-books";
+
+import { Button } from "@/components/ui/button";
+
+import { useAddBooksToCollection } from "../api/use-add-books-to-collection";
+import { useCollectionId } from "../hooks/useCollectionId";
+import { useGetCollection } from "../api/use-get-collection";
+
+type BookItemProps = {
+  book: Book;
+  isSelected: boolean;
+  isAlreadyInCollection: boolean;
+  onToggle: () => void;
+};
 
 const BookItem = ({
   book,
   isSelected,
+  isAlreadyInCollection,
   onToggle,
-}: {
-  book: Book;
-  isSelected: boolean;
-  onToggle: () => void;
-}) => (
-  <div className="flex items-center justify-between p-2 hover:bg-gray-100 rounded">
+}: BookItemProps) => (
+  <div
+    className={`flex items-center justify-between p-2 rounded transition-colors duration-200 ${
+      isAlreadyInCollection
+        ? "bg-gray-100 opacity-50"
+        : isSelected
+          ? "bg-primary/10 border border-primary"
+          : "hover:bg-gray-100"
+    }`}
+  >
     <div className="flex items-center space-x-3">
-      <Image
-        src={book.coverImage || "/placeholder.svg"}
-        alt={`Cover of ${book.title}`}
-        width={60}
-        height={80}
-        className="object-cover rounded"
-      />
+      <div className="relative">
+        <Image
+          src={book.coverImage || "/placeholder.svg"}
+          alt={`Cover of ${book.title}`}
+          width={60}
+          height={80}
+          className="object-cover rounded"
+        />
+        {isAlreadyInCollection && (
+          <div className="absolute inset-0 bg-gray-500/50 rounded flex items-center justify-center">
+            <X className="text-white w-6 h-6" />
+          </div>
+        )}
+      </div>
       <div>
         <h3 className="font-semibold">{book.title}</h3>
         <p className="text-sm text-gray-600">{book.author}</p>
+        {isAlreadyInCollection && (
+          <p className="text-xs text-gray-500 mt-1">Already in collection</p>
+        )}
       </div>
     </div>
-    <Button variant="ghost" size="icon" onClick={onToggle}>
-      {isSelected ? (
-        <Check className="h-4 w-4" />
-      ) : (
-        <Plus className="h-4 w-4" />
-      )}
-    </Button>
+
+    {!isAlreadyInCollection && (
+      <Button
+        variant={isSelected ? "secondary" : "ghost"}
+        size="icon"
+        onClick={onToggle}
+        aria-label={
+          isSelected
+            ? `Remove ${book.title} from selection`
+            : `Add ${book.title} to selection`
+        }
+      >
+        {isSelected ? (
+          <Check className="h-4 w-4" />
+        ) : (
+          <Plus className="h-4 w-4" />
+        )}
+      </Button>
+    )}
   </div>
 );
 
@@ -61,12 +92,14 @@ export default function AddBooksToCollection({
   onClose,
 }: AddBooksToCollectionProps) {
   const [selectedBooks, setSelectedBooks] = useState<Set<string>>(new Set());
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const collectionId = useCollectionId();
   const queryClient = useQueryClient();
 
   const { books, isPending: isGetBooksPending } = useGetBooks();
+  const { collection, isPending: isCollectionPending } = useGetCollection({
+    collectionId,
+  });
   const { addBooksToCollection, isPending: isAddBookToCollectionPending } =
     useAddBooksToCollection();
 
@@ -100,10 +133,28 @@ export default function AddBooksToCollection({
           });
           onClose();
         },
+        onError: (error) => {
+          toast({
+            description: error.message,
+            variant: "destructive",
+          });
+        },
       },
     );
     setSelectedBooks(new Set());
   };
+
+  if (isGetBooksPending || isCollectionPending) {
+    return (
+      <div className="sm:max-w-[500px] p-4">
+        <Loader2 className="flex items-center justify-center mx-auto animate-spin" />
+      </div>
+    );
+  }
+
+  const filteredBooks = books?.filter(
+    (book) => !collection?.books.some((b) => b.id === book.id),
+  );
 
   return (
     <div className="sm:max-w-[500px] p-4">
@@ -117,6 +168,9 @@ export default function AddBooksToCollection({
             key={book.id}
             book={book}
             isSelected={selectedBooks.has(book.id)}
+            isAlreadyInCollection={
+              collection?.books.some((b) => b.id === book.id) as boolean
+            }
             onToggle={() => toggleBook(book.id)}
           />
         ))}
