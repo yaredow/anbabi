@@ -2,11 +2,13 @@
 
 import { useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
-import { useGetBooks } from "../api/use-get-books";
-import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
-import BookCard from "./book-card";
-import { StatusType } from "../schemas";
+
 import { statusMapping } from "@/lib/utils";
+
+import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
+import { useFilterBooks } from "../api/use-filter-books";
+import { StatusType } from "../schemas";
+import BookCard from "./book-card";
 
 interface BooksGridProps {
   categoryName?: string;
@@ -16,7 +18,7 @@ interface BooksGridProps {
 export function BooksGrid({ categoryName, status }: BooksGridProps) {
   const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
 
-  const { books, isPending, refetch } = useGetBooks({
+  const { books, isPending, refetch } = useFilterBooks({
     status: mappedStatus as StatusType,
     category: categoryName!,
   });

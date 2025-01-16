@@ -1,28 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/hono";
+import { useQuery } from "@tanstack/react-query";
 
-import { StatusType } from "../schemas";
-
-type UseGetBooksProps = {
-  category: string;
-  status: StatusType;
-};
-
-export const useGetBooks = ({ category, status }: UseGetBooksProps) => {
-  console.log({ status });
-  const {
-    data: books,
-    isPending,
-    refetch,
-  } = useQuery({
-    queryKey: ["books", category, status],
+export const useGetBooks = () => {
+  const { data: books, isPending } = useQuery({
+    queryKey: ["books"],
     queryFn: async () => {
-      const response = await client.api.books.$get({
-        query: { category, status },
-      });
+      const response = await client.api.books.$get();
 
       if (!response.ok) {
-        throw new Error("Something went wrong while fetching books");
+        const errorData = await response.json();
+        if ("error" in errorData) {
+          throw new Error(errorData.error);
+        } else {
+          throw new Error("An unknown error occurred");
+        }
       }
 
       const data = await response.json();
@@ -31,10 +22,9 @@ export const useGetBooks = ({ category, status }: UseGetBooksProps) => {
     select: (data) =>
       data.map((book) => ({
         ...book,
-        uploadedAt: new Date(book?.uploadedAt),
+        uploadedAt: new Date(book.uploadedAt),
       })),
-    enabled: !!category || !!status,
   });
 
-  return { books, isPending, refetch };
+  return { books, isPending };
 };

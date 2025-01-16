@@ -17,6 +17,7 @@ import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collect
 import { useCollectionId } from "../hooks/useCollectionId";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetCollection } from "../api/use-get-collection";
+import AddBooksToCollection from "./add-books-to-collection";
 
 export default function CollectionBooksList() {
   const queryClient = useQueryClient();
@@ -42,6 +43,7 @@ export default function CollectionBooksList() {
     <>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">{collection?.name}</h2>
+        <AddBooksToCollection />
       </div>
 
       <ul className="space-y-4">

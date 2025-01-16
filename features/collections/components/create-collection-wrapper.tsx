@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useGetBooks } from "@/features/books/api/use-get-books";
+import { useGetBooks } from "@/features/books/api/use-filter-books";
 import { StatusType } from "@/features/books/schemas";
 import { Loader2 } from "lucide-react";
 import CreateCollectionForm from "./create-collection-form";

@@ -17,19 +17,86 @@ const querySchema = z.object({
 });
 
 const app = new Hono()
-  .get("/", SessionMiddleware, zValidator("query", querySchema), async (c) => {
+  .get("/", SessionMiddleware, async (c) => {
     const user = c.get("user");
-    const { category, status } = c.req.valid("query");
 
     if (!user) {
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    let books: Book[] = [];
+    const books = await prisma.book.findMany({
+      where: {
+        uploader: {
+          id: user.id,
+        },
+      },
+      orderBy: { uploadedAt: "desc" },
+    });
 
-    if (category) {
-      if (category === "all") {
-        // Fetch all books if category is "all"
+    if (!books) {
+      return c.json({ error: "No books found" }, 404);
+    }
+
+    return c.json({ data: books });
+  })
+  .get(
+    "/filter",
+    SessionMiddleware,
+    zValidator("query", querySchema),
+    async (c) => {
+      const user = c.get("user");
+      const { category, status } = c.req.valid("query");
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      let books: Book[] = [];
+
+      if (category) {
+        if (category === "all") {
+          // Fetch all books if category is "all"
+          books = await prisma.book.findMany({
+            where: {
+              uploader: {
+                id: user.id,
+              },
+            },
+            orderBy: { uploadedAt: "desc" },
+          });
+        } else {
+          const normalizedCategory = normalizeCategory(category);
+
+          // Fetch all books uploaded by the user
+          const allBooks = await prisma.book.findMany({
+            where: {
+              uploader: {
+                id: user.id,
+              },
+            },
+            orderBy: { uploadedAt: "desc" },
+          });
+
+          // Filter books by normalized category
+          books = allBooks.filter((book) =>
+            book.categories.some(
+              (cat) => normalizeCategory(cat) === normalizedCategory,
+            ),
+          );
+        }
+      } else if (status) {
+        // Fetch books by status
+        books = await prisma.book.findMany({
+          where: {
+            uploader: {
+              id: user.id,
+            },
+            status,
+          },
+          orderBy: { uploadedAt: "desc" },
+        });
+      } else {
+        // If neither category nor status is provided, return all books
         books = await prisma.book.findMany({
           where: {
             uploader: {
@@ -38,55 +105,15 @@ const app = new Hono()
           },
           orderBy: { uploadedAt: "desc" },
         });
-      } else {
-        const normalizedCategory = normalizeCategory(category);
-
-        // Fetch all books uploaded by the user
-        const allBooks = await prisma.book.findMany({
-          where: {
-            uploader: {
-              id: user.id,
-            },
-          },
-          orderBy: { uploadedAt: "desc" },
-        });
-
-        // Filter books by normalized category
-        books = allBooks.filter((book) =>
-          book.categories.some(
-            (cat) => normalizeCategory(cat) === normalizedCategory,
-          ),
-        );
       }
-    } else if (status) {
-      // Fetch books by status
-      books = await prisma.book.findMany({
-        where: {
-          uploader: {
-            id: user.id,
-          },
-          status,
-        },
-        orderBy: { uploadedAt: "desc" },
-      });
-    } else {
-      // If neither category nor status is provided, return all books
-      books = await prisma.book.findMany({
-        where: {
-          uploader: {
-            id: user.id,
-          },
-        },
-        orderBy: { uploadedAt: "desc" },
-      });
-    }
 
-    if (!books.length) {
-      return c.json({ error: "No books found", data: [] }, 404);
-    }
+      if (!books.length) {
+        return c.json({ error: "No books found", data: [] }, 404);
+      }
 
-    return c.json({ data: books });
-  })
+      return c.json({ data: books });
+    },
+  )
   .get("/:bookId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { bookId } = c.req.param();
