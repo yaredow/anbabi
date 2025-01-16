@@ -155,7 +155,7 @@ const app = new Hono()
       return c.json({ message: "Books are added to collection" });
     },
   )
-  .delete("/collections/:collectionId", SessionMiddleware, async (c) => {
+  .delete("/:collectionId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { collectionId } = c.req.param();
 
@@ -216,6 +216,23 @@ const app = new Hono()
         },
       },
     });
+
+    const bookCount = await prisma.collection.count({
+      where: {
+        id: collectionId,
+        books: {
+          some: {},
+        },
+      },
+    });
+
+    if (bookCount === 0) {
+      await prisma.collection.delete({
+        where: {
+          id: collectionId,
+        },
+      });
+    }
 
     return c.json({ message: "Book removed from collection successfully" });
   })

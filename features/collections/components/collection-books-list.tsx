@@ -2,8 +2,11 @@
 
 import { FaCirclePlus } from "react-icons/fa6";
 import { MoreHorizontal } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,22 +15,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collection";
-import { useCollectionId } from "../hooks/useCollectionId";
-import { useQueryClient } from "@tanstack/react-query";
-import { useGetCollection } from "../api/use-get-collection";
-import AddBooksToCollection from "./add-books-to-collection";
+
 import { useAddBooksToCollectionModal } from "../hooks/use-add-books-to-collection-modal";
+import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collection";
+import { useGetCollection } from "../api/use-get-collection";
+import { useCollectionId } from "../hooks/useCollectionId";
 
 export default function CollectionBooksList() {
   const queryClient = useQueryClient();
   const collectionId = useCollectionId();
+  const router = useRouter();
 
   const { open } = useAddBooksToCollectionModal();
   const { collection } = useGetCollection({ collectionId });
   const { removeBookFromCollection, isPending } = useRemoveBookFromCollection();
 
   const handleRemoveBook = (bookId: string) => {
+    const lastBook = collection?.books.length === 1;
+
     removeBookFromCollection(
       { collectionId, bookId },
       {
@@ -35,6 +40,10 @@ export default function CollectionBooksList() {
           queryClient.invalidateQueries({
             queryKey: ["collection", collectionId],
           });
+          if (lastBook) {
+            queryClient.invalidateQueries({ queryKey: ["collections"] });
+            router.push("/");
+          }
         },
       },
     );

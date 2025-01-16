@@ -4,9 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 export const useDeleteCollection = () => {
   const { mutate: deleteCollection, isPending } = useMutation({
     mutationFn: async (collectionId: string) => {
-      const response = await client.api.collections["collections"][
-        ":collectionId"
-      ].$delete({
+      const response = await client.api.collections[":collectionId"].$delete({
         param: { collectionId },
       });
 
