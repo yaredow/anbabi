@@ -1,10 +1,9 @@
 "use client";
 
+import { FaCirclePlus } from "react-icons/fa6";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-import { Book } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,11 +17,13 @@ import { useCollectionId } from "../hooks/useCollectionId";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetCollection } from "../api/use-get-collection";
 import AddBooksToCollection from "./add-books-to-collection";
+import { useAddBooksToCollectionModal } from "../hooks/use-add-books-to-collection-modal";
 
 export default function CollectionBooksList() {
   const queryClient = useQueryClient();
   const collectionId = useCollectionId();
 
+  const { open } = useAddBooksToCollectionModal();
   const { collection } = useGetCollection({ collectionId });
   const { removeBookFromCollection, isPending } = useRemoveBookFromCollection();
 
@@ -43,7 +44,9 @@ export default function CollectionBooksList() {
     <>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">{collection?.name}</h2>
-        <AddBooksToCollection />
+        <Button variant="ghost" onClick={open}>
+          <FaCirclePlus />
+        </Button>
       </div>
 
       <ul className="space-y-4">
@@ -81,7 +84,7 @@ export default function CollectionBooksList() {
                   disabled={isPending}
                   onClick={() => handleRemoveBook(book.id)}
                 >
-                  Remove from collection
+                  Remove
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

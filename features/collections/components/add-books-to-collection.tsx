@@ -1,13 +1,12 @@
 "use client";
 
-import { FaCirclePlus } from "react-icons/fa6";
-
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -16,6 +15,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus, Check } from "lucide-react";
 import { Book } from "@prisma/client";
 import { useGetBooks } from "@/features/books/api/use-get-books";
+import { useAddBooksToCollection } from "../api/use-add-books-to-collection";
+import { useCollectionId } from "../hooks/useCollectionId";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
 
 const BookItem = ({
   book,
@@ -50,10 +53,22 @@ const BookItem = ({
   </div>
 );
 
-export default function AddBooksToCollection() {
-  const [selectedBooks, setSelectedBooks] = useState<Set<string>>(new Set());
+type AddBooksToCollectionProps = {
+  onClose: () => void;
+};
 
-  const { books, isPending } = useGetBooks();
+export default function AddBooksToCollection({
+  onClose,
+}: AddBooksToCollectionProps) {
+  const [selectedBooks, setSelectedBooks] = useState<Set<string>>(new Set());
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const collectionId = useCollectionId();
+  const queryClient = useQueryClient();
+
+  const { books, isPending: isGetBooksPending } = useGetBooks();
+  const { addBooksToCollection, isPending: isAddBookToCollectionPending } =
+    useAddBooksToCollection();
 
   const toggleBook = (bookId: string) => {
     setSelectedBooks((prev) => {
@@ -68,41 +83,55 @@ export default function AddBooksToCollection() {
   };
 
   const handleAddBooks = () => {
-    // Here you would typically send the selected books to your backend
-    console.log("Adding books:", Array.from(selectedBooks));
-    // Reset selection after adding
+    addBooksToCollection(
+      {
+        json: {
+          bookIds: Array.from(selectedBooks),
+        },
+        param: { collectionId },
+      },
+      {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries({
+            queryKey: ["collection", collectionId],
+          });
+          toast({
+            description: data.message,
+          });
+          onClose();
+        },
+      },
+    );
     setSelectedBooks(new Set());
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost">
-          <FaCirclePlus className="h-4 w-4" />
+    <div className="sm:max-w-[500px] p-4">
+      <div className="p-4">
+        <h3 className="text-lg font-semibold">Add Books to Collection</h3>
+      </div>
+
+      <div className="mt-4 h-[400px] overflow-auto">
+        {books?.map((book) => (
+          <BookItem
+            key={book.id}
+            book={book}
+            isSelected={selectedBooks.has(book.id)}
+            onToggle={() => toggleBook(book.id)}
+          />
+        ))}
+      </div>
+      <div className="flex items-center justify-end gap-2">
+        <Button variant="secondary" onClick={onClose}>
+          Cancel
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Add Books to Collection</DialogTitle>
-        </DialogHeader>
-        <ScrollArea className="mt-4 h-[400px] pr-4">
-          {books?.map((book) => (
-            <BookItem
-              key={book.id}
-              book={book}
-              isSelected={selectedBooks.has(book.id)}
-              onToggle={() => toggleBook(book.id)}
-            />
-          ))}
-        </ScrollArea>
         <Button
           onClick={handleAddBooks}
-          className="mt-4"
-          disabled={selectedBooks.size === 0}
+          disabled={isAddBookToCollectionPending || selectedBooks.size === 0}
         >
           Add Books ({selectedBooks.size})
         </Button>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }

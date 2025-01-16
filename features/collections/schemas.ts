@@ -44,3 +44,7 @@ export const UpdateCollectionSchema = z.object({
 });
 
 export type UpdateCollectionData = z.infer<typeof UpdateCollectionSchema>;
+
+export const AddBooksToCollectionSchema = z.object({
+  bookIds: z.array(z.string().cuid()),
+});

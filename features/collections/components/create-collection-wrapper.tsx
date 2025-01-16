@@ -1,8 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useGetBooks } from "@/features/books/api/use-filter-books";
 import { StatusType } from "@/features/books/schemas";
 import { Loader2 } from "lucide-react";
 import CreateCollectionForm from "./create-collection-form";
+import { useGetBooks } from "@/features/books/api/use-get-books";
 
 type CreateCollectionWrapperProps = {
   onCancel: () => void;
@@ -11,10 +11,7 @@ type CreateCollectionWrapperProps = {
 export default function CreateCollectionWrapper({
   onCancel,
 }: CreateCollectionWrapperProps) {
-  const { books, isPending } = useGetBooks({
-    status: StatusType.TO_READ,
-    category: "all",
-  });
+  const { books, isPending } = useGetBooks();
 
   if (isPending) {
     <Card className="w-full h-[714px] border-none shadow-none">
