@@ -3,11 +3,11 @@ import { useMutation } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.collections)[":collectionId"]["$patch"]
+  (typeof client.api.collections)["collections"][":collectionId"]["$patch"]
 >;
 
 type RequestType = InferRequestType<
-  (typeof client.api.collections)[":collectionId"]["$patch"]
+  (typeof client.api.collections)["collections"][":collectionId"]["$patch"]
 >;
 
 export const useUpdateCollection = () => {
@@ -17,7 +17,9 @@ export const useUpdateCollection = () => {
     RequestType
   >({
     mutationFn: async ({ json, param }) => {
-      const response = await client.api.collections[":collectionId"].$patch({
+      const response = await client.api.collections["collections"][
+        ":collectionId"
+      ].$patch({
         json,
         param,
       });

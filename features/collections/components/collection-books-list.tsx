@@ -28,7 +28,6 @@ export default function CollectionBooksList({
     <>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold">{collectionName}</h2>
-        <RiAddCircleFill className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition" />
       </div>
 
       <ul className="space-y-4">

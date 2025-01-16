@@ -108,7 +108,7 @@ const app = new Hono()
       return c.json({ data: collection });
     },
   )
-  .delete("/:collectionId", SessionMiddleware, async (c) => {
+  .delete("/collections/:collectionId", SessionMiddleware, async (c) => {
     const user = c.get("user");
     const { collectionId } = c.req.param();
 
@@ -130,8 +130,54 @@ const app = new Hono()
 
     return c.json({ message: "Collection deleted successfully" });
   })
+  .delete(
+    "/collections/:collectionId/books/:booksId",
+    SessionMiddleware,
+    async (c) => {
+      const user = c.get("user");
+      const { collectionId, booksId } = c.req.param();
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const existingCollection = await prisma.collection.findUnique({
+        where: {
+          id: collectionId,
+        },
+        include: {
+          books: true,
+        },
+      });
+
+      if (!existingCollection) {
+        return c.json({ error: "Collection not found" }, 404);
+      }
+
+      const bookExistsInCollection = existingCollection.books.some(
+        (book) => book.id === booksId,
+      );
+
+      if (!bookExistsInCollection) {
+        return c.json({ error: "Book not found in the collection" }, 404);
+      }
+
+      await prisma.collection.update({
+        where: {
+          id: collectionId,
+        },
+        data: {
+          books: {
+            disconnect: { id: booksId },
+          },
+        },
+      });
+
+      return c.json({ message: "Book removed from collection successfully" });
+    },
+  )
   .patch(
-    "/:collectionId",
+    "/collections/:collectionId",
     SessionMiddleware,
     zValidator("json", UpdateCollectionSchema),
     async (c) => {

@@ -55,6 +55,7 @@ export default function UpdatedCollectionForm({
   const form = useForm<UpdateCollectionData>({
     defaultValues: {
       ...initialValue,
+      books: books.map((book) => book.id),
       description: initialValue.description || "",
       image: initialValue.image || undefined,
     },
