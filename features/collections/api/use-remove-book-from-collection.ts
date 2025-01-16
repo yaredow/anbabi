@@ -1,17 +1,14 @@
 import { client } from "@/lib/hono";
 import { useMutation } from "@tanstack/react-query";
 
-type UseRemoveBookFromCollectionParams = {
+type RequestType = {
   collectionId: string;
   bookId: string;
 };
 
-export const useRemoveBookFromCollection = ({
-  collectionId,
-  bookId,
-}: UseRemoveBookFromCollectionParams) => {
+export const useRemoveBookFromCollection = () => {
   const { mutate: removeBookFromCollection, isPending } = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ collectionId, bookId }: RequestType) => {
       const response = await client.api.collections["collections"][
         ":collectionId"
       ]["books"][":bookId"].$delete({ param: { collectionId, bookId } });

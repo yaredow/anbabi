@@ -14,6 +14,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collection";
+import { useCollectionId } from "../hooks/useCollectionId";
+import { useQueryClient } from "@tanstack/react-query";
 
 type CollectionBooksListProps = {
   books: Book[];
@@ -24,6 +27,21 @@ export default function CollectionBooksList({
   books,
   collectionName,
 }: CollectionBooksListProps) {
+  const queryClient = useQueryClient();
+  const collectionId = useCollectionId();
+  const { removeBookFromCollection, isPending } = useRemoveBookFromCollection();
+
+  const handleRemoveBook = (bookId: string) => {
+    removeBookFromCollection(
+      { collectionId, bookId },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["books", collectionId] });
+        },
+      },
+    );
+  };
+
   return (
     <>
       <div className="flex justify-between items-center mb-6">
@@ -61,7 +79,7 @@ export default function CollectionBooksList({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => {}}>
+                <DropdownMenuItem onClick={() => handleRemoveBook(book.id)}>
                   Remove from collection
                 </DropdownMenuItem>
               </DropdownMenuContent>
