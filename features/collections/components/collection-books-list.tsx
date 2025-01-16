@@ -41,34 +41,28 @@ export default function CollectionBooksList() {
   const handleRemoveBook = (bookId: string) => {
     const lastBook = collection?.books.length === 1;
 
+    const onSuccess = () => {
+      queryClient
+        .invalidateQueries({ queryKey: ["collection", collectionId] })
+        .then(() => {
+          if (lastBook) {
+            queryClient
+              .invalidateQueries({ queryKey: ["collections"] })
+              .then(() => {
+                window.location.href = "/";
+              });
+          }
+        });
+    };
+
     if (lastBook) {
       confirm().then((confirmed) => {
         if (confirmed) {
-          removeBookFromCollection(
-            { collectionId, bookId },
-            {
-              onSuccess: () => {
-                queryClient.invalidateQueries({
-                  queryKey: ["collection", collectionId],
-                });
-                queryClient.invalidateQueries({ queryKey: ["collections"] });
-                router.push("/");
-              },
-            },
-          );
+          removeBookFromCollection({ collectionId, bookId }, { onSuccess });
         }
       });
     } else {
-      removeBookFromCollection(
-        { collectionId, bookId },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: ["collection", collectionId],
-            });
-          },
-        },
-      );
+      removeBookFromCollection({ collectionId, bookId }, { onSuccess });
     }
   };
 

@@ -62,6 +62,7 @@ const app = new Hono()
       }
 
       let uploadResult;
+
       if (image) {
         try {
           let imageBuffer;

@@ -58,6 +58,8 @@ export default function BookReader() {
     setSelectedColor,
   } = useAnnotationStore();
 
+  console.log({ selections });
+
   let themeStyles;
 
   switch (theme) {

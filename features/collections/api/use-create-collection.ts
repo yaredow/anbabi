@@ -2,7 +2,7 @@ import { client } from "@/lib/hono";
 import { useMutation } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
 
-type ResponseType = InferResponseType<typeof client.api.collections.$post>;
+type ResponseType = InferResponseType<typeof client.api.collections.$post, 200>;
 
 type RequestType = InferRequestType<typeof client.api.collections.$post>;
 
@@ -25,7 +25,8 @@ export const useCreateCollection = () => {
       }
 
       const data = await response.json();
-      return data;
+
+      return data.data;
     },
   });
 

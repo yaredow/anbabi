@@ -28,6 +28,7 @@ import {
 
 import { CreateCollectionData, CreateCollectionSchema } from "../schemas";
 import { useCreateCollection } from "../api/use-create-collection";
+import { useRouter } from "next/navigation";
 
 type CreateCollectionFormProps = {
   onCancel?: () => void;
@@ -41,6 +42,7 @@ export default function CreateCollectionForm({
   const inputRef = useRef<HTMLInputElement>(null);
   const { createCollection, isPending } = useCreateCollection();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const form = useForm<CreateCollectionData>({
     resolver: zodResolver(CreateCollectionSchema),
@@ -61,16 +63,14 @@ export default function CreateCollectionForm({
         },
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           queryClient.invalidateQueries({ queryKey: ["collections"] });
           queryClient.invalidateQueries({ queryKey: ["collection"] });
           toast({
             description: "Collection created successfully",
           });
           form.reset();
-          if (onCancel) {
-            onCancel();
-          }
+          router.push(`/collections/${data}`);
         },
         onError: (error) => {
           toast({
