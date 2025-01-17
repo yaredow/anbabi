@@ -42,17 +42,11 @@ export default function CollectionBooksList() {
     const lastBook = collection?.books.length === 1;
 
     const onSuccess = () => {
-      queryClient
-        .invalidateQueries({ queryKey: ["collection", collectionId] })
-        .then(() => {
-          if (lastBook) {
-            queryClient
-              .invalidateQueries({ queryKey: ["collections"] })
-              .then(() => {
-                window.location.href = "/";
-              });
-          }
-        });
+      queryClient.invalidateQueries({ queryKey: ["collection", collectionId] });
+      if (lastBook) {
+        queryClient.invalidateQueries({ queryKey: ["collections"] });
+        window.location.href = "/";
+      }
     };
 
     if (lastBook) {

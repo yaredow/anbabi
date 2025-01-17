@@ -10,11 +10,18 @@ import CollectionSwitcher from "@/features/collections/components/collection-swi
 import CollectionBooksList from "@/features/collections/components/collection-books-list";
 
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 type IParams = {
   params: Promise<{ collectionId: string }>;
 };
 export async function generateMetadata({ params }: IParams) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) redirect("/sign-in");
+
   const { collectionId } = await params;
   const collection = await getCollection(collectionId);
 
