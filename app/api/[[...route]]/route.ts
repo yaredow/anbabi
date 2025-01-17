@@ -1,8 +1,9 @@
-import { Hono } from "hono";
 import { handle } from "hono/vercel";
-import bookRoute from "@/features/books/server/route";
-import assistanceRute from "@/features/assistants/server/route";
+import { Hono } from "hono";
+
 import collectionRoute from "@/features/collections/server/route";
+import assistanceRute from "@/features/assistants/server/route";
+import bookRoute from "@/features/books/server/route";
 
 const app = new Hono().basePath("/api");
 

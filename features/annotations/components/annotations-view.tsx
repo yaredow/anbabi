@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   ChevronLeft,
   Share2,
@@ -9,6 +8,7 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAnnotationStore } from "../store/annotations-store";
 
 interface Annotation {
   id: string;
@@ -30,6 +30,8 @@ export function AnnotationsView({
   chapter,
   count,
 }: AnnotationsViewProps) {
+  const { annotations: anno } = useAnnotationStore();
+
   return (
     <div className="flex md:h-[500px] flex-col justify-end">
       <div className="flex items-center justify-between p-4 border-b border-gray-800">

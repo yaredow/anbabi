@@ -1,6 +1,5 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Inter, Roboto } from "next/font/google";
-import { Metadata } from "next";
+import { Roboto } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 

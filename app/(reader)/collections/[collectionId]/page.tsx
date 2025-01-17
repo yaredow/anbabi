@@ -1,10 +1,7 @@
-import { ArrowLeft, PencilIcon, PlusCircle } from "lucide-react";
+import { ArrowLeft, PencilIcon } from "lucide-react";
 import Link from "next/link";
 
-import {
-  getBooksWithCollectionId,
-  getCollection,
-} from "@/features/collections/queries";
+import { getCollection } from "@/features/collections/queries";
 
 import CollectionSwitcher from "@/features/collections/components/collection-switcher";
 import CollectionBooksList from "@/features/collections/components/collection-books-list";
@@ -18,10 +15,6 @@ type IParams = {
   params: Promise<{ collectionId: string }>;
 };
 export async function generateMetadata({ params }: IParams) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session) redirect("/sign-in");
-
   const { collectionId } = await params;
   const collection = await getCollection(collectionId);
 
@@ -31,6 +24,10 @@ export async function generateMetadata({ params }: IParams) {
 }
 
 export default async function PageWithCollectionId({ params }: IParams) {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) redirect("/sign-in");
+
   const { collectionId } = await params;
 
   return (

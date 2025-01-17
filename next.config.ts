@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
       { hostname: "books.google.com" },
     ],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;

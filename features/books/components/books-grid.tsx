@@ -9,14 +9,16 @@ import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 import { useFilterBooks } from "../api/use-filter-books";
 import { StatusType } from "../schemas";
 import BookCard from "./book-card";
+import { useCategoryName } from "../hooks/use-category-name";
 
 interface BooksGridProps {
-  categoryName?: string;
   status?: string;
 }
 
-export function BooksGrid({ categoryName, status }: BooksGridProps) {
+export function BooksGrid({ status }: BooksGridProps) {
   const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
+
+  const categoryName = useCategoryName();
 
   const { books, isPending, refetch } = useFilterBooks({
     status: mappedStatus as StatusType,

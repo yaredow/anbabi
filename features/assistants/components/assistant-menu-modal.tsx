@@ -1,6 +1,7 @@
 "use client";
 
-import ResponsiveAssistantMenuModal from "./responsive-assistant-menu-modal";
+import ResponsiveMenuModal from "@/components/responsive-menu-modal";
+
 import { useAssistantMenuModal } from "../hooks/use-assistant-menu-modal";
 import AssistantMenu from "./assistant-menu";
 
@@ -16,12 +17,12 @@ export default function AssistantMenuModal({
   const { isOpen, setIsOpen, close } = useAssistantMenuModal();
 
   return (
-    <ResponsiveAssistantMenuModal open={isOpen} onOpenChange={setIsOpen}>
+    <ResponsiveMenuModal open={isOpen} onOpenChange={setIsOpen}>
       <AssistantMenu
         selectedCfiRange={selectedCfiRange}
         onClose={close}
         handleHighlightClick={handleHighlightClick}
       />
-    </ResponsiveAssistantMenuModal>
+    </ResponsiveMenuModal>
   );
 }

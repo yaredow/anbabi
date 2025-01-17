@@ -1,11 +1,10 @@
 import React, { ReactElement, useState } from "react";
-import { X, Maximize2, Minimize2, Settings, NotebookIcon } from "lucide-react";
+import { Maximize2, Minimize2, Settings, NotebookIcon } from "lucide-react";
 import { useMedia } from "react-use";
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useToolBarModal } from "@/hooks/use-tool-bar-modal";
 
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,11 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useBookStore } from "@/features/books/store/book-store";
-import { AnnotationsView } from "@/features/annotations/components/annotations-view";
-import { SAMPLE_ANNOTATIONS } from "@/features/annotations/constants";
-import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 import ReaderMenu from "@/features/books/components/reader-menu";
-import { RenditionRef } from "@/features/books/types";
 import { Sheet, SheetContent, SheetOverlay } from "./ui/sheet";
 
 interface ResponsiveModalProps {
@@ -36,7 +31,6 @@ export default function ResponsiveReaderModal({
   const { open: openToolBar } = useToolBarModal();
   const [isMaximized, setIsMaximized] = useState(false);
   const { theme } = useBookStore();
-  const { setAnnotationOpen } = useAnnotationStore();
 
   const handleMaximizeToggle = () => setIsMaximized((prev) => !prev);
 
@@ -65,7 +59,6 @@ export default function ResponsiveReaderModal({
             <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
               <Button
                 variant="ghost"
-                onClick={() => setAnnotationOpen((prev) => !prev)}
                 className={`${theme === "dark" && "text-white"}`}
               >
                 <NotebookIcon className="h-5 w-5" />
