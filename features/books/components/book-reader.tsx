@@ -213,7 +213,7 @@ export default function BookReader() {
             updateTheme(rendition, theme);
           }}
           tocChanged={(toc) => (tocRef.current = toc)}
-          readerStyles={{ ...ownStyle, ...themeStyles }}
+          readerStyles={themeStyles}
           epubOptions={{
             allowPopups: true,
             allowScriptedContent: true,
