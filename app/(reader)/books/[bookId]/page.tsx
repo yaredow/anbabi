@@ -1,9 +1,8 @@
-import BookInformation from "@/features/books/components/book-information";
-import { auth } from "@/lib/auth";
-import { Loader2 } from "lucide-react";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+
+import BookInformation from "@/features/books/components/book-information";
 
 type BookWithIdProps = {
   params: Promise<{ bookId: string }>;
