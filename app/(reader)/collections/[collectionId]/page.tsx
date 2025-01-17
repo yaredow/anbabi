@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 type IParams = {
   params: Promise<{ collectionId: string }>;
 };
+
 export async function generateMetadata({ params }: IParams) {
   const { collectionId } = await params;
   const collection = await getCollection(collectionId);

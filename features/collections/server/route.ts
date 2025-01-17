@@ -113,6 +113,10 @@ const app = new Hono()
         },
       });
 
+      if (!collection) {
+        return c.json({ error: "Failed to create collection" }, 500);
+      }
+
       return c.json({ data: collection });
     },
   )

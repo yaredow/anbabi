@@ -35,6 +35,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { toast } from "@/hooks/use-toast";
 
 export function NavCollections() {
   const { open } = useCreateCollectionModal();
@@ -55,7 +56,16 @@ export function NavCollections() {
     const ok = await confirm();
 
     if (ok) {
-      deleteCollection(collectionId);
+      deleteCollection(collectionId, {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+        onError: (error) => {
+          toast({
+            description: error.message || "Failed to delete collection",
+          });
+        },
+      });
     }
   };
 

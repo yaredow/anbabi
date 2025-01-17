@@ -1,20 +1,19 @@
-import UpdatedCollectionForm from "@/features/collections/components/updated-collection-form";
-import {
-  getBooksWithCollectionId,
-  getCollection,
-} from "@/features/collections/queries";
-import { auth } from "@/lib/auth";
-import { Collection } from "@prisma/client";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { headers } from "next/headers";
+import { Suspense } from "react";
 
-type CollectionSettingsPageParams = {
+import { auth } from "@/lib/auth";
+
+import CollectionSetting from "@/features/collections/components/collection-setting";
+
+type CollectionSettingsPageProps = {
   params: Promise<{ collectionId: string }>;
 };
 
 export default async function CollectionSettingsPage({
   params,
-}: CollectionSettingsPageParams) {
+}: CollectionSettingsPageProps) {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
@@ -23,15 +22,13 @@ export default async function CollectionSettingsPage({
 
   const { collectionId } = await params;
 
-  const initialValues = await getCollection(collectionId);
-  const books = await getBooksWithCollectionId(collectionId);
-
   return (
-    <div className="w-full lg:max-w-xl mx-auto">
-      <UpdatedCollectionForm
-        initialValue={initialValues as Collection}
-        books={books || []}
-      />
-    </div>
+    <Suspense
+      fallback={
+        <Loader2 className="flex items-center justify-center mx-auto animate-spin" />
+      }
+    >
+      <CollectionSetting collectionId={collectionId} />
+    </Suspense>
   );
 }

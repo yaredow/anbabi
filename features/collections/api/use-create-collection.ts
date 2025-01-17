@@ -26,7 +26,7 @@ export const useCreateCollection = () => {
 
       const data = await response.json();
 
-      return data.data;
+      return data;
     },
   });
 

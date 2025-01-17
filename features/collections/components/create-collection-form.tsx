@@ -70,7 +70,7 @@ export default function CreateCollectionForm({
             description: "Collection created successfully",
           });
           form.reset();
-          router.push(`/collections/${data}`);
+          router.push(`/collections/${data.data.id}`);
         },
         onError: (error) => {
           toast({
