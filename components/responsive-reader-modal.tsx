@@ -19,6 +19,7 @@ import { SAMPLE_ANNOTATIONS } from "@/features/annotations/constants";
 import { useAnnotationStore } from "@/features/annotations/store/annotations-store";
 import ReaderMenu from "@/features/books/components/reader-menu";
 import { RenditionRef } from "@/features/books/types";
+import { Sheet, SheetContent, SheetOverlay } from "./ui/sheet";
 
 interface ResponsiveModalProps {
   open: boolean;
@@ -69,12 +70,6 @@ export default function ResponsiveReaderModal({
               >
                 <NotebookIcon className="h-5 w-5" />
               </Button>
-              <AnnotationsView
-                onClose={() => setAnnotationOpen(false)}
-                annotations={SAMPLE_ANNOTATIONS}
-                chapter="Chapter 1"
-                count={SAMPLE_ANNOTATIONS.length}
-              />
               <Button
                 variant="link"
                 onClick={openToolBar}
@@ -111,23 +106,11 @@ export default function ResponsiveReaderModal({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent
-        id="reader-modal"
-        className="h-screen p-0 overflow-hidden border-none fixed"
-      >
-        <div className="absolute top-2 right-2 z-10">
-          <Button
-            onClick={() => onOpenChange(false)}
-            variant="ghost"
-            size="icon"
-            className="text-red-500 hover:text-red-700"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="h-full overflow-y-auto pt-10">{children}</div>
-      </DrawerContent>
-    </Drawer>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetOverlay />
+      <SheetContent className="w-full h-screen p-0 border-none overflow-y-auto hide-scrollbar">
+        {children}
+      </SheetContent>
+    </Sheet>
   );
 }

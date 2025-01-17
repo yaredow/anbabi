@@ -9,13 +9,6 @@ import {
   Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-} from "@/components/ui/dropdown-menu";
-
-import { useAnnotationStore } from "../store/annotations-store";
 
 interface Annotation {
   id: string;
@@ -30,31 +23,17 @@ interface AnnotationsViewProps {
   annotations: Annotation[];
   chapter: string;
   count: number;
-  onClose: () => void;
 }
 
 export function AnnotationsView({
   annotations,
   chapter,
   count,
-  onClose,
 }: AnnotationsViewProps) {
-  const [isMobile, setIsMobile] = useState(false);
-  const { isAnnotationOpen } = useAnnotationStore();
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const content = (
-    <div className="flex flex-col h-full bg-black text-white">
+  return (
+    <div className="flex md:h-[500px] flex-col justify-end">
       <div className="flex items-center justify-between p-4 border-b border-gray-800">
-        <Button variant="ghost" size="icon" onClick={onClose}>
+        <Button variant="ghost" size="icon">
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-xl font-medium">Annotations</h1>
@@ -123,23 +102,5 @@ export function AnnotationsView({
         </div>
       </div>
     </div>
-  );
-
-  if (isMobile) {
-    return (
-      <Sheet open={isAnnotationOpen} onOpenChange={onClose}>
-        <SheetContent side="bottom" className="h-[100dvh] p-0">
-          {content}
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  return (
-    <DropdownMenu open={isAnnotationOpen} onOpenChange={onClose}>
-      <DropdownMenuContent align="end" className="w-[400px] h-[600px] p-0">
-        {content}
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 }
