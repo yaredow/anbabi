@@ -58,7 +58,7 @@ export default function BookReader() {
     setSelectedColor,
   } = useAnnotationStore();
 
-  console.log({ selections });
+  console.log({ bookUrl: book?.bookUrl });
 
   let themeStyles;
 
