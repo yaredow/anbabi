@@ -1,4 +1,6 @@
 import { ArrowLeft, PencilIcon } from "lucide-react";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 import { getCollection } from "@/features/collections/queries";
@@ -8,8 +10,6 @@ import CollectionBooksList from "@/features/collections/components/collection-bo
 
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 
 type IParams = {
   params: Promise<{ collectionId: string }>;

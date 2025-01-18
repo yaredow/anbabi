@@ -8,12 +8,10 @@ import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import { useGetBook } from "../api/use-get-book";
 import { useEffect } from "react";
 import { useBookStore } from "../store/book-store";
+import { useBookId } from "../hooks/use-book-id";
 
-type BookInfoProps = {
-  bookId: string;
-};
-
-export default function BookInformation({ bookId }: BookInfoProps) {
+export default function BookInformation() {
+  const bookId = useBookId();
   const { book, isPending } = useGetBook({ bookId });
   const { open } = useBookReaderModal();
   const { setBookId } = useBookStore();

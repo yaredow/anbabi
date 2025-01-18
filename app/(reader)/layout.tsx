@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import CreateCollectionModal from "@/features/collections/components/create-collection-modal";
 import AddBooksToCollectionModal from "@/features/collections/components/add-books-to-collection-modal";
 import AnnotaionModal from "@/features/annotations/components/annotations-modal";
+import { Suspense } from "react";
 
 type ReaderLayoutProps = {
   children: React.ReactNode;
@@ -24,7 +25,9 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
         <AppSidebar />
         <div className="flex-1">
           <div className="mx-auto max-w-screen-2xl h-screen">
-            <Header />
+            <Suspense>
+              <Header />
+            </Suspense>
             <main className="h-full p-4 flex flex-col">{children}</main>
           </div>
         </div>
