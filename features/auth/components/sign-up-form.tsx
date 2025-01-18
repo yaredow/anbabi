@@ -60,7 +60,7 @@ export default function SignUpForm({
         toast({
           description: "Account created successfully.",
         });
-        router.push("/post-signup");
+        router.push("/");
       },
     });
   };
