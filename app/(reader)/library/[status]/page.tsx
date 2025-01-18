@@ -3,10 +3,16 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default async function PageWithStatus() {
+type PageWithStatusProps = {
+  params: Promise<{ status: string }>;
+};
+
+export default async function PageWithStatus({ params }: PageWithStatusProps) {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) redirect("/sign-in");
 
-  return <BooksGrid />;
+  const { status } = await params;
+
+  return <BooksGrid status={status} />;
 }

@@ -13,8 +13,12 @@ import { useBookStatus } from "../hooks/use-book-status";
 import { StatusType } from "../schemas";
 import BookCard from "./book-card";
 
-export function BooksGrid() {
-  const status = useBookStatus();
+type BooksGridType = {
+  status: string;
+};
+
+export function BooksGrid({ status }: BooksGridType) {
+  console.log({ status });
   const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
 
   const categoryName = useCategoryName();

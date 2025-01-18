@@ -92,7 +92,7 @@ export function NavMain() {
                         asChild
                       >
                         <Link
-                          href={`/category/${library.status.toLowerCase()}`}
+                          href={`/library/${library.status.toLowerCase()}`}
                           className="flex items-center justify-between"
                         >
                           <span>{library.name}</span>
