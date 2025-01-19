@@ -44,7 +44,6 @@ export function NavCollections() {
   const { collections, isPending } = useGetCollections();
   const { deleteCollection } = useDeleteCollection();
   const collectionId = useCollectionId();
-  console.log("collectionId", collectionId);
 
   const [ConfirmationDialog, confirm] = useConfirm({
     title: "Delete collection",

@@ -2,7 +2,6 @@
 
 import { useMedia } from "react-use";
 import { Menu } from "lucide-react";
-import * as React from "react";
 import Image from "next/image";
 
 import { UserButton } from "@/features/auth/components/user-button";
@@ -19,6 +18,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { NavCollections } from "./nav-collections";
 import { Button } from "./ui/button";
 import { NavMain } from "./nav-main";
+import { Suspense } from "react";
 
 const BookReaderSidebarContent = ({
   ...props
@@ -30,7 +30,9 @@ const BookReaderSidebarContent = ({
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        <NavCollections />
+        <Suspense fallback={<div>Loading...</div>}>
+          <NavCollections />
+        </Suspense>
       </SidebarContent>
       <SidebarFooter>
         <UserButton />

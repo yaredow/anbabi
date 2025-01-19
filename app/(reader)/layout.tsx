@@ -16,11 +16,13 @@ type ReaderLayoutProps = {
 export default function ReaderLayout({ children }: ReaderLayoutProps) {
   return (
     <div className="flex w-full h-full">
-      <UploadBookModal />
-      <BookReaderModal />
-      <CreateCollectionModal />
-      <AddBooksToCollectionModal />
-      <AnnotaionModal />
+      <Suspense fallback={<div>Loading...</div>}>
+        <UploadBookModal />
+        <BookReaderModal />
+        <CreateCollectionModal />
+        <AddBooksToCollectionModal />
+        <AnnotaionModal />
+      </Suspense>
       <SidebarProvider>
         <AppSidebar />
         <div className="flex-1">

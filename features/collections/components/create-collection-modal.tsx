@@ -1,6 +1,5 @@
 "use client";
 
-import CreateCollectionForm from "./create-collection-form";
 import ResponsiveModal from "@/components/responsive-modal";
 
 import { useCreateCollectionModal } from "../hooks/use-create-collection-modal";

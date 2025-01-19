@@ -8,8 +8,6 @@ import QueryProviders from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
-import { Suspense } from "react";
-import { Loader2 } from "lucide-react";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -38,15 +36,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProviders>
-            <Suspense
-              fallback={
-                <Loader2 className="flex items-center justify-center mx-auto animate-spin" />
-              }
-            >
-              <NuqsAdapter>
-                <main>{children}</main>
-              </NuqsAdapter>
-            </Suspense>
+            <NuqsAdapter>
+              <main>{children}</main>
+            </NuqsAdapter>
             <Toaster />
           </QueryProviders>
         </ThemeProvider>

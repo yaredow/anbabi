@@ -17,10 +17,10 @@ type ToolbarContentProps = {
   renditionRef: RenditionRef | undefined;
 };
 
-export const ToolBar: React.FC<ToolbarContentProps> = ({
+export default function ToolBar({
   renditionRef,
   onClose,
-}) => {
+}: ToolbarContentProps) {
   const {
     theme,
     setTheme,
@@ -177,4 +177,4 @@ export const ToolBar: React.FC<ToolbarContentProps> = ({
       )}
     </Tabs>
   );
-};
+}

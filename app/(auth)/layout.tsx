@@ -12,6 +12,7 @@ type AuthLayoutProps = {
 export default function AuthLayout({ children }: AuthLayoutProps) {
   const pathName = usePathname();
   const isSignin = pathName === "/sign-in";
+
   return (
     <main className="min-h-screen flex flex-col items-center justify-center overflow-hidden">
       <div className="w-full max-w-screen-2xl">

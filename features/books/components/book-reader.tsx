@@ -1,6 +1,6 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ReactReader, ReactReaderStyle } from "react-reader";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useMedia } from "react-use";
 
@@ -166,12 +166,14 @@ export default function BookReader() {
   return (
     <>
       <VisuallyHidden>
-        <ToolBarModal renditionRef={renditionRef} />
-        <AssistantMenuModal
-          selectedCfiRange={selectedCfiRange}
-          handleHighlightClick={handleHighlightClick}
-        />
-        <AssistantItemsModal selectedCfiRange={selectedCfiRange} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ToolBarModal renditionRef={renditionRef} />
+          <AssistantMenuModal
+            selectedCfiRange={selectedCfiRange}
+            handleHighlightClick={handleHighlightClick}
+          />
+          <AssistantItemsModal selectedCfiRange={selectedCfiRange} />
+        </Suspense>
       </VisuallyHidden>
 
       <div
