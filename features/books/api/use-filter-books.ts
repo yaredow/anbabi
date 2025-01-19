@@ -25,14 +25,13 @@ export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
       }
 
       const data = await response.json();
-      return data.data;
+      return data.data || [];
     },
     select: (data) =>
       data.map((book) => ({
         ...book,
         uploadedAt: new Date(book?.uploadedAt),
       })),
-    enabled: !!category || !!status,
   });
 
   return { books, isPending, refetch };
