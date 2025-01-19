@@ -14,7 +14,7 @@ export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
     isPending,
     refetch,
   } = useQuery({
-    queryKey: ["books", category, status],
+    queryKey: ["filteredBooks", category, status],
     queryFn: async () => {
       const response = await client.api.books.filter.$get({
         query: { category, status },

@@ -9,7 +9,6 @@ import BooksGridSkeleton from "@/components/skeletons/books-grid-skeleton";
 
 import { useFilterBooks } from "../api/use-filter-books";
 import { useCategoryName } from "../hooks/use-category-name";
-import { useBookStatus } from "../hooks/use-book-status";
 import { StatusType } from "../schemas";
 import BookCard from "./book-card";
 
@@ -18,7 +17,6 @@ type BooksGridType = {
 };
 
 export function BooksGrid({ status }: BooksGridType) {
-  console.log({ status });
   const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
 
   const categoryName = useCategoryName();
@@ -29,7 +27,7 @@ export function BooksGrid({ status }: BooksGridType) {
   });
 
   const debounceRefetch = useCallback(
-    debounce(() => refetch(), 400),
+    debounce(() => refetch(), 200),
     [refetch],
   );
 
