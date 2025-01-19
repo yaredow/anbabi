@@ -28,7 +28,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <div
           className={cn(
             "flex flex-col pt-4 max-w-3xl mx-auto items-center justify-center",
-            isSignin ? "md:pt-14" : "md:pt-12",
+            isSignin ? "md:pt-14" : "md:pt-10",
           )}
         >
           {children}
