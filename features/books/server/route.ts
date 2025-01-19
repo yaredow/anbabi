@@ -2,14 +2,14 @@ import { UploadApiResponse } from "cloudinary";
 import { Hono } from "hono";
 import { z } from "zod";
 
-import { zValidator } from "@hono/zod-validator";
 import { SessionMiddleware } from "@/lib/session-middleware";
+import { zValidator } from "@hono/zod-validator";
 import { normalizeCategory } from "@/lib/utils";
 import cloudinary from "@/lib/cloudinary";
+import { Book } from "@prisma/client";
 import prisma from "@/lib/prisma";
 
 import { BookSchema, StatusType } from "../schemas";
-import { Book } from "@prisma/client";
 
 const querySchema = z.object({
   category: z.string().optional(),
@@ -65,9 +65,8 @@ const app = new Hono()
             orderBy: { uploadedAt: "desc" },
           });
         } else {
-          const normalizedCategory = normalizeCategory(category);
-
           // Fetch all books uploaded by the user
+          const normalizedCategory = normalizeCategory(category);
           const allBooks = await prisma.book.findMany({
             where: {
               uploader: {

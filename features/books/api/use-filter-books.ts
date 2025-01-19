@@ -32,6 +32,7 @@ export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
         ...book,
         uploadedAt: new Date(book?.uploadedAt),
       })),
+    staleTime: 1000 * 60 * 5,
   });
 
   return { books, isPending, refetch };
