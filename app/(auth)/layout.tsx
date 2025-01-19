@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,21 +15,24 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
   const isSignin = pathName === "/sign-in";
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center overflow-hidden">
-      <div className="w-full max-w-screen-2xl">
-        <nav className="flex items-center justify-between p-3">
-          <Link href="/">
-            <Image src="/images/logo.svg" alt="logo" width={150} height={56} />
-          </Link>
+    <main className=" bg-neutral-100 min-h-screen">
+      <div className=" mx-auto max-w-screen-2xl p-4">
+        <nav className="flex items-center justify-between">
+          <Image src="/images/logo.svg" alt="logo" width={150} height={56} />
           <Button asChild className="" variant="secondary">
             <Link href={isSignin ? "/sign-up" : "/sign-in"}>
               {isSignin ? "Sign Up" : "Sign In"}
             </Link>
           </Button>
         </nav>
-        <main className="bg-muted flex flex-col items-center justify-center w-full h-full">
+        <div
+          className={cn(
+            "flex flex-col pt-4 max-w-3xl mx-auto items-center justify-center",
+            isSignin ? "md:pt-14" : "md:pt-12",
+          )}
+        >
           {children}
-        </main>
+        </div>
       </div>
     </main>
   );
