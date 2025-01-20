@@ -30,6 +30,7 @@ import { useUpdateCollection } from "../api/use-update-collection";
 import { UpdateCollectionData } from "../schemas";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { collectionKeys } from "@/lib/queryKeys";
 
 type UpdatedCollectionFormProps = {
   initialValue: Collection;
@@ -112,7 +113,9 @@ export default function UpdatedCollectionForm({
     if (ok) {
       deleteCollection(initialValue.id, {
         onSuccess: () => {
-          queryClinet.invalidateQueries({ queryKey: ["collections"] });
+          queryClinet.invalidateQueries({
+            queryKey: collectionKeys.collections,
+          });
           toast({
             variant: "destructive",
             description: "Collection deleted successfully",

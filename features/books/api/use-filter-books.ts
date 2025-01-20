@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/hono";
 
 import { StatusType } from "../schemas";
+import { bookKeys } from "@/lib/queryKeys";
 
 type UseGetBooksProps = {
   category: string;
@@ -14,7 +15,7 @@ export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
     isPending,
     refetch,
   } = useQuery({
-    queryKey: ["filteredBooks", category, status],
+    queryKey: bookKeys.filter({ category, status }),
     queryFn: async () => {
       const response = await client.api.books.filter.$get({
         query: { category, status },

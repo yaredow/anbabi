@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { DictionaryApiResponse } from "../types";
+import { assistatntKeys } from "@/lib/queryKeys";
 
 type UseGetWordDefinationProps = {
   word: string;
@@ -10,7 +11,7 @@ export const useGetWordDefination = ({ word }: UseGetWordDefinationProps) => {
     DictionaryApiResponse,
     Error
   >({
-    queryKey: ["defination", word],
+    queryKey: assistatntKeys.defination(word),
     queryFn: async () => {
       const response = await fetch(
         `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`,

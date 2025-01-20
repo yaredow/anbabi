@@ -23,6 +23,7 @@ import { useBookReaderModal } from "../hooks/use-book-reader-modal";
 import { useGetBook } from "../api/use-get-book";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useRouter } from "next/navigation";
+import { bookKeys } from "@/lib/queryKeys";
 
 export default function BookActionsDropdownMenu() {
   const router = useRouter();
@@ -50,8 +51,8 @@ export default function BookActionsDropdownMenu() {
         { param: { bookId } },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["books"] });
-            queryClient.invalidateQueries({ queryKey: ["counts"] });
+            queryClient.invalidateQueries({ queryKey: bookKeys.books });
+            queryClient.invalidateQueries({ queryKey: bookKeys.counts });
             toast({
               variant: "destructive",
               description: "Book removed successfully",

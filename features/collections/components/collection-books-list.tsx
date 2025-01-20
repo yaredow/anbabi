@@ -21,6 +21,7 @@ import { useRemoveBookFromCollection } from "../api/use-remove-book-from-collect
 import { useGetCollection } from "../api/use-get-collection";
 import { useCollectionId } from "../hooks/useCollectionId";
 import { useConfirm } from "@/hooks/use-confirm";
+import { collectionKeys } from "@/lib/queryKeys";
 
 export default function CollectionBooksList() {
   const queryClient = useQueryClient();
@@ -42,9 +43,11 @@ export default function CollectionBooksList() {
     const lastBook = collection?.books.length === 1;
 
     const onSuccess = () => {
-      queryClient.invalidateQueries({ queryKey: ["collection", collectionId] });
+      queryClient.invalidateQueries({
+        queryKey: collectionKeys.collection(collectionId),
+      });
       if (lastBook) {
-        queryClient.invalidateQueries({ queryKey: ["collections"] });
+        queryClient.invalidateQueries({ queryKey: collectionKeys.collections });
         window.location.href = "/";
       }
     };

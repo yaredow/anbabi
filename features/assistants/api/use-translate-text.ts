@@ -1,3 +1,4 @@
+import { assistatntKeys } from "@/lib/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 
 type UseTranslateTextProps = {
@@ -16,7 +17,7 @@ export const useTranslateText = ({
     isPending,
     refetch,
   } = useQuery<string, Error>({
-    queryKey: ["translated-text", text, targetLang, sourceLang],
+    queryKey: assistatntKeys.translation(text, targetLang, sourceLang),
     queryFn: async () => {
       const response = await fetch(
         `https://api.mymemory.translated.net/get?q=${encodeURIComponent(

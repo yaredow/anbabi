@@ -1,4 +1,5 @@
 import { client } from "@/lib/hono";
+import { bookKeys } from "@/lib/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 
 type UseGetBookProps = {
@@ -7,7 +8,7 @@ type UseGetBookProps = {
 
 export const useGetBook = ({ bookId }: UseGetBookProps) => {
   const { data: book, isPending } = useQuery({
-    queryKey: ["bookDetails", bookId],
+    queryKey: bookKeys.book(bookId),
     queryFn: async () => {
       const response = await client.api.books[":bookId"].$get({
         param: { bookId },

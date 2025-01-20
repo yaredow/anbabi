@@ -1,4 +1,5 @@
 import { client } from "@/lib/hono";
+import { collectionKeys } from "@/lib/queryKeys";
 import { useQuery } from "@tanstack/react-query";
 
 type UseGetCollectionProps = {
@@ -7,7 +8,7 @@ type UseGetCollectionProps = {
 
 export const useGetCollection = ({ collectionId }: UseGetCollectionProps) => {
   const { data: collection, isPending } = useQuery({
-    queryKey: ["collection", collectionId],
+    queryKey: collectionKeys.collection(collectionId),
     queryFn: async () => {
       const response = await client.api.collections[":collectionId"].$get({
         param: { collectionId },
