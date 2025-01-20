@@ -53,7 +53,7 @@ export default function Header() {
           <span>Back to Library</span>
         </Link>
       )}
-      <div className="flex items-center gap-4 flex-grow mx-4">
+      <div className="flex items-center gap-4 flex-grow justify-center absolute left-1/2 transform -translate-x-1/2">
         {isHome ? (
           isSearchOpen ? (
             <SearchBar onClose={toggleSearch} />
