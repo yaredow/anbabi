@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Plus, Search } from "lucide-react";
+import { ArrowLeft, Plus, Search, X } from "lucide-react";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,8 +14,12 @@ import { useBookId } from "@/features/books/hooks/use-book-id";
 import { useBookStatus } from "@/features/books/hooks/use-book-status";
 
 import { Button } from "./ui/button";
+import { useState } from "react";
+import { SearchBar } from "./search-bar";
 
 export default function Header() {
+  const [isSearchOpen, setSearchIsOpen] = useState<boolean>(false);
+
   const { open } = useUploadBookModal();
   const category = useCategoryName();
   const pathName = usePathname();
@@ -27,6 +31,8 @@ export default function Header() {
     pathName === `/category/${category}` || pathName === `/library/${status}`;
 
   const isCollection = pathName.includes("/collections");
+
+  const toggleSearch = () => setSearchIsOpen((prev) => !prev);
 
   if (isCollection) {
     return null;
@@ -47,12 +53,24 @@ export default function Header() {
           <span>Back to Library</span>
         </Link>
       )}
-      <div className="flex items-center gap-4">
-        <h1 className="text-sm">{isHome ? "Library" : book?.title}</h1>
+      <div className="flex items-center gap-4 flex-grow mx-4">
+        {isHome ? (
+          isSearchOpen ? (
+            <SearchBar onClose={toggleSearch} />
+          ) : (
+            <h1 className="text-sm">Library</h1>
+          )
+        ) : (
+          <h1 className="text-sm">{book?.title}</h1>
+        )}
       </div>
       {isHome ? (
-        <Button variant="ghost">
-          <Search className="size-5" />
+        <Button variant="ghost" onClick={toggleSearch}>
+          {isSearchOpen ? (
+            <X className="size-5" />
+          ) : (
+            <Search className="size-5" />
+          )}
         </Button>
       ) : (
         <BookActionsDropdownMenu />
