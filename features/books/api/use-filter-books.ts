@@ -7,26 +7,38 @@ import { bookKeys } from "@/lib/queryKeys";
 type UseGetBooksProps = {
   category: string;
   status: StatusType;
+  query: string;
 };
 
-export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
+export const useFilterBooks = ({
+  category,
+  status,
+  query: searchQuery,
+}: UseGetBooksProps) => {
   const {
     data: books,
+    isFetching,
     isPending,
+    error,
     refetch,
   } = useQuery({
-    queryKey: bookKeys.filter({ category, status }),
+    queryKey: bookKeys.filter({ category, status, searchQuery }),
     queryFn: async () => {
       const response = await client.api.books.filter.$get({
-        query: { category, status },
+        query: { category, status, query: searchQuery },
       });
 
       if (!response.ok) {
-        throw new Error("Something went wrong while fetching books");
+        const errorData = await response.json();
+        if ("error" in errorData) {
+          throw new Error(errorData.error);
+        } else {
+          throw new Error("An unknown error occurred");
+        }
       }
 
       const data = await response.json();
-      return data.data || [];
+      return data.data;
     },
     select: (data) =>
       data.map((book) => ({
@@ -36,5 +48,5 @@ export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
     staleTime: 1000 * 60 * 5,
   });
 
-  return { books, isPending, refetch };
+  return { books, isFetching, isPending, error, refetch };
 };

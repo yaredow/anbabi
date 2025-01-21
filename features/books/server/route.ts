@@ -6,7 +6,7 @@ import { SessionMiddleware } from "@/lib/session-middleware";
 import { zValidator } from "@hono/zod-validator";
 import { normalizeCategory } from "@/lib/utils";
 import cloudinary from "@/lib/cloudinary";
-import { Book } from "@prisma/client";
+import { Book, Prisma } from "@prisma/client";
 import prisma from "@/lib/prisma";
 
 import { BookSchema, StatusType } from "../schemas";
@@ -14,6 +14,7 @@ import { BookSchema, StatusType } from "../schemas";
 const querySchema = z.object({
   category: z.string().optional(),
   status: z.nativeEnum(StatusType).optional(),
+  query: z.string().optional(),
 });
 
 const app = new Hono()
@@ -45,7 +46,7 @@ const app = new Hono()
     zValidator("query", querySchema),
     async (c) => {
       const user = c.get("user");
-      const { category, status } = c.req.valid("query");
+      const { category, status, query } = c.req.valid("query");
 
       if (!user) {
         return c.json({ error: "Unauthorized" }, 401);
@@ -53,14 +54,35 @@ const app = new Hono()
 
       let books: Book[] = [];
 
+      const baseWhere: Prisma.BookWhereInput = {
+        uploader: {
+          id: user.id,
+        },
+      };
+
+      if (query) {
+        baseWhere.OR = [
+          {
+            title: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            author: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+        ];
+      }
+
       if (category) {
         if (category === "all") {
           // Fetch all books if category is "all"
           books = await prisma.book.findMany({
             where: {
-              uploader: {
-                id: user.id,
-              },
+              ...baseWhere,
             },
             orderBy: { uploadedAt: "desc" },
           });
@@ -69,9 +91,7 @@ const app = new Hono()
           const normalizedCategory = normalizeCategory(category);
           const allBooks = await prisma.book.findMany({
             where: {
-              uploader: {
-                id: user.id,
-              },
+              ...baseWhere,
             },
             orderBy: { uploadedAt: "desc" },
           });
@@ -87,21 +107,15 @@ const app = new Hono()
         // Fetch books by status
         books = await prisma.book.findMany({
           where: {
-            uploader: {
-              id: user.id,
-            },
+            ...baseWhere,
             status,
           },
           orderBy: { uploadedAt: "desc" },
         });
       } else {
-        // If neither category nor status is provided, return all books
+        // Fetch all books if no filters are provided
         books = await prisma.book.findMany({
-          where: {
-            uploader: {
-              id: user.id,
-            },
-          },
+          where: baseWhere,
           orderBy: { uploadedAt: "desc" },
         });
       }
@@ -172,6 +186,47 @@ const app = new Hono()
 
     return c.json({ data: { categoryCount, totalBooks, libraryCount } });
   })
+  .get(
+    "/search",
+    SessionMiddleware,
+    zValidator("query", z.object({ query: z.string() })),
+    async (c) => {
+      const user = c.get("user");
+      const { query } = c.req.valid("query");
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const books = await prisma.book.findMany({
+        where: {
+          uploader: {
+            id: user.id,
+          },
+          OR: [
+            {
+              title: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              author: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+      });
+
+      if (!books.length) {
+        return c.json({ error: "No books found", data: [] }, 404);
+      }
+
+      return c.json({ data: books });
+    },
+  )
   .post(
     "/upload",
     SessionMiddleware,

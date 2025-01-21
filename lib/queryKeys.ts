@@ -4,10 +4,18 @@ export const bookKeys = {
   books: ["books"] as const,
   counts: ["counts"] as const,
   book: (id: string) => [`book-${id}`] as const,
-  filter: (filter: { category: string; status: StatusType }) =>
+  filter: (filter: {
+    category: string;
+    status: StatusType;
+    searchQuery: string;
+  }) =>
     [
       "filteredBooks",
-      { category: filter.category, status: filter.status },
+      {
+        category: filter.category,
+        status: filter.status,
+        searchQuery: filter.searchQuery,
+      },
     ] as const,
 };
 
