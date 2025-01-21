@@ -172,6 +172,47 @@ const app = new Hono()
 
     return c.json({ data: { categoryCount, totalBooks, libraryCount } });
   })
+  .get(
+    "/search",
+    SessionMiddleware,
+    zValidator("query", z.object({ query: z.string() })),
+    async (c) => {
+      const user = c.get("user");
+      const { query } = c.req.valid("query");
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const books = await prisma.book.findMany({
+        where: {
+          uploader: {
+            id: user.id,
+          },
+          OR: [
+            {
+              title: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              author: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+          ],
+        },
+      });
+
+      if (!books.length) {
+        return c.json({ error: "No books found", data: [] }, 404);
+      }
+
+      return c.json({ data: books });
+    },
+  )
   .post(
     "/upload",
     SessionMiddleware,
