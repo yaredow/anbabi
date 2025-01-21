@@ -7,18 +7,23 @@ import { bookKeys } from "@/lib/queryKeys";
 type UseGetBooksProps = {
   category: string;
   status: StatusType;
+  query: string;
 };
 
-export const useFilterBooks = ({ category, status }: UseGetBooksProps) => {
+export const useFilterBooks = ({
+  category,
+  status,
+  query: searchQuery,
+}: UseGetBooksProps) => {
   const {
     data: books,
     isPending,
     refetch,
   } = useQuery({
-    queryKey: bookKeys.filter({ category, status }),
+    queryKey: bookKeys.filter({ category, status, searchQuery }),
     queryFn: async () => {
       const response = await client.api.books.filter.$get({
-        query: { category, status },
+        query: { category, status, query: searchQuery },
       });
 
       if (!response.ok) {

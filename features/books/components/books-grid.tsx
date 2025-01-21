@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import { useRouter } from "next/router";
 import debounce from "lodash/debounce";
 
 import { statusMapping } from "@/lib/utils";
@@ -11,12 +12,16 @@ import { useFilterBooks } from "../api/use-filter-books";
 import { useCategoryName } from "../hooks/use-category-name";
 import { StatusType } from "../schemas";
 import BookCard from "./book-card";
+import { useSearchParams } from "next/navigation";
 
 type BooksGridType = {
   status: string;
 };
 
 export function BooksGrid({ status }: BooksGridType) {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("query") || "";
+
   const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
 
   const categoryName = useCategoryName();
@@ -24,7 +29,10 @@ export function BooksGrid({ status }: BooksGridType) {
   const { books, isPending, refetch } = useFilterBooks({
     status: mappedStatus as StatusType,
     category: categoryName!,
+    query: searchQuery,
   });
+
+  console.log({ books });
 
   const debounceRefetch = useCallback(
     debounce(() => refetch(), 200),
@@ -34,7 +42,7 @@ export function BooksGrid({ status }: BooksGridType) {
   useEffect(() => {
     debounceRefetch();
     return () => debounceRefetch.cancel();
-  }, [categoryName, status, debounceRefetch]);
+  }, [categoryName, status, searchQuery, debounceRefetch]);
 
   if (isPending) {
     return <BooksGridSkeleton />;

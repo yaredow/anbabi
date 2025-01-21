@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
 
 interface SearchBarProps {
   onClose: () => void;
 }
 
 export function SearchBar({ onClose }: SearchBarProps) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useQueryState("query");
 
   const searchBarRef = useRef<HTMLFormElement>(null);
 
@@ -45,7 +47,7 @@ export function SearchBar({ onClose }: SearchBarProps) {
         <Input
           type="text"
           placeholder="Search library..."
-          value={searchQuery}
+          value={searchQuery || ""}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-8 pr-4 py-2"
           autoFocus

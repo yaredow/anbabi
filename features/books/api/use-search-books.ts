@@ -7,7 +7,11 @@ type UseSearchBooksProps = {
 };
 
 export const useSearchBooks = ({ query }: UseSearchBooksProps) => {
-  const { data: books, isPending } = useQuery({
+  const {
+    data: books,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: bookKeys.search(query),
     queryFn: async () => {
       const response = await client.api.books.search.$get({ query: { query } });
@@ -26,5 +30,5 @@ export const useSearchBooks = ({ query }: UseSearchBooksProps) => {
     },
   });
 
-  return { books, isPending };
+  return { books, isPending, refetch };
 };
