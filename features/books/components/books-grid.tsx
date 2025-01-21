@@ -44,7 +44,7 @@ export function BooksGrid({ status }: BooksGridType) {
     return <BooksGridSkeleton />;
   }
 
-  if (!books || !isFetching) {
+  if (!books || books.length === 0) {
     let noBooksMessage = `No books available`;
 
     if (searchQuery) {
