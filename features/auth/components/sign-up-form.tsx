@@ -24,6 +24,7 @@ import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function SignUpForm({
   className,
@@ -163,12 +164,12 @@ export default function SignUpForm({
                 </Button>
                 <div className="text-center text-sm">
                   Already have an account?
-                  <a
+                  <Link
                     href="/sign-in"
                     className="underline ml-2 underline-offset-4"
                   >
                     Sign In
-                  </a>
+                  </Link>
                 </div>
               </div>
             </form>
