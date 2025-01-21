@@ -12,12 +12,10 @@ import { useFilterBooks } from "../api/use-filter-books";
 import { useCategoryName } from "../hooks/use-category-name";
 import { StatusType } from "../schemas";
 import BookCard from "./book-card";
+import { useBookStatus } from "../hooks/use-book-status";
 
-type BooksGridType = {
-  status: string;
-};
-
-export function BooksGrid({ status }: BooksGridType) {
+export function BooksGrid() {
+  const status = useBookStatus();
   const mappedStatus = status ? statusMapping[status.toLowerCase()] : undefined;
 
   const categoryName = useCategoryName();
@@ -39,10 +37,6 @@ export function BooksGrid({ status }: BooksGridType) {
     debounceRefetch();
     return () => debounceRefetch.cancel();
   }, [categoryName, status, searchQuery, debounceRefetch]);
-
-  if (isFetching) {
-    return <BooksGridSkeleton />;
-  }
 
   if (!books || books.length === 0) {
     let noBooksMessage = `No books available`;
