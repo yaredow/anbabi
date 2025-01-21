@@ -17,7 +17,9 @@ export const useFilterBooks = ({
 }: UseGetBooksProps) => {
   const {
     data: books,
+    isFetching,
     isPending,
+    error,
     refetch,
   } = useQuery({
     queryKey: bookKeys.filter({ category, status, searchQuery }),
@@ -27,11 +29,16 @@ export const useFilterBooks = ({
       });
 
       if (!response.ok) {
-        throw new Error("Something went wrong while fetching books");
+        const errorData = await response.json();
+        if ("error" in errorData) {
+          throw new Error(errorData.error);
+        } else {
+          throw new Error("An unknown error occurred");
+        }
       }
 
       const data = await response.json();
-      return data.data || [];
+      return data.data;
     },
     select: (data) =>
       data.map((book) => ({
@@ -41,5 +48,5 @@ export const useFilterBooks = ({
     staleTime: 1000 * 60 * 5,
   });
 
-  return { books, isPending, refetch };
+  return { books, isFetching, isPending, error, refetch };
 };

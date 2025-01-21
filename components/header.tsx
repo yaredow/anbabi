@@ -56,7 +56,7 @@ export default function Header() {
       <div className="flex items-center gap-4 flex-grow justify-center absolute left-1/2 transform -translate-x-1/2">
         {isHome ? (
           isSearchOpen ? (
-            <SearchBar onClose={toggleSearch} />
+            <SearchBar />
           ) : (
             <h1 className="text-sm">Library</h1>
           )
