@@ -9,6 +9,7 @@ export const bookKeys = {
       "filteredBooks",
       { category: filter.category, status: filter.status },
     ] as const,
+  search: (query: string) => ["search-books", query] as const,
 };
 
 export const collectionKeys = {
