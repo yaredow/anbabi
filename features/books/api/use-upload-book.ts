@@ -23,7 +23,12 @@ export const useUploadBook = () => {
       const response = await client.api.books.upload.$post({ json });
 
       if (!response.ok) {
-        throw new Error("Something happened while uploading");
+        const errorData = await response.json();
+        if ("error" in errorData) {
+          throw new Error(errorData.error);
+        } else {
+          throw new Error("An unknown error occurred");
+        }
       }
 
       const data = await response.json();

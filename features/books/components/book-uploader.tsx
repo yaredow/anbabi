@@ -111,6 +111,12 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
                 onCancel();
               }
             },
+            onError: (error) => {
+              toast({
+                description: error.message,
+                variant: "destructive",
+              });
+            },
           },
         );
       }
