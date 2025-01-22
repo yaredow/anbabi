@@ -1,6 +1,6 @@
 "use client";
 
-import { Book, ChevronRight } from "lucide-react";
+import { Book, ChevronRight, Library } from "lucide-react";
 import Link from "next/link";
 
 import { useCategoryName } from "@/features/books/hooks/use-category-name";
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/collapsible";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 import { useBookStatus } from "@/features/books/hooks/use-book-status";
+import { FaBook } from "react-icons/fa6";
 
 export function NavMain() {
   const categoryName = useCategoryName();
@@ -34,11 +35,11 @@ export function NavMain() {
       <SidebarGroupLabel>Browse</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild>
+          <SidebarMenuButton asChild isActive={!categoryName && !status}>
             <Link href="/" className="flex items-center justify-between">
               <span className="flex items-center justify-center">
-                <Book className="mr-2 size-4" />
-                All
+                <FaBook className="mr-2 size-4" />
+                All books
               </span>
               <span className="ml-auto">{count?.totalBooks || 0}</span>
             </Link>
@@ -48,7 +49,10 @@ export function NavMain() {
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton>
-                <span>Categories</span>
+                <span className="flex items-center">
+                  <Book className="mr-2 size-4" />
+                  Categories
+                </span>
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>
             </CollapsibleTrigger>
@@ -66,7 +70,9 @@ export function NavMain() {
                           href={`/category/${category.name.toLowerCase()}`}
                           className="flex items-center justify-between"
                         >
-                          <span>{category.name}</span>
+                          <span className="flex items-center">
+                            {category.name}
+                          </span>
                           <span className="ml-auto">
                             {categoryCount?.[category.name.toLowerCase()] || 0}
                           </span>
@@ -84,7 +90,10 @@ export function NavMain() {
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton>
-                <span>Library</span>
+                <span className="flex items-center">
+                  <Library className="mr-2 size-4" />
+                  Library
+                </span>
                 <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
               </SidebarMenuButton>
             </CollapsibleTrigger>
@@ -103,7 +112,9 @@ export function NavMain() {
                           href={`/library/${library.status.toLowerCase()}`}
                           className="flex items-center justify-between"
                         >
-                          <span>{library.name}</span>
+                          <span className="flex items-center">
+                            {library.name}
+                          </span>
                           <span className="ml-auto">
                             {libraryCount?.[library.status] || 0}
                           </span>
