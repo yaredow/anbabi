@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { Book, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import { useCategoryName } from "@/features/books/hooks/use-category-name";
@@ -33,6 +33,17 @@ export function NavMain() {
     <SidebarGroup>
       <SidebarGroupLabel>Browse</SidebarGroupLabel>
       <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild>
+            <Link href="/" className="flex items-center justify-between">
+              <span className="flex items-center justify-center">
+                <Book className="mr-2 size-4" />
+                All
+              </span>
+              <span className="ml-auto">{count?.totalBooks || 0}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         <Collapsible asChild className="group/collapsible">
           <SidebarMenuItem>
             <CollapsibleTrigger asChild>
@@ -57,10 +68,7 @@ export function NavMain() {
                         >
                           <span>{category.name}</span>
                           <span className="ml-auto">
-                            {category.name.toLowerCase() === "all"
-                              ? count?.totalBooks || 0
-                              : categoryCount?.[category.name.toLowerCase()] ||
-                                0}
+                            {categoryCount?.[category.name.toLowerCase()] || 0}
                           </span>
                         </Link>
                       </SidebarMenuSubButton>

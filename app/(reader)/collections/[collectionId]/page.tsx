@@ -25,10 +25,6 @@ export async function generateMetadata({ params }: IParams) {
 }
 
 export default async function PageWithCollectionId({ params }: IParams) {
-  const session = await auth.api.getSession({ headers: await headers() });
-
-  if (!session) redirect("/sign-in");
-
   const { collectionId } = await params;
 
   return (

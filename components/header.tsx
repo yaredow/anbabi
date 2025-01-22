@@ -27,9 +27,9 @@ export default function Header() {
   const bookId = useBookId();
   const { book } = useGetBook({ bookId });
 
-  const isHome =
-    pathName === `/category/${category}` || pathName === `/library/${status}`;
-
+  const isHome = ["/", `/category/${category}`, `/library/${status}`].includes(
+    pathName,
+  );
   const isCollection = pathName.includes("/collections");
 
   const toggleSearch = () => setSearchIsOpen((prev) => !prev);

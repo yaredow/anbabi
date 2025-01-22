@@ -29,6 +29,7 @@ import {
 import { CreateCollectionData, CreateCollectionSchema } from "../schemas";
 import { useCreateCollection } from "../api/use-create-collection";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
 type CreateCollectionFormProps = {
   onCancel?: () => void;
@@ -43,6 +44,8 @@ export default function CreateCollectionForm({
   const { createCollection, isPending } = useCreateCollection();
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const { data: session } = useSession();
 
   const form = useForm<CreateCollectionData>({
     resolver: zodResolver(CreateCollectionSchema),
@@ -242,8 +245,8 @@ export default function CreateCollectionForm({
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending}>
-                Create Collection
+              <Button type="submit" disabled={isPending || !session}>
+                {session ? "Create Collection" : "Sign in to create collection"}
               </Button>
             </div>
           </form>

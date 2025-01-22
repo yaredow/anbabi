@@ -2,7 +2,6 @@ import { IReactReaderStyle, ReactReaderStyle } from "react-reader";
 import { StatusType } from "./schemas";
 
 export const BookCategories = [
-  { name: "All" },
   { name: "Fiction" },
   { name: "Non-Fiction" },
   { name: "Science-fiction" },

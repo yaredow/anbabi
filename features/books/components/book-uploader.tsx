@@ -12,6 +12,7 @@ import { useUploadBook } from "../api/use-upload-book";
 import { BookType } from "../types";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "@/lib/auth-client";
 
 type EpubUploaderProps = {
   onCancel?: () => void;
@@ -22,6 +23,8 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [parsedFiles, setParsedFiles] = useState<BookType[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { data: session } = useSession();
 
   const { upload, status } = useUploadBook();
   const queryClinet = useQueryClient();
@@ -209,9 +212,9 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
         </Button>
         <Button
           onClick={handleUpload}
-          disabled={status === "pending" || files.length === 0}
+          disabled={status === "pending" || files.length === 0 || !session}
         >
-          Upload
+          {session ? "Upload" : "Sign in to upload"}
         </Button>
       </div>
     </div>

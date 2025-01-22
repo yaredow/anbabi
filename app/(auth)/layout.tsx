@@ -18,7 +18,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     <main className=" bg-neutral-100 min-h-screen">
       <div className=" mx-auto max-w-screen-2xl p-4">
         <nav className="flex items-center justify-between">
-          <Image src="/images/logo.svg" alt="logo" width={150} height={56} />
+          <Link href="/">
+            <Image src="/images/logo.svg" alt="logo" width={150} height={56} />
+          </Link>
           <Button asChild className="" variant="secondary">
             <Link href={isSignin ? "/sign-up" : "/sign-in"}>
               {isSignin ? "Sign Up" : "Sign In"}

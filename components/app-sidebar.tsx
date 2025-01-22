@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import Image from "next/image";
 
 import { UserButton } from "@/features/auth/components/user-button";
+import Link from "next/link";
 
 import {
   Sidebar,
@@ -19,10 +20,13 @@ import { NavCollections } from "./nav-collections";
 import { Button } from "./ui/button";
 import { NavMain } from "./nav-main";
 import { Suspense } from "react";
+import { useSession } from "@/lib/auth-client";
 
 const BookReaderSidebarContent = ({
   ...props
 }: React.ComponentProps<typeof Sidebar>) => {
+  const { data: session } = useSession();
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -35,7 +39,15 @@ const BookReaderSidebarContent = ({
         </Suspense>
       </SidebarContent>
       <SidebarFooter>
-        <UserButton />
+        {session ? (
+          <UserButton />
+        ) : (
+          <Link className="flex items-center mx-auto" href="/sign-in">
+            <Button variant="default" className="px-4 py-2">
+              Sign In
+            </Button>
+          </Link>
+        )}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
