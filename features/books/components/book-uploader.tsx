@@ -180,7 +180,7 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
                 <div className="flex items-center justify-between">
                   <p className="font-medium">{file.fileName}</p>
                   <button
-                    onClick={() => removeFile(file.fileName)}
+                    onClick={() => removeFile(file.fileName!)}
                     className="text-muted-foreground hover:text-foreground"
                   >
                     <Trash2 className="h-4 w-4" />
