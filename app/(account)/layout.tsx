@@ -3,5 +3,9 @@ type AccountLayoutProps = {
 };
 
 export default function AccountLayout({ children }: AccountLayoutProps) {
-  return <div>{children}</div>;
+  return (
+    <div className="flex w-full bg-neutral-100 items-center justify-center min-h-screen">
+      {children}
+    </div>
+  );
 }
