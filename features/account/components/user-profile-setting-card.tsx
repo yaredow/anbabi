@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertCircle } from "lucide-react";
 
@@ -29,10 +28,9 @@ export function UserProfileSettingsCard() {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="account" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="flex justify-center w-full">
             <TabsTrigger value="account">Account</TabsTrigger>
             <TabsTrigger value="password">Password</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
             <div className="space-y-4 py-4">
@@ -43,10 +41,6 @@ export function UserProfileSettingsCard() {
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <Input id="username" placeholder="Enter your username" />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch id="public-profile" />
-                <Label htmlFor="public-profile">Make my profile public</Label>
               </div>
             </div>
           </TabsContent>
@@ -65,22 +59,6 @@ export function UserProfileSettingsCard() {
                 <Input id="confirm-password" type="password" />
               </div>
               <Button>Update Password</Button>
-            </div>
-          </TabsContent>
-          <TabsContent value="notifications">
-            <div className="space-y-4 py-4">
-              <div className="flex items-center space-x-2">
-                <Switch id="email-notifications" />
-                <Label htmlFor="email-notifications">Email Notifications</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch id="push-notifications" />
-                <Label htmlFor="push-notifications">Push Notifications</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch id="weekly-digest" />
-                <Label htmlFor="weekly-digest">Weekly Digest</Label>
-              </div>
             </div>
           </TabsContent>
         </Tabs>

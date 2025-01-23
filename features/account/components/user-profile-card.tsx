@@ -1,16 +1,14 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardTitle,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useSession } from "@/lib/auth-client";
 import { LogOut, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { signOut, useSession } from "@/lib/auth-client";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
+import { useOpenProfileModal } from "../hooks/use-open-profile-modal";
 
 const recentBooks = [
   {
@@ -29,6 +27,18 @@ const recentBooks = [
 export default function UserProfileCard() {
   const { data: session } = useSession();
   const user = session?.user;
+  const router = useRouter();
+  const { open } = useOpenProfileModal();
+
+  const handleLogout = () => {
+    signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/sign-in");
+        },
+      },
+    });
+  };
 
   return (
     <Card>
@@ -112,17 +122,19 @@ export default function UserProfileCard() {
             ))}
           </div>
         </div>
+
         <div className="flex justify-between mt-6">
-          <Button variant="outline" className="mr-2">
+          <Button variant="outline" className="mr-2" onClick={open}>
             <Settings className="h-4 w-4 mr-2" />
             Edit Profile
           </Button>
           <Button
             variant="ghost"
             className="text-red-600 hover:text-red-800 hover:bg-red-100"
+            onClick={handleLogout}
           >
             <LogOut className="h-4 w-4 mr-2" />
-            Log Out
+            Sign Out
           </Button>
         </div>
       </CardContent>

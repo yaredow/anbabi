@@ -1,16 +1,14 @@
 "use client";
 
-import { BadgeCheck, ChevronsUpDown, LogOut, Settings } from "lucide-react";
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Settings,
+  Sparkles,
+} from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -30,15 +28,17 @@ import {
 } from "@/components/ui/sidebar";
 import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import UserProfileCard from "@/features/account/components/user-profile-card";
-import { UserProfileSettingsCard } from "@/features/account/components/user-profile-setting-card";
+import { useOpenProfileModal } from "@/features/account/hooks/use-open-profile-modal";
+import { useOpeUserProfileSettingsModal } from "@/features/account/hooks/use-open-profile-settings-modal";
 
 export function UserButton() {
   const router = useRouter();
 
   const { data: session, isPending } = useSession();
   const { name, email, image } = session?.user || {};
+  const { open: openUserProfileModal } = useOpenProfileModal();
+  const { open: openUserProfileSettingsModal } =
+    useOpeUserProfileSettingsModal();
 
   const { isMobile } = useSidebar();
 
@@ -93,52 +93,13 @@ export function UserButton() {
             <DropdownMenuSeparator />
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Link
-                  href="/profile"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <BadgeCheck className="size-5" />
-                  Account
-                </Link>
+              <DropdownMenuItem onClick={openUserProfileModal}>
+                <BadgeCheck />
+                Account
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="link"
-                      className="flex items-center justify-center gap-2"
-                    >
-                      <BadgeCheck className="size-5" />
-                      Profile
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Profile</DialogTitle>
-                    </DialogHeader>
-                    <UserProfileCard />
-                  </DialogContent>
-                </Dialog>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="link"
-                      className="flex items-center justify-center gap-2"
-                    >
-                      <Settings className="size-5" />
-                      Settings
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Settings</DialogTitle>
-                    </DialogHeader>
-                    <UserProfileSettingsCard />
-                  </DialogContent>
-                </Dialog>
+              <DropdownMenuItem onClick={openUserProfileSettingsModal}>
+                <Settings />
+                Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
