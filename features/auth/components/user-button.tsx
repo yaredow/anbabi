@@ -28,12 +28,17 @@ import {
 } from "@/components/ui/sidebar";
 import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useOpenProfileModal } from "@/features/account/hooks/use-open-profile-modal";
+import { useOpeUserProfileSettingsModal } from "@/features/account/hooks/use-open-profile-settings-modal";
 
 export function UserButton() {
   const router = useRouter();
 
   const { data: session, isPending } = useSession();
   const { name, email, image } = session?.user || {};
+  const { open: openUserProfileModal } = useOpenProfileModal();
+  const { open: openUserProfileSettingsModal } =
+    useOpeUserProfileSettingsModal();
 
   const { isMobile } = useSidebar();
 
@@ -88,11 +93,11 @@ export function UserButton() {
             <DropdownMenuSeparator />
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={openUserProfileModal}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={openUserProfileSettingsModal}>
                 <Settings />
                 Settings
               </DropdownMenuItem>

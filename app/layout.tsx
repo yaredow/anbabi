@@ -8,6 +8,8 @@ import QueryProviders from "@/components/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
+import UserProfileModal from "@/features/account/components/user-profile-modal";
+import UserProfileSettingsModal from "@/features/account/components/user-profile-settings-modal";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -37,6 +39,8 @@ export default function RootLayout({
         >
           <QueryProviders>
             <NuqsAdapter>
+              <UserProfileModal />
+              <UserProfileSettingsModal />
               <main>{children}</main>
             </NuqsAdapter>
             <Toaster />
