@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { emailOtp } from "@/lib/auth-client";
+import { forgetPassword } from "@/lib/auth-client";
 import { useState } from "react";
 
 export default function ResetPasswordPage() {
@@ -10,20 +10,18 @@ export default function ResetPasswordPage() {
 
   const handleSendPasswordResetEmail = async () => {
     setIsLoading(true);
-    await emailOtp.sendVerificationOtp({
-      email: "yaredyilma11@gmail.com",
-      type: "forget-password",
+    const { data, error } = await forgetPassword({
+      email: "yaredyilma11@gamil.com",
       fetchOptions: {
-        onSuccess: (data) => {
-          console.log(data);
+        onSuccess: () => {
           toast({
-            description: "OTP sent to your email.",
+            description: "Password reset email sent",
           });
           setIsLoading(false);
         },
         onError: () => {
           toast({
-            description: "Failed to send OTP email. Please try again later.",
+            description: "Something went wrong. Please try again!",
             variant: "destructive",
           });
           setIsLoading(false);
