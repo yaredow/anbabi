@@ -1,14 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,14 +29,14 @@ export function UserProfileSettingsCard() {
   return (
     <>
       <ConfirmationDialog />
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle>Profile Settings</CardTitle>
-          <CardDescription>
+      <div className="bg-white shadow rounded-lg p-6 w-full max-w-2xl mx-auto">
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold">Profile Settings</h2>
+          <p className="text-gray-600">
             Manage your account settings and preferences.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div>
           <Tabs defaultValue="account" className="w-full">
             <TabsList className="flex justify-center w-full">
               <TabsTrigger value="account">Account</TabsTrigger>
@@ -83,8 +76,8 @@ export function UserProfileSettingsCard() {
               </div>
             </TabsContent>
           </Tabs>
-        </CardContent>
-        <CardFooter className="flex flex-col items-start space-y-4">
+        </div>
+        <div className="flex flex-col items-start space-y-4 mt-4">
           <div className="w-full">
             <Button
               variant="destructive"
@@ -94,8 +87,8 @@ export function UserProfileSettingsCard() {
               Delete Account
             </Button>
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
     </>
   );
 }

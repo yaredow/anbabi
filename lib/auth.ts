@@ -3,9 +3,7 @@ import { betterAuth } from "better-auth";
 import { emailOTP } from "better-auth/plugins";
 
 import prisma from "./prisma";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { resend } from "./resend";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -50,6 +48,7 @@ export const auth = betterAuth({
       },
       otpLength: 8,
       expiresIn: 600,
+      sendVerificationOnSignUp: true,
     }),
   ],
 });
