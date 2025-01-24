@@ -14,7 +14,8 @@ export default function ResetPasswordPage() {
       email: "yaredyilma11@gmail.com",
       type: "forget-password",
       fetchOptions: {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          console.log(data);
           toast({
             description: "OTP sent to your email.",
           });

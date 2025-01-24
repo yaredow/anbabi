@@ -19,7 +19,7 @@ export function BooksFilter() {
 
   const [searchQuery] = useQueryState("query");
 
-  const { books, isFetching, refetch } = useFilterBooks({
+  const { books, isPending, refetch } = useFilterBooks({
     status: mappedStatus as StatusType,
     category: categoryName!,
     query: searchQuery || "",
@@ -64,5 +64,5 @@ export function BooksFilter() {
     );
   }
 
-  return <BooksGrid books={books} />;
+  return <BooksGrid books={books} isPending={isPending} />;
 }

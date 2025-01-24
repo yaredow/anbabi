@@ -10,6 +10,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import UserProfileModal from "@/features/account/components/user-profile-modal";
 import UserProfileSettingsModal from "@/features/account/components/user-profile-settings-modal";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -39,8 +41,14 @@ export default function RootLayout({
         >
           <QueryProviders>
             <NuqsAdapter>
-              <UserProfileModal />
-              <UserProfileSettingsModal />
+              <Suspense
+                fallback={
+                  <Loader2 className="flex items-center justify-center mx-auto animate-pulse min-h-screen" />
+                }
+              >
+                <UserProfileModal />
+                <UserProfileSettingsModal />
+              </Suspense>
               <main>{children}</main>
             </NuqsAdapter>
             <Toaster />

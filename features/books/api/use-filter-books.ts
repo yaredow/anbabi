@@ -17,7 +17,6 @@ export const useFilterBooks = ({
 }: UseGetBooksProps) => {
   const {
     data: books,
-    isFetching,
     isPending,
     error,
     refetch,
@@ -48,5 +47,5 @@ export const useFilterBooks = ({
     staleTime: 1000 * 60 * 5,
   });
 
-  return { books, isFetching, isPending, error, refetch };
+  return { books, isPending, error, refetch };
 };

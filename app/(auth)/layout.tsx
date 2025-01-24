@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import UserProfileModal from "@/features/account/components/user-profile-modal";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
