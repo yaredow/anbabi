@@ -54,6 +54,7 @@
     "react-markdown": "^9.0.1",
     "react-reader": "^2.0.11",
     "react-use": "^17.5.1",
+    "resend": "^4.1.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.1",

@@ -3,7 +3,9 @@ import { betterAuth } from "better-auth";
 import { emailOTP } from "better-auth/plugins";
 
 import prisma from "./prisma";
-import { transporter } from "./transporter";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -21,6 +23,7 @@ export const auth = betterAuth({
   plugins: [
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
+        console.log({ email });
         const subjectMapping = {
           "sign-in": "Your Login OTP Code",
           "forget-password": "Your Password Reset OTP Code",
@@ -33,16 +36,13 @@ export const auth = betterAuth({
           "email-verification": `Your email verification OTP code is ${otp}`,
         };
 
-        const mailOptions = {
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: subjectMapping[type] || "Your OTP Code",
-          text: textMapping[type] || `Your OTP code is ${otp}`,
-        };
-
         try {
-          const info = await transporter.sendMail(mailOptions);
-          console.log(`OTP sent to ${email}: ${info.messageId}`);
+          await resend.emails.send({
+            from: process.env.SMTP_USER!,
+            to: email,
+            subject: subjectMapping[type] || "Your OTP Code",
+            text: textMapping[type] || `Your OTP code is ${otp}`,
+          });
         } catch (error) {
           console.error("Error sending OTP email:", error);
           throw new Error("Failed to send OTP email. Please try again later.");
