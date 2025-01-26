@@ -105,7 +105,7 @@ export default function SignInForm({
                           Password
                         </FormLabel>
                         <a
-                          href="#"
+                          href="/forget-password"
                           className="text-sm text-neutral-600 underline-offset-2 hover:underline"
                         >
                           Forgot your password?
