@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { PasswordForgetSchema } from "../schemas";
+import { forgetPassword } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 export function ForgotPasswordForm() {
   const form = useForm<z.infer<typeof PasswordForgetSchema>>({
@@ -31,7 +33,24 @@ export function ForgotPasswordForm() {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof PasswordForgetSchema>) {}
+  async function onSubmit(data: z.infer<typeof PasswordForgetSchema>) {
+    await forgetPassword({
+      email: data.email,
+      fetchOptions: {
+        onSuccess: () => {
+          toast({
+            description: "Reset instructions sent to your email",
+          });
+        },
+        onError: () => {
+          toast({
+            description: "Failed to send reset instructions",
+            variant: "destructive",
+          });
+        },
+      },
+    });
+  }
 
   return (
     <Card className="w-full max-w-md">
