@@ -1,8 +1,13 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Loader2 } from "lucide-react";
 import * as z from "zod";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { forgetPassword } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,10 +25,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+
 import { PasswordForgetSchema } from "../schemas";
-import { forgetPassword } from "@/lib/auth-client";
-import { toast } from "@/hooks/use-toast";
 
 export function ForgotPasswordForm() {
   const form = useForm<z.infer<typeof PasswordForgetSchema>>({
@@ -35,6 +38,7 @@ export function ForgotPasswordForm() {
 
   async function onSubmit(data: z.infer<typeof PasswordForgetSchema>) {
     await forgetPassword({
+      redirectTo: "/reset-password",
       email: data.email,
       fetchOptions: {
         onSuccess: () => {

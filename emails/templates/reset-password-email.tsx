@@ -28,19 +28,19 @@ export const ResetPasswordEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>Dropbox reset your password</Preview>
+      <Preview>Anbabi reset your password</Preview>
       <Body style={main}>
         <Container style={container}>
           <Img
             src={`${baseUrl}/static/dropbox-logo.png`}
             width="40"
             height="33"
-            alt="Dropbox"
+            alt="Anbabi"
           />
           <Section>
             <Text style={text}>Hi {userFirstname},</Text>
             <Text style={text}>
-              Someone recently requested a password change for your Dropbox
+              Someone recently requested a password change for your Anbabi
               account. If this was you, you can set a new password here:
             </Text>
             <Button style={button} href={resetPasswordLink}>
@@ -57,7 +57,7 @@ export const ResetPasswordEmail = ({
                 more security tips.
               </Link>
             </Text>
-            <Text style={text}>Happy Dropboxing!</Text>
+            <Text style={text}>Happy Reading!</Text>
           </Section>
         </Container>
       </Body>

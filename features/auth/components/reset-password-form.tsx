@@ -22,10 +22,15 @@ import {
 } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { PasswordResetData, PasswordResetSchema } from "../schemas";
+import { resetPassword } from "@/lib/auth-client";
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = new URLSearchParams(window.location.search).get("token");
+
+  if (!token) {
+    return <div>Invalid token</div>;
+  }
 
   const form = useForm<PasswordResetData>({
     resolver: zodResolver(PasswordResetSchema),
@@ -35,7 +40,25 @@ export function ResetPasswordForm() {
     },
   });
 
-  async function onSubmit(data: PasswordResetData) {}
+  const handleResetPassword = async (values: PasswordResetData) => {
+    try {
+      const { data, error } = await resetPassword({
+        newPassword: values.password,
+        token,
+      });
+
+      if (error) {
+        console.error("Error resetting password:", error);
+        // Handle error (e.g., show a notification)
+      } else {
+        console.log("Password reset successful:", data);
+        // Handle success (e.g., redirect to login page)
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      // Handle unexpected error (e.g., show a notification)
+    }
+  };
 
   return (
     <Card className="w-full max-w-md">
@@ -45,7 +68,10 @@ export function ResetPasswordForm() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleResetPassword)}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="password"
