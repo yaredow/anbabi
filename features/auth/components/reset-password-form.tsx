@@ -23,6 +23,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { PasswordResetData, PasswordResetSchema } from "../schemas";
 import { resetPassword } from "@/lib/auth-client";
+import { toast } from "@/hooks/use-toast";
 
 export function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -48,11 +49,14 @@ export function ResetPasswordForm() {
       });
 
       if (error) {
-        console.error("Error resetting password:", error);
-        // Handle error (e.g., show a notification)
+        toast({
+          description: error.message,
+          variant: "destructive",
+        });
       } else {
-        console.log("Password reset successful:", data);
-        // Handle success (e.g., redirect to login page)
+        toast({
+          description: "Password reset successfully",
+        });
       }
     } catch (error) {
       console.error("Unexpected error:", error);
