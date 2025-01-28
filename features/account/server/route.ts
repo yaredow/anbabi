@@ -16,9 +16,9 @@ const app = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    await prisma.user.delete({
+    await prisma.account.delete({
       where: {
-        id: user.id,
+        userId: user.id,
       },
     });
 
@@ -29,23 +29,52 @@ const app = new Hono()
     SessionMiddleware,
     zValidator("json", PasswordUpdateSchema),
     async (c) => {
-      const user = c.get("user");
-      const { currentPassword, newPassword } = c.req.valid("json");
+      try {
+        const user = c.get("user");
+        const { currentPassword, newPassword } = c.req.valid("json");
 
-      if (!user) {
-        return c.json({ error: "Unauthorized" }, 401);
+        if (!user) {
+          return c.json({ error: "Unauthorized" }, 401);
+        }
+
+        // Prevent setting the same password
+        if (currentPassword === newPassword) {
+          return c.json(
+            { error: "New password must be different from current password" },
+            400,
+          );
+        }
+
+        // Secure account lookup and password comparison
+        const accountRecord = await prisma.account.findFirst({
+          where: { userId: user.id },
+        });
+
+        // Prevent timing attacks by always running comparison
+        const isPasswordValid = accountRecord
+          ? await bcrypt.compare(currentPassword, accountRecord.password!)
+          : false;
+
+        if (!isPasswordValid) {
+          return c.json({ error: "Current password is incorrect" }, 400);
+        }
+
+        // Update password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await prisma.account.update({
+          where: { userId: user.id },
+          data: { password: hashedPassword },
+        });
+
+        await prisma.session.deleteMany({
+          where: { userId: user.id },
+        });
+
+        return c.json({ message: "Password updated successfully" });
+      } catch (error) {
+        console.error("Password update error:", error);
+        return c.json({ error: "Internal server error" }, 500);
       }
-
-      await prisma.account.update({
-        where: {
-          user: { id: user.id },
-        },
-        data: {
-          password: hashedPassword,
-        },
-      });
-
-      return c.json({ message: "Password updated successfully" });
     },
   );
 

@@ -21,7 +21,7 @@ enum StatusType {
 }
 
 model User {
-  id            String       @id
+  id            String       @id @default(cuid())
   name          String
   email         String
   emailVerified Boolean
@@ -38,7 +38,7 @@ model User {
 }
 
 model Session {
-  id        String   @id
+  id        String   @id @default(cuid())
   expiresAt DateTime
   token     String
   createdAt DateTime
@@ -53,7 +53,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id
+  id                    String    @id @default(cuid())
   accountId             String
   providerId            String
   userId                String
@@ -72,12 +72,13 @@ model Account {
 }
 
 model Verification {
-  id         String    @id
+  id         String @id @default(cuid())
   identifier String
   value      String
-  expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+
+  expiresAt DateTime
+  createdAt DateTime?
+  updatedAt DateTime?
 
   @@map("verification")
 }
@@ -107,7 +108,7 @@ model Book {
 }
 
 model Collection {
-  id               String             @id @default(uuid()) // Unique identifier for each collection
+  id               String             @id @default(cuid()) // Unique identifier for each collection
   name             String
   description      String?
   userId           String
@@ -123,7 +124,7 @@ model Collection {
 }
 
 model BookOnCollection {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   bookId       String
   collectionId String
   createdAt    DateTime @default(now())
