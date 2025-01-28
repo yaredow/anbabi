@@ -4,6 +4,7 @@ import ResetPasswordEmail from "@/emails/templates/reset-password-email";
 
 import prisma from "./prisma";
 import { resend } from "./resend";
+import { hashPassword, verifyPassword } from "./utils";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -11,6 +12,10 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    password: {
+      hash: hashPassword,
+      verify: verifyPassword,
+    },
     sendResetPassword: async ({ user, url, token }, request) => {
       await resend.emails.send({
         from: process.env.SMTP_USER!,

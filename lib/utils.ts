@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import bcrypt from "bcrypt";
+
 import { AnnoationColor } from "@/features/annotations/constants";
 import { RenditionRef } from "@/features/books/types";
 import { StatusType } from "@/features/books/schemas";
@@ -82,6 +84,20 @@ export const normalizeCategory = (category: string): string => {
 
   return categoryMapping[category.toLowerCase()] || category;
 };
+
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+}
+
+export async function verifyPassword(data: {
+  password: string;
+  hash: string;
+}): Promise<boolean> {
+  const { password, hash } = data;
+  return await bcrypt.compare(password, hash);
+}
 
 export const statusMapping: Record<string, StatusType> = {
   favorites: StatusType.FAVORITE,
