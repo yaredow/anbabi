@@ -1,12 +1,11 @@
-import prisma from "@/lib/prisma";
-import { SessionMiddleware } from "@/lib/session-middleware";
+import bcrypt from "bcryptjs";
 import { Hono } from "hono";
-import {
-  PasswordUpdateSchema,
-  PasswordUpdateData,
-} from "@/features/auth/schemas";
-import bcrypt from "bcrypt";
+
+import { SessionMiddleware } from "@/lib/session-middleware";
 import { zValidator } from "@hono/zod-validator";
+import prisma from "@/lib/prisma";
+
+import { PasswordUpdateSchema } from "@/features/auth/schemas";
 
 const app = new Hono()
   .delete("/delete", SessionMiddleware, async (c) => {
@@ -16,7 +15,7 @@ const app = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    await prisma.account.delete({
+    await prisma.account.deleteMany({
       where: {
         userId: user.id,
       },
@@ -55,19 +54,17 @@ const app = new Hono()
           ? await bcrypt.compare(currentPassword, accountRecord.password!)
           : false;
 
+        console.log({ isPasswordValid });
         if (!isPasswordValid) {
           return c.json({ error: "Current password is incorrect" }, 400);
         }
 
         // Update password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        await prisma.account.update({
-          where: { id: accountRecord?.id },
-          data: { password: hashedPassword },
-        });
 
-        await prisma.session.deleteMany({
-          where: { userId: user.id },
+        await prisma.account.update({
+          where: { id: user.id },
+          data: { password: hashedPassword },
         });
 
         return c.json({ message: "Password updated successfully" });

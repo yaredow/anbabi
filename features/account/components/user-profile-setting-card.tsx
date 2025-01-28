@@ -7,9 +7,30 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDeleteAccount } from "../api/use-delete-account";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useUpdatePassword } from "../api/use-update-password";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  PasswordUpdateSchema,
+  PasswordUpdateData,
+} from "@/features/auth/schemas";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "@/hooks/use-toast";
 
 export function UserProfileSettingsCard() {
-  const { deleteAccount, isPending } = useDeleteAccount();
+  const { deleteAccount, isPending: isDeleteAccountPending } =
+    useDeleteAccount();
+  const { updatePassword, isPending: isUpdateAccountPending } =
+    useUpdatePassword();
+
+  const isLoading = isDeleteAccountPending || isUpdateAccountPending;
 
   const [ConfirmationDialog, confirm] = useConfirm({
     title: "Delete Account",
@@ -24,6 +45,35 @@ export function UserProfileSettingsCard() {
     if (ok) {
       deleteAccount();
     }
+  };
+
+  const form = useForm<PasswordUpdateData>({
+    resolver: zodResolver(PasswordUpdateSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  const handleUpdatePassword = (data: PasswordUpdateData) => {
+    updatePassword(
+      { json: data },
+      {
+        onSuccess: () => {
+          form.reset();
+          toast({
+            description: "Password updated successfully",
+          });
+        },
+        onError: (error) => {
+          toast({
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -60,19 +110,67 @@ export function UserProfileSettingsCard() {
             </TabsContent>
             <TabsContent value="password">
               <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">Current Password</Label>
-                  <Input id="current-password" type="password" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">New Password</Label>
-                  <Input id="new-password" type="password" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirm-password">Confirm New Password</Label>
-                  <Input id="confirm-password" type="password" />
-                </div>
-                <Button>Update Password</Button>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(handleUpdatePassword)}
+                    className="space-y-4"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="currentPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Current Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="Enter your current password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="newPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>New Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="Enter your new password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm New Password</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="Confirm your new password"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" disabled={isLoading}>
+                      Update Password
+                    </Button>
+                  </form>
+                </Form>
               </div>
             </TabsContent>
           </Tabs>
@@ -82,6 +180,7 @@ export function UserProfileSettingsCard() {
             <Button
               variant="destructive"
               className="w-full"
+              disabled={isLoading}
               onClick={handleDeletAccount}
             >
               Delete Account

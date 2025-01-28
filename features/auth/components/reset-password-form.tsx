@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,10 +23,21 @@ import { Loader2 } from "lucide-react";
 import { PasswordResetData, PasswordResetSchema } from "../schemas";
 import { resetPassword } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
 export function ResetPasswordForm() {
-  const token = new URLSearchParams(window.location.search).get("token");
-  console.log({ token });
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const queryToken = new URLSearchParams(window.location.search).get("token");
+    setToken(queryToken);
+  });
+
+  if (token === null) {
+    return (
+      <Loader2 className="size-8 animate-spin flex items-center justify-center mx-auto" />
+    );
+  }
 
   if (!token) {
     return <div>Invalid token</div>;

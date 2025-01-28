@@ -34,7 +34,7 @@
     "@radix-ui/react-visually-hidden": "^1.1.0",
     "@react-email/components": "^0.0.32",
     "@tanstack/react-query": "^5.62.3",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "better-auth": "^1.1.7",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.5.1",
@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20",
     "@types/react": "19.0.7",

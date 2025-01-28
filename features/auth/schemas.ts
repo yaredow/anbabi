@@ -43,6 +43,8 @@ export const PasswordResetSchema = z
     path: ["confirmPassword"],
   });
 
+export type PasswordResetData = z.infer<typeof PasswordResetSchema>;
+
 export const PasswordUpdateSchema = z
   .object({
     currentPassword: z

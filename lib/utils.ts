@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 import { AnnoationColor } from "@/features/annotations/constants";
 import { RenditionRef } from "@/features/books/types";
