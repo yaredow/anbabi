@@ -62,7 +62,7 @@ const app = new Hono()
         // Update password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await prisma.account.update({
-          where: { userId: user.id },
+          where: { id: accountRecord?.id },
           data: { password: hashedPassword },
         });
 
