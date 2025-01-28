@@ -7,10 +7,6 @@ import BookCardSkeleton from "./skeletons/book-card-skeleton";
 export default function Home() {
   const { books, isPending } = useGetBooks();
 
-  if (isPending) {
-    return <BookCardSkeleton />;
-  }
-
   if (!books || books.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center p-8 rounded-lg">

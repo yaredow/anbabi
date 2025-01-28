@@ -26,8 +26,8 @@ import { resetPassword } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 
 export function ResetPasswordForm() {
-  const searchParams = useSearchParams();
   const token = new URLSearchParams(window.location.search).get("token");
+  console.log({ token });
 
   if (!token) {
     return <div>Invalid token</div>;
