@@ -15,9 +15,9 @@ const app = new Hono()
       return c.json({ error: "Unauthorized" }, 401);
     }
 
-    await prisma.account.deleteMany({
+    await prisma.user.delete({
       where: {
-        userId: user.id,
+        id: user.id,
       },
     });
 
@@ -54,7 +54,6 @@ const app = new Hono()
           ? await bcrypt.compare(currentPassword, accountRecord.password!)
           : false;
 
-        console.log({ isPasswordValid });
         if (!isPasswordValid) {
           return c.json({ error: "Current password is incorrect" }, 400);
         }
