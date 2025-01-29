@@ -45,25 +45,28 @@ export default function UserProfileCard() {
       return;
     }
 
-    const arrayBuffer = await file.arrayBuffer();
-    const unit8Array = new Uint8Array(arrayBuffer);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-    updateProfilePicture(
-      { json: { profilePicture: Array.from(unit8Array) } },
-      {
-        onSuccess: () => {
-          toast({
-            description: "Profile picture updated successfully",
-          });
+    reader.onload = async () => {
+      const base64String = reader.result as string;
+      updateProfilePicture(
+        { json: { profilePicture: base64String } },
+        {
+          onSuccess: () => {
+            toast({
+              description: "Profile picture updated successfully",
+            });
+          },
+          onError: (error) => {
+            toast({
+              description: error.message,
+              variant: "destructive",
+            });
+          },
         },
-        onError: (error) => {
-          toast({
-            description: error.message,
-            variant: "destructive",
-          });
-        },
-      },
-    );
+      );
+    };
   };
 
   const handleLogout = () => {

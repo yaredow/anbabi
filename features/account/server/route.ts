@@ -81,23 +81,22 @@ const app = new Hono()
   .post(
     "/update-profile-picture",
     SessionMiddleware,
-    zValidator("json", z.object({ profilePicture: z.array(z.number()) })),
+    zValidator("json", z.object({ profilePicture: z.string() })),
     async (c) => {
       const user = c.get("user");
       const { profilePicture } = c.req.valid("json");
+      const base64Data = profilePicture.split(",")[1];
+      const buffer = Buffer.from(base64Data, "base64");
 
       if (!user) {
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      if (!profilePicture || !Array.isArray(profilePicture)) {
+      if (!profilePicture) {
         return c.json({ error: "Invalid profile picture data" }, 400);
       }
 
-      const buffer = Buffer.from(profilePicture);
-
       let uploadResult: UploadApiResponse | undefined;
-
       try {
         uploadResult = await new Promise<UploadApiResponse | undefined>(
           (resolve, reject) => {
