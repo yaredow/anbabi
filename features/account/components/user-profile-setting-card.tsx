@@ -24,7 +24,13 @@ import {
 } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
 
-export function UserProfileSettingsCard() {
+type UserProfileSettingsCardProps = {
+  onClose: () => void;
+};
+
+export function UserProfileSettingsCard({
+  onClose,
+}: UserProfileSettingsCardProps) {
   const { deleteAccount, isPending: isDeleteAccountPending } =
     useDeleteAccount();
   const { updatePassword, isPending: isUpdateAccountPending } =
@@ -65,6 +71,7 @@ export function UserProfileSettingsCard() {
           toast({
             description: "Password updated successfully",
           });
+          onClose();
         },
         onError: (error) => {
           toast({

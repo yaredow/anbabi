@@ -5,11 +5,11 @@ import { UserProfileSettingsCard } from "./user-profile-setting-card";
 import ResponsiveProfileModal from "./responsive-profile-modal";
 
 export default function UserProfileSettingsModal() {
-  const { isOpen, setIsOpen } = useOpeUserProfileSettingsModal();
+  const { isOpen, setIsOpen, close } = useOpeUserProfileSettingsModal();
 
   return (
     <ResponsiveProfileModal open={isOpen} onOpenChange={setIsOpen}>
-      <UserProfileSettingsCard />
+      <UserProfileSettingsCard onClose={close} />
     </ResponsiveProfileModal>
   );
 }
