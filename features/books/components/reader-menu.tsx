@@ -80,10 +80,7 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
               <span>Maximize</span>
             </button>
 
-            <button
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={handleOpenAnnotations}
-            >
+            <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <NotebookIcon className="mr-3 size-4" />
               <span>Annotations</span>
             </button>
