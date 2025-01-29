@@ -32,6 +32,8 @@ const app = new Hono()
         const user = c.get("user");
         const { currentPassword, newPassword } = c.req.valid("json");
 
+        console.log({ currentPassword, newPassword });
+
         if (!user) {
           return c.json({ error: "Unauthorized" }, 401);
         }
@@ -62,13 +64,13 @@ const app = new Hono()
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         await prisma.account.update({
-          where: { id: user.id },
+          where: { id: accountRecord?.id },
           data: { password: hashedPassword },
         });
 
         return c.json({ message: "Password updated successfully" });
       } catch (error) {
-        console.error("Password update error:", error);
+        console.log("Password update error:", error);
         return c.json({ error: "Internal server error" }, 500);
       }
     },
