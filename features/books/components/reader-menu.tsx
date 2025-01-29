@@ -17,10 +17,14 @@ import { useBookStore } from "../store/book-store";
 import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
 
 type ReaderMenuProps = {
+  isDesktop?: boolean;
   handleMaximizeToggle: () => void;
 };
 
-export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
+export default function ReaderMenu({
+  handleMaximizeToggle,
+  isDesktop,
+}: ReaderMenuProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { renditionRef } = useBookStore();
@@ -72,13 +76,15 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
             aria-orientation="vertical"
             aria-labelledby="options-menu"
           >
-            <button
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={handleMaximizeToggle}
-            >
-              <Maximize2 className="mr-3 size-4" />
-              <span>Maximize</span>
-            </button>
+            {isDesktop && (
+              <button
+                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={handleMaximizeToggle}
+              >
+                <Maximize2 className="mr-3 size-4" />
+                <span>Maximize</span>
+              </button>
+            )}
 
             <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <NotebookIcon className="mr-3 size-4" />

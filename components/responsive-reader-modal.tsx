@@ -116,12 +116,6 @@ export default function ResponsiveReaderModal({
             <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
               <ReaderMenu handleMaximizeToggle={handleMaximizeToggle} />
             </div>
-            <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
-              <ReaderMenu handleMaximizeToggle={handleMaximizeToggle} />
-            </div>
-            <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
-              <ReaderMenu handleMaximizeToggle={handleMaximizeToggle} />
-            </div>
             {children}
           </div>
         </DialogContent>
@@ -133,6 +127,9 @@ export default function ResponsiveReaderModal({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetOverlay />
       <SheetContent className="w-full h-screen p-0 border-none overflow-y-auto hide-scrollbar">
+        <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+          <ReaderMenu handleMaximizeToggle={handleMaximizeToggle} />
+        </div>
         {children}
       </SheetContent>
     </Sheet>
