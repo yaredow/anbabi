@@ -6,6 +6,9 @@ import { zValidator } from "@hono/zod-validator";
 import prisma from "@/lib/prisma";
 
 import { PasswordUpdateSchema } from "@/features/auth/schemas";
+import { z } from "zod";
+import { UploadApiResponse } from "cloudinary";
+import cloudinary from "@/lib/cloudinary";
 
 const app = new Hono()
   .delete("/delete", SessionMiddleware, async (c) => {
@@ -73,6 +76,64 @@ const app = new Hono()
         console.log("Password update error:", error);
         return c.json({ error: "Internal server error" }, 500);
       }
+    },
+  )
+  .post(
+    "/update-profile-picture",
+    SessionMiddleware,
+    zValidator("json", z.object({ profilePicture: z.array(z.number()) })),
+    async (c) => {
+      const user = c.get("user");
+      const { profilePicture } = c.req.valid("json");
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      if (!profilePicture || !Array.isArray(profilePicture)) {
+        return c.json({ error: "Invalid profile picture data" }, 400);
+      }
+
+      const buffer = Buffer.from(profilePicture);
+
+      let uploadResult: UploadApiResponse | undefined;
+
+      try {
+        uploadResult = await new Promise<UploadApiResponse | undefined>(
+          (resolve, reject) => {
+            cloudinary.uploader
+              .upload_stream(
+                {
+                  tags: ["ai-book"],
+                  upload_preset: "ai-books",
+                },
+                (err, result) => {
+                  if (err) {
+                    reject(
+                      new Error("Cloudinary upload failed: " + err.message),
+                    );
+                  } else {
+                    resolve(result);
+                  }
+                },
+              )
+              .end(buffer);
+          },
+        );
+      } catch (error) {
+        console.error(error);
+      }
+
+      if (!uploadResult) {
+        return c.json({ error: "Failed to upload profile picture" }, 500);
+      }
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { image: uploadResult.secure_url },
+      });
+
+      return c.json({ message: "Profile picture updated successfully" });
     },
   );
 

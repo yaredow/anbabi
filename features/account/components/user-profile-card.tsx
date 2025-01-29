@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { useOpenProfileModal } from "../hooks/use-open-profile-modal";
+import { useState } from "react";
+import axios from "axios";
+import { useUpdateProfilePicture } from "../api/use-update-profile-picture";
+import { toast } from "@/hooks/use-toast";
 
 const recentBooks = [
   {
@@ -29,6 +33,38 @@ export default function UserProfileCard() {
   const user = session?.user;
   const router = useRouter();
   const { open } = useOpenProfileModal();
+
+  const { updateProfilePicture, isPending } = useUpdateProfilePicture();
+
+  const handleProfilePictureUpdate = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const unit8Array = new Uint8Array(arrayBuffer);
+
+    updateProfilePicture(
+      { json: { profilePicture: Array.from(unit8Array) } },
+      {
+        onSuccess: () => {
+          toast({
+            description: "Profile picture updated successfully",
+          });
+        },
+        onError: (error) => {
+          toast({
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      },
+    );
+  };
 
   const handleLogout = () => {
     signOut({
@@ -51,6 +87,7 @@ export default function UserProfileCard() {
             height={96}
             className="rounded-full"
           />
+          {isPending && <p>Uploading...</p>}
           <label
             htmlFor="avatar-upload"
             className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-lg cursor-pointer"
@@ -81,6 +118,7 @@ export default function UserProfileCard() {
             type="file"
             accept="image/*"
             className="hidden"
+            onChange={handleProfilePictureUpdate}
           />
         </div>
         <div className="flex items-center">
