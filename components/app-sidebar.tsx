@@ -19,21 +19,23 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { NavCollections } from "./nav-collections";
 import { Button } from "./ui/button";
 import { NavMain } from "./nav-main";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 
-const BookReaderSidebarContent = ({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) => {
+type SidebarContentsProps = {
+  setIsOpen?: (isOpen: boolean) => void;
+};
+
+const SidebarContents = ({ setIsOpen }: SidebarContentsProps) => {
   const { data: session } = useSession();
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <>
       <SidebarHeader>
         <Image src="/images/logo.svg" alt="logo" height={45} width={145} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain />
+        <NavMain setIsOpen={setIsOpen} />
         <Suspense fallback={<div>Loading...</div>}>
           <NavCollections />
         </Suspense>
@@ -49,39 +51,35 @@ const BookReaderSidebarContent = ({
           </Link>
         )}
       </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    </>
   );
 };
 
 export function AppSidebar() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isDesktop = useMedia("(min-width: 1024px)", true);
 
-  if (!isDesktop) {
+  if (isDesktop) {
     return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="fixed top-4 left-4 z-40"
-          >
-            <Menu className="h-4 w-4" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
-          <Sidebar className="border-none">
-            <BookReaderSidebarContent />
-          </Sidebar>
-        </SheetContent>
-      </Sheet>
+      <Sidebar collapsible="icon" className="hidden md:block">
+        <SidebarContents />
+        <SidebarRail />
+      </Sidebar>
     );
   }
 
   return (
-    <Sidebar className="hidden md:block">
-      <BookReaderSidebarContent />
-      <SidebarRail />
-    </Sidebar>
+    <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="icon" className="fixed left-4 z-40">
+          <Menu className="h-4 w-4" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
+        <div className="h-full flex flex-col">
+          <SidebarContents setIsOpen={setIsSidebarOpen} />
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

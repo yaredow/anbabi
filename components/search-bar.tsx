@@ -14,7 +14,7 @@ export function SearchBar() {
   const searchBarRef = useRef<HTMLFormElement>(null);
 
   return (
-    <form ref={searchBarRef} className="w-full max-w-md">
+    <form ref={searchBarRef} className="md:w-full max-w-md">
       <div className="relative">
         <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground size-4" />
         <Input

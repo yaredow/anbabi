@@ -39,21 +39,21 @@ export default function Header() {
   }
 
   return (
-    <header className="flex z-20 w-full bg-background sticky top-0 items-center justify-between h-12 px-4 py-2">
+    <header className="flex z-20 w-full bg-background top-0 items-center justify-between h-12 px-4 py-2 relative">
       {isHome ? (
-        <Button onClick={open} variant="ghost">
+        <Button onClick={open} variant="ghost" className="hidden md:block">
           <Plus className="size-5" />
         </Button>
       ) : (
         <Link
           href="/"
-          className="inline-flex gap-2 items-center text-sm text-muted-foreground hover:text-primary"
+          className="md:inline-flex hidden gap-2 md:items-center text-sm text-muted-foreground hover:text-primary"
         >
           <ArrowLeft className="size-4" />
           <span>Back to Library</span>
         </Link>
       )}
-      <div className="flex items-center gap-4 flex-grow justify-center absolute left-1/2 transform -translate-x-1/2">
+      <div className="flex items-center gap-4 flex-grow justify-center md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
         {isHome ? (
           isSearchOpen ? (
             <SearchBar />
@@ -64,17 +64,23 @@ export default function Header() {
           <h1 className="text-sm">{book?.title}</h1>
         )}
       </div>
-      {isHome ? (
-        <Button variant="ghost" onClick={toggleSearch}>
-          {isSearchOpen ? (
-            <X className="size-5" />
-          ) : (
-            <Search className="size-5" />
-          )}
-        </Button>
-      ) : (
-        <BookActionsDropdownMenu />
-      )}
+      <div className="flex items-center gap-2">
+        {isHome ? (
+          <Button
+            variant="ghost"
+            onClick={toggleSearch}
+            className="ml-auto md:ml-0"
+          >
+            {isSearchOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Search className="size-5" />
+            )}
+          </Button>
+        ) : (
+          <BookActionsDropdownMenu />
+        )}
+      </div>
     </header>
   );
 }

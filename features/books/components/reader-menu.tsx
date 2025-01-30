@@ -15,6 +15,7 @@ import { useBookReaderModal } from "@/features/books/hooks/use-book-reader-modal
 import { Button } from "@/components/ui/button";
 import { useBookStore } from "../store/book-store";
 import { useCloseModalOnClick } from "@/hooks/use-close-modal-on-click";
+import { useMedia } from "react-use";
 
 type ReaderMenuProps = {
   handleMaximizeToggle: () => void;
@@ -24,6 +25,8 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { renditionRef } = useBookStore();
+
+  const isDesktop = useMedia("(min-width: 1024px)", true);
 
   const { close } = useBookReaderModal();
   const { open: openToolBar } = useToolBarModal();
@@ -72,18 +75,17 @@ export default function ReaderMenu({ handleMaximizeToggle }: ReaderMenuProps) {
             aria-orientation="vertical"
             aria-labelledby="options-menu"
           >
-            <button
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={handleMaximizeToggle}
-            >
-              <Maximize2 className="mr-3 size-4" />
-              <span>Maximize</span>
-            </button>
+            {isDesktop ? (
+              <button
+                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                onClick={handleMaximizeToggle}
+              >
+                <Maximize2 className="mr-3 size-4" />
+                <span>Maximize</span>
+              </button>
+            ) : null}
 
-            <button
-              className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              onClick={handleOpenAnnotations}
-            >
+            <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <NotebookIcon className="mr-3 size-4" />
               <span>Annotations</span>
             </button>

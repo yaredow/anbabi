@@ -8,6 +8,7 @@ import CreateCollectionModal from "@/features/collections/components/create-coll
 import AddBooksToCollectionModal from "@/features/collections/components/add-books-to-collection-modal";
 import AnnotaionModal from "@/features/annotations/components/annotations-modal";
 import { Suspense } from "react";
+import MobileBookUploadButton from "@/components/mobile-book-upload-button";
 
 type ReaderLayoutProps = {
   children: React.ReactNode;
@@ -31,6 +32,9 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
               <Header />
             </Suspense>
             <main className="h-full p-4 flex flex-col">{children}</main>
+            <Suspense>
+              <MobileBookUploadButton />
+            </Suspense>
           </div>
         </div>
       </SidebarProvider>
