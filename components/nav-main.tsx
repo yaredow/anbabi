@@ -26,7 +26,7 @@ import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-c
 import { useBookStatus } from "@/features/books/hooks/use-book-status";
 
 type NavMainProps = {
-  setIsOpen: (isOpen: boolean) => void;
+  setIsOpen?: (isOpen: boolean) => void;
 };
 
 export function NavMain({ setIsOpen }: NavMainProps) {
@@ -35,7 +35,9 @@ export function NavMain({ setIsOpen }: NavMainProps) {
   const { count } = useGetCategoriesCount();
 
   const toggleSheet = () => {
-    setIsOpen(false);
+    if (setIsOpen) {
+      setIsOpen(false);
+    }
   };
 
   return (

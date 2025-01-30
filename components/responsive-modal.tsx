@@ -7,7 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 type ResponsiveModalProps = {
   children: React.ReactNode;
@@ -25,11 +30,11 @@ export default function ResponsiveModal({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogHeader>
-          <VisuallyHidden>
+        <VisuallyHidden>
+          <DialogHeader>
             <DialogTitle>Title</DialogTitle>
-          </VisuallyHidden>
-        </DialogHeader>
+          </DialogHeader>
+        </VisuallyHidden>
         <DialogContent className="w-full sm:max-w-lg p-0 bordr-none overflow-y-auto max-h-[85vh] hide-scrollbar">
           {children}
         </DialogContent>
@@ -40,6 +45,11 @@ export default function ResponsiveModal({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
+        <VisuallyHidden>
+          <DrawerHeader>
+            <DrawerTitle>Title</DrawerTitle>
+          </DrawerHeader>
+        </VisuallyHidden>
         <div className="overflow-y-auto max-h-[85vh] hide-scrollbar">
           {children}
         </div>

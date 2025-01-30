@@ -6,6 +6,7 @@ import BookUploader from "./book-uploader";
 
 export default function UploadBookModal() {
   const { isOpen, setIsOpen, close } = useUploadBookModal();
+
   return (
     <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
       <BookUploader onCancel={close} />
