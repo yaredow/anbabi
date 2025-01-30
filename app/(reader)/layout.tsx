@@ -8,6 +8,8 @@ import CreateCollectionModal from "@/features/collections/components/create-coll
 import AddBooksToCollectionModal from "@/features/collections/components/add-books-to-collection-modal";
 import AnnotaionModal from "@/features/annotations/components/annotations-modal";
 import { Suspense } from "react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type ReaderLayoutProps = {
   children: React.ReactNode;
@@ -31,6 +33,12 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
               <Header />
             </Suspense>
             <main className="h-full p-4 flex flex-col">{children}</main>
+            <Button
+              className="fixed bottom-4 right-4 rounded-full p-0 w-14 h-14 hover:bg-primary/90 shadow-lg md:hidden"
+              aria-label="Upload book"
+            >
+              <Plus className="size-4" />
+            </Button>
           </div>
         </div>
       </SidebarProvider>

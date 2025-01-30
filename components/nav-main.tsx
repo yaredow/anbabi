@@ -1,6 +1,7 @@
 "use client";
 
 import { Book, ChevronRight, Library } from "lucide-react";
+import { FaBook } from "react-icons/fa6";
 import Link from "next/link";
 
 import { useCategoryName } from "@/features/books/hooks/use-category-name";
@@ -23,12 +24,19 @@ import {
 } from "@/components/ui/collapsible";
 import { useGetCategoriesCount } from "@/features/books/api/use-get-categories-count";
 import { useBookStatus } from "@/features/books/hooks/use-book-status";
-import { FaBook } from "react-icons/fa6";
 
-export function NavMain() {
+type NavMainProps = {
+  setIsOpen: (isOpen: boolean) => void;
+};
+
+export function NavMain({ setIsOpen }: NavMainProps) {
   const categoryName = useCategoryName();
   const status = useBookStatus();
   const { count } = useGetCategoriesCount();
+
+  const toggleSheet = () => {
+    setIsOpen(false);
+  };
 
   return (
     <SidebarGroup>
@@ -65,6 +73,7 @@ export function NavMain() {
                       <SidebarMenuSubButton
                         isActive={categoryName === category.name.toLowerCase()}
                         asChild
+                        onClick={toggleSheet}
                       >
                         <Link
                           href={`/category/${category.name.toLowerCase()}`}
@@ -107,6 +116,7 @@ export function NavMain() {
                       <SidebarMenuSubButton
                         isActive={status === library.status.toLowerCase()}
                         asChild
+                        onClick={toggleSheet}
                       >
                         <Link
                           href={`/library/${library.status.toLowerCase()}`}
