@@ -57,12 +57,10 @@ export function AppSidebar() {
 
   if (isDesktop) {
     return (
-      <SidebarProvider>
-        <Sidebar collapsible="icon" className="hidden md:block">
-          <SidebarContents />
-          <SidebarRail />
-        </Sidebar>
-      </SidebarProvider>
+      <Sidebar collapsible="icon" className="hidden md:block">
+        <SidebarContents />
+        <SidebarRail />
+      </Sidebar>
     );
   }
 

@@ -113,9 +113,6 @@ export default function ResponsiveReaderModal({
           <div
             className={`${isMaximized ? "h-screen" : "h-full"} overflow-hidden flex flex-col`}
           >
-            <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
-              <ReaderMenu handleMaximizeToggle={handleMaximizeToggle} />
-            </div>
             {children}
           </div>
         </DialogContent>

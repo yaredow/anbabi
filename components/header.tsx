@@ -47,7 +47,7 @@ export default function Header() {
       ) : (
         <Link
           href="/"
-          className="inline-flex gap-2 items-center text-sm text-muted-foreground hover:text-primary"
+          className="md:inline-flex hidden gap-2 md:items-center text-sm text-muted-foreground hover:text-primary"
         >
           <ArrowLeft className="size-4" />
           <span>Back to Library</span>
