@@ -32,7 +32,9 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
               <Header />
             </Suspense>
             <main className="h-full p-4 flex flex-col">{children}</main>
-            <MobileBookUploadButton />
+            <Suspense>
+              <MobileBookUploadButton />
+            </Suspense>
           </div>
         </div>
       </SidebarProvider>
