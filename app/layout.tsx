@@ -31,27 +31,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(`${roboto.className} antialiased`)}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <QueryProviders>
-            <NuqsAdapter>
-              <Suspense
-                fallback={
-                  <Loader2 className="flex items-center justify-center mx-auto animate-pulse min-h-screen" />
-                }
-              >
-                <UserProfileModal />
-                <UserProfileSettingsModal />
-              </Suspense>
-              <main>{children}</main>
-            </NuqsAdapter>
-            <Toaster />
-          </QueryProviders>
-        </ThemeProvider>
+        <QueryProviders>
+          <NuqsAdapter>
+            <Suspense
+              fallback={
+                <Loader2 className="flex items-center justify-center mx-auto animate-pulse min-h-screen" />
+              }
+            >
+              <UserProfileModal />
+              <UserProfileSettingsModal />
+            </Suspense>
+            <main>{children}</main>
+          </NuqsAdapter>
+          <Toaster />
+        </QueryProviders>
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ import AddBooksToCollectionModal from "@/features/collections/components/add-boo
 import AnnotaionModal from "@/features/annotations/components/annotations-modal";
 import { Suspense } from "react";
 import MobileBookUploadButton from "@/components/mobile-book-upload-button";
+import { Loader2 } from "lucide-react";
 
 type ReaderLayoutProps = {
   children: React.ReactNode;
@@ -28,7 +29,11 @@ export default function ReaderLayout({ children }: ReaderLayoutProps) {
         <AppSidebar />
         <div className="flex-1">
           <div className="mx-auto max-w-screen-2xl h-screen">
-            <Suspense>
+            <Suspense
+              fallback={
+                <Loader2 className="flex items-center justify-center mx-auto min-h-screen animate-spin" />
+              }
+            >
               <Header />
             </Suspense>
             <main className="h-full p-4 flex flex-col">{children}</main>
