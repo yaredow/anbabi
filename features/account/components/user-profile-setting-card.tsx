@@ -23,6 +23,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
+import { UpdateUserData, UpdateUserSchema } from "../schema";
+import { useUpdateUserProfile } from "../api/use-update-user-profile";
 
 type UserProfileSettingsCardProps = {
   onClose: () => void;
@@ -35,6 +37,8 @@ export function UserProfileSettingsCard({
     useDeleteAccount();
   const { updatePassword, isPending: isUpdateAccountPending } =
     useUpdatePassword();
+
+  const { updateProfile, isPending } = useUpdateUserProfile();
 
   const isLoading = isDeleteAccountPending || isUpdateAccountPending;
 
@@ -53,7 +57,15 @@ export function UserProfileSettingsCard({
     }
   };
 
-  const form = useForm<PasswordUpdateData>({
+  const accountForm = useForm<UpdateUserData>({
+    defaultValues: {
+      email: "",
+      name: "",
+    },
+    resolver: zodResolver(UpdateUserSchema),
+  });
+
+  const accountSettingForm = useForm<PasswordUpdateData>({
     resolver: zodResolver(PasswordUpdateSchema),
     defaultValues: {
       currentPassword: "",
@@ -67,9 +79,29 @@ export function UserProfileSettingsCard({
       { json: data },
       {
         onSuccess: () => {
-          form.reset();
+          accountSettingForm.reset();
           toast({
             description: "Password updated successfully",
+          });
+          onClose();
+        },
+        onError: (error) => {
+          toast({
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      },
+    );
+  };
+
+  const handleUpdateUserData = (data: UpdateUserData) => {
+    updateProfile(
+      { form: data },
+      {
+        onSuccess: () => {
+          toast({
+            description: "Account updated successfully",
           });
           onClose();
         },
@@ -101,29 +133,65 @@ export function UserProfileSettingsCard({
             </TabsList>
             <TabsContent value="account">
               <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    placeholder="Enter your email"
-                    type="email"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input id="username" placeholder="Enter your username" />
-                </div>
+                <Form {...accountSettingForm}>
+                  <form
+                    className="space-y-4"
+                    onSubmit={accountForm.handleSubmit(handleUpdateUserData)}
+                  >
+                    <FormField
+                      control={accountForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="Enter your email"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={accountForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              placeholder="Enter your username"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button type="submit" disabled={isLoading}>
+                      Update Account
+                    </Button>
+                  </form>
+                </Form>
               </div>
             </TabsContent>
+
             <TabsContent value="password">
               <div className="space-y-4 py-4">
-                <Form {...form}>
+                <Form {...accountSettingForm}>
                   <form
-                    onSubmit={form.handleSubmit(handleUpdatePassword)}
+                    onSubmit={accountSettingForm.handleSubmit(
+                      handleUpdatePassword,
+                    )}
                     className="space-y-4"
                   >
                     <FormField
-                      control={form.control}
+                      control={accountSettingForm.control}
                       name="currentPassword"
                       render={({ field }) => (
                         <FormItem>
@@ -140,7 +208,7 @@ export function UserProfileSettingsCard({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={accountSettingForm.control}
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem>
@@ -157,7 +225,7 @@ export function UserProfileSettingsCard({
                       )}
                     />
                     <FormField
-                      control={form.control}
+                      control={accountSettingForm.control}
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>

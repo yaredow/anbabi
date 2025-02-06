@@ -9,6 +9,7 @@ import { PasswordUpdateSchema } from "@/features/auth/schemas";
 import { z } from "zod";
 import { UploadApiResponse } from "cloudinary";
 import cloudinary from "@/lib/cloudinary";
+import { UpdateUserSchema } from "../schema";
 
 const app = new Hono()
   .delete("/delete", SessionMiddleware, async (c) => {
@@ -133,6 +134,41 @@ const app = new Hono()
       });
 
       return c.json({ message: "Profile picture updated successfully" });
+    },
+  )
+  .post(
+    "/update-profile",
+    SessionMiddleware,
+    zValidator("form", UpdateUserSchema),
+    async (c) => {
+      const user = c.get("user");
+      const { name, email } = c.req.valid("form");
+
+      if (!user) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+      });
+
+      if (!existingUser) {
+        return c.json({ error: "User not found" }, 404);
+      }
+
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          email,
+          name,
+        },
+      });
+
+      return c.json({ message: "Profile updated successfully" });
     },
   );
 
