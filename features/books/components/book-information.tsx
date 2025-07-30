@@ -9,6 +9,7 @@ import { useGetBook } from "../api/use-get-book";
 import { useEffect } from "react";
 import { useBookStore } from "../store/book-store";
 import { useBookId } from "../hooks/use-book-id";
+import Image from "next/image";
 
 export default function BookInformation() {
   const bookId = useBookId();
@@ -35,7 +36,7 @@ export default function BookInformation() {
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           <Card className="overflow-hidden h-fit">
-            <img
+            <Image
               src={book.coverImage ?? ""}
               alt="Untold Secrets: Fire & Ice Book Cover"
               className="w-full object-cover"

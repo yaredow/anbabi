@@ -58,8 +58,6 @@ export default function BookReader() {
     setSelectedColor,
   } = useAnnotationStore();
 
-  console.log({ bookUrl: book?.bookUrl });
-
   let themeStyles;
 
   switch (theme) {
@@ -156,8 +154,7 @@ export default function BookReader() {
       const { displayed, href } = renditionRef.current.location.start;
       const chapter = tocRef.current.find((item) => item.href === href);
       setPage(
-        `Page ${displayed.page} of ${displayed.total} in chapter ${
-          chapter ? chapter.label : "n/a"
+        `Page ${displayed.page} of ${displayed.total} in chapter ${chapter ? chapter.label : "n/a"
         }`,
       );
     }
@@ -177,9 +174,8 @@ export default function BookReader() {
       </VisuallyHidden>
 
       <div
-        className={`relative my-0 mx-auto top-0 w-full m-0 p-0 text-left ${
-          isDesktop ? "h-full" : "h-[95vh]"
-        }`}
+        className={`relative my-0 mx-auto top-0 w-full m-0 p-0 text-left ${isDesktop ? "h-full" : "h-[95vh]"
+          }`}
       >
         <ReactReader
           location={location}

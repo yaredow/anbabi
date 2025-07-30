@@ -297,6 +297,7 @@ const app = new Hono()
                   resource_type: "raw",
                   tags: ["ai-book"],
                   upload_preset: "ai-books",
+                  timeout: 10000,
                 },
                 (err, result) => {
                   if (err) {

@@ -133,9 +133,8 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
     <div className="w-full max-w-3xl p-6 mx-auto">
       <div className="grid gap-8 md:grid-cols-2">
         <div
-          className={`relative rounded-lg border-dashed p-8 text-center ${
-            dragActive ? "border-primary bg-primary/5" : "border-blue-400"
-          }`}
+          className={`relative rounded-lg border-dashed p-8 text-center ${dragActive ? "border-primary bg-primary/5" : "border-blue-400"
+            }`}
           style={{
             borderWidth: "2px",
             borderStyle: "dashed",
@@ -181,9 +180,8 @@ export default function EpubUploader({ onCancel }: EpubUploaderProps) {
               className="flex items-center gap-4 rounded-lg border p-4"
             >
               <FileText
-                className={`h-8 w-8 flex-shrink-0 ${
-                  file.error ? "text-red-500" : "text-blue-500"
-                }`}
+                className={`h-8 w-8 flex-shrink-0 ${file.error ? "text-red-500" : "text-blue-500"
+                  }`}
               />
               <div className="flex-1 space-y-1">
                 <div className="flex items-center justify-between">
