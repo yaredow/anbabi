@@ -32,12 +32,11 @@ export function BooksGrid({ books, isPending }: BooksGridProps) {
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
       {books.map((book) => (
         <BookCard
-          key={book.id}
-          id={book.id ?? ""}
+          bookUrl={book.coverImage as string}
+          id={book.id}
+          title={book.title}
           progress={10}
-          author={book.author ?? ""}
-          coverUrl={book.coverImage ?? ""}
-          title={book.title ?? ""}
+          key={book.id}
         />
       ))}
     </div>

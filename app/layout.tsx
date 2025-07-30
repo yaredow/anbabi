@@ -1,5 +1,5 @@
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Inter, Roboto } from "next/font/google";
+import { Roboto } from "next/font/google";
 
 import { cn } from "@/lib/utils";
 
@@ -12,13 +12,6 @@ import UserProfileSettingsModal from "@/features/account/components/user-profile
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import siteConfig from "@/config/site-config";
-
-const inter = Inter({
-	subsets: ["latin"],
-	display: "swap",
-	variable: "--font-sans",
-	weight: ["400", "500", "700"],
-});
 
 const roboto = Roboto({
 	subsets: ["latin"],
@@ -36,7 +29,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={cn(` ${inter.className} antialiased`)}>
+			<body className={cn(`${roboto.className} antialiased`)}>
 				<QueryProviders>
 					<NuqsAdapter>
 						<Suspense
