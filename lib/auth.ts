@@ -7,31 +7,31 @@ import { resend } from "./resend";
 import { hashPassword, verifyPassword } from "./utils";
 
 export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: "postgresql",
-  }),
-  emailAndPassword: {
-    enabled: true,
-    password: {
-      hash: hashPassword,
-      verify: verifyPassword,
-    },
-    sendResetPassword: async ({ user, url, token }, request) => {
-      await resend.emails.send({
-        from: process.env.SMTP_USER!,
-        to: user.email,
-        subject: "Reset your password",
-        react: ResetPasswordEmail({
-          resetPasswordLink: url,
-          userFirstname: user.name.split(" ")[0],
-        }),
-      });
-    },
-  },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    },
-  },
+	database: prismaAdapter(prisma, {
+		provider: "postgresql",
+	}),
+	emailAndPassword: {
+		enabled: true,
+		password: {
+			hash: hashPassword,
+			verify: verifyPassword,
+		},
+		sendResetPassword: async ({ user, url, token }, request) => {
+			await resend.emails.send({
+				from: process.env.SMTP_USER!,
+				to: user.email,
+				subject: "Reset your password",
+				react: ResetPasswordEmail({
+					resetPasswordLink: url,
+					userFirstname: user.name.split(" ")[0],
+				}),
+			});
+		},
+	},
+	socialProviders: {
+		google: {
+			clientId: process.env.GOOGLE_CLIENT_ID!,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+		},
+	},
 });

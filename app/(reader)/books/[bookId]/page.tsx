@@ -6,13 +6,13 @@ import BookInformation from "@/features/books/components/book-information";
 import { Suspense } from "react";
 
 export default async function BookWithId() {
-  const session = await auth.api.getSession({ headers: await headers() });
+	const session = await auth.api.getSession({ headers: await headers() });
 
-  if (!session) redirect("/sign-in");
+	if (!session) redirect("/sign-in");
 
-  return (
-    <Suspense>
-      <BookInformation />
-    </Suspense>
-  );
+	return (
+		<Suspense>
+			<BookInformation />
+		</Suspense>
+	);
 }
