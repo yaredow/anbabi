@@ -58,7 +58,7 @@ export default function Header() {
           isSearchOpen ? (
             <SearchBar />
           ) : (
-            <h1 className="text-sm">Library</h1>
+            <h1 className="text-base font-semibold">Library</h1>
           )
         ) : (
           <h1 className="text-sm">{book?.title}</h1>
